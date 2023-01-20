@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 
-function profileScreen() {
+function ProfileScreen() {
   return (
     <View>
       <Text>Feed</Text>
@@ -9,4 +9,4 @@ function profileScreen() {
   );
 };
 
-export default profileScreen;
+export default ProfileScreen;
