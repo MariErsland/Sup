@@ -1,11 +1,19 @@
-import React, { useState } from 'react';
-import { View, Text, Button, ScrollView } from 'react-native';
+import React from 'react';
+import StackNavigationHome from './StackNavigationHome'
 
+function App() {
+  return (
+    <StackNavigationHome />
+  );
+}
 
+export default App;
+
+/*
 const App = () => {
 
 function Fetch(){
-  const users = fetch("http://152.94.160.72:3000/users")
+  const users = fetch("http://152.94.160.72:3000/user/${id}")
   .then((response) => response.json())
   .then((data) => {
     console.log(data)
@@ -32,3 +40,4 @@ const [data, setData] = useState([{id: 100, email: 1, first_name: "Mari"}]);
 };
 
 export default App;
+*/
