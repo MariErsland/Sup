@@ -9,7 +9,7 @@ function Feed(props: FeedscreenProps) {
   return (
     <View>
       <Text>This is the feeed, wassupp??</Text>
-      <Button title="go to profile" onPress={() => props.navigation.push("Profile")}/>
+      <Button title="Min profil" onPress={() => props.navigation.push("Profile")}/>
     </View>
   );
 };

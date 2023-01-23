@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Button, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+
 
 interface ProfileScreen {
   id: number;
@@ -8,10 +10,11 @@ interface ProfileScreen {
 }
 
 function ProfileScreen() {
+  const navigation = useNavigation();
   const [data, setData] = useState([{id: 1, first_name: 'Iselin Bjaanes', email: 'Iselin@bjaanes.no'}]);
   
   function FetchUser(){
-    fetch("http://152.94.160.72:3000/user/500")
+    fetch("http://152.94.160.72:3000/user/505")
     .then((response) => response.json())
     .then((data) => {
       console.log(data)
@@ -27,20 +30,19 @@ function ProfileScreen() {
       'Er du helt sikker på at du vil slette brukeren din?',
       [
         {
-          text: 'Cancel',
+          text: 'Avbryt',
           style: 'cancel',
         },
 
         {
-          text: 'Delete',
+          text: 'Slett bruker',
           onPress: () => {
-            // code to delete the user here
             fetch(`http://152.94.160.72:3000/user/500`, {
               method: 'DELETE'
             })
             .then(response => response.json())
             .then(data => {
-              console.log('Bruker slettet suksess', data);
+              console.log('Bruker slettet = suksess', data);
             })
             .catch(error => {
               console.log('Feil ved sletting av bruker', error);
@@ -52,13 +54,21 @@ function ProfileScreen() {
     );
   }
 
-  
+  function EditUser() {
+    console.log('userId before nav', data[0].id);
+    navigation.navigate('Edit', { params: { userId: data[0].id } });
+}
 
+
+    
   return (
     <View>
         <Text>Profilside</Text>
         <Button title="Press her for bruker informasjon (test)" onPress={FetchUser}/>
         <Button title="Slett bruker" onPress={DeleteUser}/>
+        <Button title="Rediger bruker" onPress={() => EditUser()}/>
+
+
         {
           data.map((item) => {
             return(
@@ -74,3 +84,4 @@ function ProfileScreen() {
   );
 };
 export default ProfileScreen;
+
