@@ -1,21 +1,21 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {SafeAreaView, Text, Button, View} from 'react-native';
 import { LoginContext } from '../App';
+import { useAuth } from '../auth';
 
 interface FeedscreenProps {
     navigation: any
 }
 
-
 function Feed(props: FeedscreenProps) {
   
   const {isLoggedIn} = useContext(LoginContext);
-  
-  useEffect(() => {
+  useAuth({isLoggedIn, navigation: props.navigation});
+  /*useEffect(() => {
     if (!isLoggedIn) {
         props.navigation.navigate("Login");
     } 
-  }, [isLoggedIn, props.navigation]);
+  }, [isLoggedIn, props.navigation]);*/
 
   return (
     <View>
@@ -24,8 +24,6 @@ function Feed(props: FeedscreenProps) {
     </View>
   );
 };
-
-
 
 export default Feed;
 
