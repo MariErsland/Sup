@@ -1,11 +1,22 @@
-import React, { useState} from 'react';
+import React, { useContext, useEffect, useState} from 'react';
 import { View, Text, TextInput, Button } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NavigationEvents } from 'react-navigation';
+import { LoginContext } from '../App';
 
 const Edit = () => {
+
   const navigation = useNavigation();
   const route = useRoute();
+  const {isLoggedIn} = useContext(LoginContext);
+  
+  useEffect(() => {
+    if (!isLoggedIn) {
+        navigation.navigate("Login");
+    } 
+  }, [isLoggedIn, navigation]);
+
+  
   if(!route.params) return <View><Text>Test her...</Text></View>
   console.log('route.params:', route.params);
   const userId: any = route.params.params.userId;

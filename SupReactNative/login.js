@@ -1,6 +1,10 @@
 import React, {useState} from 'react';
 import {SafeAreaView, Text, Button} from 'react-native';
 import {GoogleSignin, GoogleSigninButton} from '@react-native-google-signin/google-signin';
+import { useContext } from 'react';
+import { LoginContext } from './App';
+import { useNavigation } from '@react-navigation/native';
+
 
 GoogleSignin.configure({
   webClientId:
@@ -8,17 +12,24 @@ GoogleSignin.configure({
   offlineAccess: false,
 });
 
-const Login = () => {
-
+const LoginScreen = () => {
+  const navigation = useNavigation();
   const [userInfo, setUserInfo] = useState(null);
+  const {setIsLoggedIn} = useContext(LoginContext);
 
   const onSignIn = () => {
+    
     GoogleSignin.hasPlayServices()
       .then(() => {
         return GoogleSignin.signIn();
       })
       .then((response) => {
         setUserInfo(response);
+        setIsLoggedIn(true);
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Feed'}]
+        }); 
       })
       .catch((err) => {
         console.log(err);
@@ -29,6 +40,7 @@ const Login = () => {
     GoogleSignin.signOut()
       .then(() => {
         setUserInfo(null);
+        setIsLoggedIn(false);
       })
       .catch((err) => {
       });
@@ -40,7 +52,7 @@ const Login = () => {
         {userInfo ? (
           <>
             <Text>
-              Hello  {`${userInfo.user.givenName} ${userInfo.user.familyName}`}
+              Hello  {`${userInfo.user.givenName} ${userInfo.user.familiName}`}
             </Text>
             <></>
             <Button title="Sign out" onPress={onSignOut} />
@@ -53,4 +65,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginScreen;
