@@ -3,18 +3,16 @@ import { View, Text, TextInput, Button } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NavigationEvents } from 'react-navigation';
 import { LoginContext } from '../App';
+import { useAuth } from '../auth';
+
+
 
 const Edit = () => {
 
   const navigation = useNavigation();
   const route = useRoute();
   const {isLoggedIn} = useContext(LoginContext);
-  
-  useEffect(() => {
-    if (!isLoggedIn) {
-        navigation.navigate("Login");
-    } 
-  }, [isLoggedIn, navigation]);
+  useAuth({isLoggedIn, navigation});
 
   
   if(!route.params) return <View><Text>Test her...</Text></View>
