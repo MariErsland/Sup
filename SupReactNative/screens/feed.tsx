@@ -9,7 +9,6 @@ import { useAuth } from '../auth';
 
 interface FeedProps {
     navigation: NavigationProp<RootStackParamList, 'Feed'>;
-
 }
 
 const Feed: React.FC<FeedProps> = ({ navigation }) => {
