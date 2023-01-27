@@ -9,7 +9,10 @@ export const useAuth = (props: Props) => {
   useEffect(() => {
     if (!props.isLoggedIn) {
       console.log('Redirecting to login');
-      props.navigation.navigate("Login");
+      props.navigation.reset({
+        index: 0,
+        routes: [{name: 'Login'}]
+      });
     } 
   }, [props.isLoggedIn, props.navigation]);
 };

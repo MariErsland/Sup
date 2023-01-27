@@ -6,8 +6,6 @@ import { LoginContext } from './App';
 import { useNavigation } from '@react-navigation/native';
 import { storeToken, retrieveToken } from './token_handling';
 
-
-
 GoogleSignin.configure({
   webClientId:
     '793626058046-1vvfcdoglco03l1aitub77m9u8dqbfld.apps.googleusercontent.com',
@@ -16,7 +14,6 @@ GoogleSignin.configure({
 
 const LoginScreen = () => {
   const navigation = useNavigation();
-  const [userInfo, setUserInfo] = useState({});
   const {setIsLoggedIn} = useContext(LoginContext);
   const [loading, setLoading] = useState(false);
 
@@ -27,8 +24,6 @@ const LoginScreen = () => {
         return GoogleSignin.signIn();
       })
       .then((response) => {
-        setUserInfo(response);
-
         //Access token for å verifisere bruker i server
         const accessToken = response.idToken;
 
@@ -54,7 +49,7 @@ const LoginScreen = () => {
           //const userToken = data.token;
           //storeToken(userToken);
           setIsLoggedIn(true);
-          //setLoading(false);
+          setLoading(false);
           navigation.reset({
             index: 0,
             routes: [{name: 'Feed'}]
@@ -82,21 +77,9 @@ const LoginScreen = () => {
   };
 
   return (
-      <SafeAreaView>
-        <Text> 
-        {userInfo ? (
-          <>
-            <Text>
-              Hello           
-            </Text>
-            <></>
-            <Button title="Sign out" onPress={onSignOut} />
-          </>
-        ) : (
-          <GoogleSigninButton onPress={onSignIn} />
-        )}
-        </Text>
-      </SafeAreaView>
+    <SafeAreaView>
+      {loading ? <Text>Loading...</Text> : <GoogleSigninButton onPress={onSignIn} />}
+    </SafeAreaView>
   );
 };
 

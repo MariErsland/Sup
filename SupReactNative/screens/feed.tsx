@@ -13,6 +13,7 @@ interface FeedProps {
 
 const Feed: React.FC<FeedProps> = ({ navigation }) => {
     const {isLoggedIn} = useContext(LoginContext);
+    console.log('Is logged in: ', isLoggedIn);
     useAuth({isLoggedIn, navigation: navigation});
     
     const [activity, setActivity] = useState(null);
