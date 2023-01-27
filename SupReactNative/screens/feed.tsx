@@ -11,11 +11,6 @@ function Feed(props: FeedscreenProps) {
   
   const {isLoggedIn} = useContext(LoginContext);
   useAuth({isLoggedIn, navigation: props.navigation});
-  /*useEffect(() => {
-    if (!isLoggedIn) {
-        props.navigation.navigate("Login");
-    } 
-  }, [isLoggedIn, props.navigation]);*/
 
   return (
     <View>
