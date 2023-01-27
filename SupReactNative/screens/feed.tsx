@@ -1,31 +1,47 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {SafeAreaView, Text, Button, View} from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { View, Text, Button } from 'react-native';
+import ActivityList from '../components/activity';
+import { NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from '../types';
 import { LoginContext } from '../App';
 import { useAuth } from '../auth';
 
-interface FeedscreenProps {
-    navigation: any
+
+interface FeedProps {
+    navigation: NavigationProp<RootStackParamList, 'Feed'>;
+
 }
 
-function Feed(props: FeedscreenProps) {
-  
-  const {isLoggedIn} = useContext(LoginContext);
-  useAuth({isLoggedIn, navigation: props.navigation});
-  /*useEffect(() => {
-    if (!isLoggedIn) {
-        props.navigation.navigate("Login");
-    } 
-  }, [isLoggedIn, props.navigation]);*/
+const Feed: React.FC<FeedProps> = ({ navigation }) => {
+    const {isLoggedIn} = useContext(LoginContext);
+    useAuth({isLoggedIn, navigation: navigation});
+    
+    const [activity, setActivity] = useState(null);
 
-  return (
-    <View>
-      <Text>This is the feeed, wassupp??</Text>
-      <Button title="Min profil" onPress={() => props.navigation.push("Profile")}/>
-    </View>
-  );
-};
+    useEffect(() => {
+        fetch(`http://152.94.160.72:3000/activity/`)
+            .then((response) => response.json())
+            .then((data) => {
+                setActivity(data);
+            })
+            .catch((error) => {
+                console.log('Error fetching activity', error);
+            });
+    }, []);
 
-export default Feed;
+    return (
+        <View>
+            <Text>DETTE ER FEED - VELKOMMEN SKAL DU VÆRE</Text>
+            <Button title="Min profil" onPress={() => navigation.navigate("Profile")}/>
+            <Button title="Ny aktivitet" onPress={() => navigation.navigate("NewActivity")} />
+            {activity ? <ActivityList activities={activity} /> : <Text>Her var det ingen aktiviteter....</Text>}
+        </View>
+    );
+
+
+
+    };
+    export default Feed;
 
 
 
