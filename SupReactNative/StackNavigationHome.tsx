@@ -5,6 +5,7 @@ import { RootStackParamList } from './types';
 import Feed from './screens/feed';
 import ProfileScreen from './screens/profileScreen';
 import Edit from './screens/Edit';
+import NewActivity from './screens/CreateActivity'
 import LoginScreen from './login';
 import { LoginProvider } from './App';
 
@@ -20,6 +21,7 @@ const stackNavigationHome = () => {
             <Stack.Screen name='Profile' component={ProfileScreen} />
             <Stack.Screen name='Edit' component={Edit} />
             <Stack.Screen name='Login' component={LoginScreen} />
+            <Stack.Screen name= 'NewActivity' component={NewActivity}/>
           </Stack.Navigator>
         </NavigationContainer>
       </LoginProvider>

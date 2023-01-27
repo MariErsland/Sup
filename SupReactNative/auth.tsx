@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-
 interface Props {
   isLoggedIn: boolean;
   navigation: any;

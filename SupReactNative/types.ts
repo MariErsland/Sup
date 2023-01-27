@@ -3,5 +3,6 @@ export type RootStackParamList = {
     Profile: undefined;
     Login: undefined; 
     'Edit': { userId: number}
+    NewActivity: undefined;
 }
 
