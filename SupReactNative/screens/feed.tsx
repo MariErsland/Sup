@@ -1,15 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, Button } from 'react-native';
 import ActivityList from '../components/activity';
 import { NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../types';
+import { LoginContext } from '../App';
+import { useAuth } from '../auth';
 
 
 interface FeedProps {
     navigation: NavigationProp<RootStackParamList, 'Feed'>;
+
 }
 
 const Feed: React.FC<FeedProps> = ({ navigation }) => {
+    const {isLoggedIn} = useContext(LoginContext);
+    useAuth({isLoggedIn, navigation: navigation});
+    
     const [activity, setActivity] = useState(null);
 
     useEffect(() => {
@@ -31,6 +37,11 @@ const Feed: React.FC<FeedProps> = ({ navigation }) => {
             {activity ? <ActivityList activities={activity} /> : <Text>Her var det ingen aktiviteter....</Text>}
         </View>
     );
-};
 
-export default Feed;
+
+
+    };
+    export default Feed;
+
+
+

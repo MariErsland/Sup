@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, Button, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { LoginContext } from '../App';
+import { useAuth } from '../auth';
+
 
 
 interface ProfileScreen {
@@ -10,8 +13,13 @@ interface ProfileScreen {
 }
 
 function ProfileScreen() {
+
   const navigation = useNavigation();
   const [data, setData] = useState([{id: 1, first_name: 'Iselin Bjaanes', email: 'Iselin@bjaanes.no'}]);
+  const {isLoggedIn} = useContext(LoginContext);
+  useAuth({isLoggedIn, navigation});
+
+  
   
   function FetchUser(){
     fetch("http://152.94.160.72:3000/user/505")

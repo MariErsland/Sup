@@ -1,7 +1,8 @@
 export type RootStackParamList = {
     Feed: undefined;
     Profile: undefined;
-    'Edit': { userId: number} //sjekk denne
+    Login: undefined; 
+    'Edit': { userId: number}
     NewActivity: undefined;
 }
 
