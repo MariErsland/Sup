@@ -3,6 +3,7 @@ import { View, Text, Button, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { LoginContext } from '../App';
 import { useAuth } from '../auth';
+import { retrieveToken } from '../token_handling';
 
 
 
@@ -19,8 +20,6 @@ function ProfileScreen() {
   const {isLoggedIn} = useContext(LoginContext);
   useAuth({isLoggedIn, navigation});
 
-  
-  
   function FetchUser(){
     fetch("http://152.94.160.72:3000/user/505")
     .then((response) => response.json())
@@ -30,6 +29,33 @@ function ProfileScreen() {
     }).catch((error)=>{
       console.log('Error fetching data', error);
     })
+  }
+  
+  //example on how to get user information from token
+  async function whoAmI() {
+  const myToken = await retrieveToken();
+  console.log("Token befor sending to fetch and after storing: ", myToken);
+  fetch("http://152.94.160.72:3000/userByToken", {
+    headers: {
+      Authorization: `Bearer ${myToken}`
+    }
+  })
+    .then((response) => {
+      try {
+        return response.json();
+      }
+      catch (error) {
+        console.error('Error parsing response as JSON', error);
+        throw error;
+      }
+    })
+    .then(userInfo => {
+      console.log(userInfo.user);
+      //setData(userInfo.user);
+    })
+    .catch((error) => {
+      console.error('Error fetching data: ', error);
+    });
   }
 
   function DeleteUser() {
@@ -72,10 +98,10 @@ function ProfileScreen() {
   return (
     <View>
         <Text>Profilside</Text>
-        <Button title="Press her for bruker informasjon (test)" onPress={FetchUser}/>
-        <Button title="Slett bruker" onPress={DeleteUser}/>
-        <Button title="Rediger bruker" onPress={() => EditUser()}/>
-
+        <Button title="Press her for bruker informasjon (test)" onPress={FetchUser} />
+        <Button title="Slett bruker" onPress={DeleteUser} />
+        <Button title="Rediger bruker" onPress={() => EditUser()} />
+        
 
         {
           data.map((item) => {
