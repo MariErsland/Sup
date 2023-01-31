@@ -3,6 +3,7 @@ import { View, Text, Button, Alert, StyleSheet, TouchableOpacity} from 'react-na
 import { useNavigation } from '@react-navigation/native';
 import { LoginContext } from '../App';
 import { useAuth } from '../auth';
+import {retrieveToken}  from '../token_handling';
 import Footer from '../shared/Footer';
 
 
@@ -33,6 +34,33 @@ function ProfileScreen() {
     })
   }
 
+   //example on how to get user information from token
+   async function whoAmI() {
+    const myToken = await retrieveToken();
+    console.log("Token befor sending to fetch and after storing: ", myToken);
+    fetch("http://152.94.160.72:3000/userByToken", {
+      headers: {
+        Authorization: `Bearer ${myToken}`
+      }
+    })
+      .then((response) => {
+        try {
+          return response.json();
+        }
+        catch (error) {
+          console.error('Error parsing response as JSON', error);
+          throw error;
+        }
+      })
+      .then(userInfo => {
+        console.log(userInfo.user);
+        //setData(userInfo.user);
+      })
+      .catch((error) => {
+        console.error('Error fetching data: ', error);
+      });
+    }
+    
   function DeleteUser() {
     Alert.alert(
       'Slett profilen min',
