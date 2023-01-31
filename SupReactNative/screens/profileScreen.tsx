@@ -3,7 +3,7 @@ import { View, Text, Button, Alert, StyleSheet, TouchableOpacity} from 'react-na
 import { useNavigation } from '@react-navigation/native';
 import { LoginContext } from '../App';
 import { useAuth } from '../auth';
-import { retrieveToken } from '../token_handling';
+import {retrieveToken}  from '../token_handling';
 import Footer from '../shared/Footer';
 
 
