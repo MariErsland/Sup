@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { View, Text, TextInput, Button } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import Footer from '../shared/Footer';
 
 const NewActivity = () => {
     const [time, setTime] = useState('');
@@ -32,46 +33,81 @@ const NewActivity = () => {
     
 
     return (
-        <View>
-            <Text>Add new activity</Text>
+        <View style= {styles.background}>
+            <View style={styles.container}>
+            
             <TextInput
-                placeholder="Time"
+                placeholder="Tidspunkt"
                 value={time}
                 onChangeText={setTime}
             />
             <TextInput
-                placeholder="County"
+                placeholder="Fylke (dropdown)"
                 value={county}
                 onChangeText={setCounty}
             />
             <TextInput
-                placeholder="Address"
+                placeholder="Møtested"
                 value={address}
                 onChangeText={setAddress}
             />
             <TextInput
-                placeholder="Category"
+                placeholder="Kategori (skal være dropdown)"
                 value={category}
                 onChangeText={setCategory}
             />
             <TextInput
-                placeholder="Description"
+                placeholder="Beskrivelse"
                 value={description}
                 onChangeText={setDescription}
             />
             <TextInput
-                placeholder="Number of participants"
+                placeholder="Må være tall(skal bort)"
                 value={number_of_participants}
                 onChangeText={setNumberOfParticipants}
             />
             <TextInput
-                placeholder="Created by"
+                placeholder="Laget av (Denne skal bort)"
                 value={created_by}
                 onChangeText={setCreatedBy}
             />
-            <Button title="Create activity" onPress={handleCreateActivity} />
+            <TouchableOpacity style={styles.button} onPress={handleCreateActivity} >
+                    <Text style={styles.buttonText}>Opprett ny aktivitet</Text>
+                    
+                </TouchableOpacity>
+        
+
+            </View>
+        <Footer />
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    background: {
+        backgroundColor: '#DEE7E6',
+        flex: 1,
+    },
+    container: {
+        backgroundColor: 'white',
+        padding: 15,
+        borderRadius: 10,
+        margin: 20,
+      },
+    button: {
+        alignSelf: 'flex-start',
+        backgroundColor: '#EB7B31',
+        borderRadius: 10,
+        marginTop: 15,
+        height: '10%',
+        width: '85%',
+        alignItems: 'center',
+        justifyContent: 'center' 
+    },
+    buttonText: {
+        color: 'white',
+        textAlign: 'center',
+    },
+})
 
 export default NewActivity;

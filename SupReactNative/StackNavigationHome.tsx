@@ -8,6 +8,7 @@ import Edit from './screens/Edit';
 import NewActivity from './screens/CreateActivity'
 import LoginScreen from './login';
 import { LoginProvider } from './App';
+import DetailsActivity from './screens/DetailsActivity';
 
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -22,6 +23,7 @@ const stackNavigationHome = () => {
             <Stack.Screen name='Edit' component={Edit} />
             <Stack.Screen name='Login' component={LoginScreen} />
             <Stack.Screen name= 'NewActivity' component={NewActivity}/>
+            <Stack.Screen name= 'DetailsActivity' component={DetailsActivity}/>
           </Stack.Navigator>
         </NavigationContainer>
       </LoginProvider>

@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useState} from 'react';
-import { View, Text, TextInput, Button } from 'react-native';
+import React, { useContext, useState} from 'react';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { NavigationEvents } from 'react-navigation';
 import { LoginContext } from '../App';
 import { useAuth } from '../auth';
+import Footer from '../shared/Footer';
 
 
 
@@ -43,10 +43,10 @@ const Edit = () => {
   }
 
   return (
-    <View>
-      <Text>Edit User {userId} hallo</Text>
+    <View style={styles.background}>
+      <View style={styles.container}>
       <TextInput
-        placeholder="First Name"
+        placeholder="Fornavn"
         onChangeText={text => setFirstName(text)}
         value={firstName}
       />
@@ -55,9 +55,52 @@ const Edit = () => {
         onChangeText={text => setEmail(text)}
         value={email}
       />
-      <Button title="Save Changes" onPress={saveChanges}/>
+      <View style={styles.buttonContainer}>
+                    <TouchableOpacity style={styles.button} onPress={saveChanges}>
+                        <Text style={styles.buttonText}>Lagre endringer</Text>
+                    </TouchableOpacity>
+                </View>
+      </View>
+      
+      <Footer />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  background: {
+    backgroundColor: '#DEE7E6',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+},
+  container: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    margin: 10,
+    width: '90%',
+    height: '70%',
+},
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height: 40,
+},
+  buttonText: {
+    color: 'white',
+    textAlign: 'center',
+},
+  buttonContainer: {
+    alignSelf: 'flex-end',
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    width: '30%',
+    backgroundColor: '#EB7B31',
+    borderRadius: 10,
+},
+})
 
 export default Edit;

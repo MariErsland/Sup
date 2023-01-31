@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, Button, Alert } from 'react-native';
+import { View, Text, Button, Alert, StyleSheet, TouchableOpacity} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { LoginContext } from '../App';
 import { useAuth } from '../auth';
+import Footer from '../shared/Footer';
 
 
 
@@ -70,26 +71,77 @@ function ProfileScreen() {
 
     
   return (
-    <View>
-        <Text>Profilside</Text>
+    <View style={styles.background}>
         <Button title="Press her for bruker informasjon (test)" onPress={FetchUser}/>
-        <Button title="Slett bruker" onPress={DeleteUser}/>
-        <Button title="Rediger bruker" onPress={() => EditUser()}/>
-
-
         {
           data.map((item) => {
             return(
-              <View key={item.id}>
-                <Text>Id: {item.id}</Text>
-                <Text>First Name: {item.first_name}</Text>
+              <View key={item.id} style={styles.container}>
+                <Text>Id: (skal ikke vise){item.id}</Text>
+                <Text>Fornavn: {item.first_name}</Text>
                 <Text>Email: {item.email}</Text>
+
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity style={styles.button} onPress={() => EditUser()}>
+                        <Text style={styles.buttonText}>Rediger bruker</Text>
+                    </TouchableOpacity>
+                </View>
+
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity style={styles.button} onPress={DeleteUser}>
+                        <Text style={styles.buttonText}>Slett bruker</Text>
+                    </TouchableOpacity>
+                </View>
+
               </View>
             )
           })
         }
+    <Footer />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  background: {
+    backgroundColor: '#DEE7E6',
+    flex: 1,
+  },
+  container: {
+    backgroundColor: 'white',
+    padding: 20,
+    marginBottom: 90,
+    borderRadius: 10,
+    margin: 10,
+    width: '90%',
+    alignSelf: 'center',
+    height: '40%',
+},
+  buttonText: {
+    color: 'white',
+    textAlign: 'center',
+},
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height: 40,
+  },
+  buttonContainer: {
+    alignSelf: 'center',
+    marginVertical: 10,
+    backgroundColor: '#EB7B31',
+    borderRadius: 10,
+    width: '85%',
+    alignItems: 'center',
+    justifyContent: 'center'
+
+},
+
+
+})
+
+
+
 export default ProfileScreen;
 
