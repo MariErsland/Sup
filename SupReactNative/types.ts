@@ -4,5 +4,6 @@ export type RootStackParamList = {
     Login: undefined; 
     'Edit': { userId: number}
     NewActivity: undefined;
+    DetailsActivity: undefined;
 }
 
