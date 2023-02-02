@@ -6,7 +6,7 @@ import Feed from './screens/feed';
 import ProfileScreen from './screens/profileScreen';
 import Edit from './screens/Edit';
 import NewActivity from './screens/CreateActivity'
-import LoginScreen from './login';
+import LoginScreen from './screens/login';
 import { LoginProvider } from './App';
 import DetailsActivity from './screens/DetailsActivity';
 
