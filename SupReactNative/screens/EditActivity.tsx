@@ -5,56 +5,52 @@ import Footer from '../shared/Footer';
 import DatePicker from 'react-native-modern-datepicker';
 import React from 'react';
 
-interface NewActivity {
-    }
+interface EditActivity {
+  id: string,
+  time: string,
+  county: string,
+  address: string,
+  category: string,
+  description: string,
+  number_of_participants: string,
+  created_by: string,
+}
 
-const NewActivity = () => {
-
+const EditActivity = ({ id }: EditActivity) => {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedCounty, setSelectedCounty] = useState(null);
-
     const [selectedDate, setSelectedDate] = useState('');
-    console.log(selectedDate);
-    
-
     const [address, setAddress] = useState('');
-
     const [showDatePicker, setShowDatePicker] = useState(false);
-    console.log(showDatePicker)
-
 
     const [category] = useState([
         { label: 'Friluft', value: 'Tur'},
         { label: 'Trening', value: 'Jogging'},
         { label: 'Matlaging', value: 'Matlaging'}, 
         { label: 'Annet', value: 'Annet'}, 
-
-        ])
-
+    ]);
   
-     const [county] = useState([
+    const [county] = useState([
         { label: 'Rogaland', value: 'Rogaland'},
         { label: 'Agder', value: 'Agder'},
-        ])
-         
-
+    ]);
+  
     const [description, setDescription] = useState('');
     const [number_of_participants, setNumberOfParticipants] = useState('');
     const [created_by, setCreatedBy] = useState('');
 
-    const handleCreateActivity = async () => {
-        console.log(selectedDate, county, category);
-        console.log(JSON.stringify({ selectedDate, county, address, category, description, number_of_participants, created_by }));
-        const response = await fetch('http://152.94.160.72:3000/create-activity', {
-            method: 'POST',
+    const handleEditActivity = async () => {
+        const response = await fetch(`http://152.94.160.72:3000/activity/1`, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ time: selectedDate, county: selectedCounty, address, category: selectedCategory, description, number_of_participants, created_by }),
         });
+        
     
         if (!response.ok) {
-            console.error('Error creating activity:', response);
+            console.error('Error updating activity:', response);
             return;
         }
     
@@ -62,10 +58,6 @@ const NewActivity = () => {
         console.log('Success:', data);
     }
     
-
-
-
-    //{'Rogaland','Agder', 'Innland', 'Møre og Romsdal', 'Nordland', 'Oslo', 'Vestfold og Telemark', 'Troms of Finnmark', 'Trøndelag', 'Vestland', 'Viken'};
 
     return (
         <View style={{flex: 1}}>
@@ -122,15 +114,10 @@ const NewActivity = () => {
                 value={created_by}
                 onChangeText={setCreatedBy}
             />
-            <TouchableOpacity style={styles.button} onPress={handleCreateActivity} >
-                    <Text style={styles.buttonText}>Opprett ny aktivitet</Text>
-
+            <TouchableOpacity style={styles.button} onPress={handleEditActivity} >
+                    <Text style={styles.buttonText}>Endre aktivitet</Text>
                 </TouchableOpacity>
-        
-            
-            
             </View>
-        
         </ScrollView>
         <Footer />
         </View>
@@ -167,4 +154,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default NewActivity;
+export default EditActivity;
