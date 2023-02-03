@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {SafeAreaView, Text, Button, Alert} from 'react-native';
+import {SafeAreaView, Text, Button, Alert, StyleSheet, View, Image, ImageBackground} from 'react-native';
 import {GoogleSignin, GoogleSigninButton} from '@react-native-google-signin/google-signin';
 import { useContext } from 'react';
 import { LoginContext } from '../App';
@@ -16,6 +16,8 @@ interface Props {
   navigation: any;
   timeoutId: any;
 }
+
+const FrontPagePhoto = require('../assets/frontPagePhoto.png');
 
 const LoginScreen = (props: Props) => {
   const {setIsLoggedIn} = useContext(LoginContext);
@@ -89,11 +91,53 @@ const LoginScreen = (props: Props) => {
   };
 
   return (
-    <SafeAreaView>
-      {loading ? <Text>Loading...</Text> : <GoogleSigninButton onPress={onSignIn} />}
+    <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
+        <ImageBackground source={FrontPagePhoto} resizeMode="cover" style={styles.image}>
+        <Text style={styles.logo}>SUP!</Text>
+        <Text style={styles.description}>SUP lar deg finne aktiviteter med nye venner....</Text>
+        {loading ? <Text>Loading...</Text> : <GoogleSigninButton style={styles.googleSigninButton} onPress={onSignIn} />}
+        </ImageBackground>
+      </View>
     </SafeAreaView>
   );
-};
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex:1
+  },
+  image: {
+    flex:1,
+    justifyContent: 'center'
+  },
+  logo: {
+    color: 'white',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginBottom: 30,
+    fontSize: 40,
+    fontWeight: 'bold',
+    
+  },
+
+  description: {
+    color: 'white',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginBottom: 30,
+  },
+
+  googleSigninButton: {
+    alignSelf: 'center',
+    marginBottom: 350,
+
+  }
+
+})
+
+
+
 
 export default LoginScreen;
 
