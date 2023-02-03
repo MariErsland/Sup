@@ -1,65 +1,38 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, Component } from 'react';
 import { View, Text, Button, Alert, StyleSheet, TouchableOpacity} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { LoginContext } from '../App';
 import { useAuth } from '../auth';
-import {retrieveToken}  from '../token_handling';
+import { getUser } from '../components/getUser';
 import Footer from '../shared/Footer';
 
-
-
-interface ProfileScreen {
+/*interface ProfileScreen {
   id: number;
   email: string;
   first_name: string;
+}*/
+
+interface User {
+  id: string;
+  first_name: string;
+  email: string;
 }
 
 function ProfileScreen() {
 
   const navigation = useNavigation();
-  const [data, setData] = useState([{id: 1, first_name: 'Iselin Bjaanes', email: 'Iselin@bjaanes.no'}]);
+  const [data, setData] = useState<User[]>([]);
   const {isLoggedIn} = useContext(LoginContext);
   useAuth({isLoggedIn, navigation});
 
-  
-  
-  function FetchUser(){
-    fetch("http://152.94.160.72:3000/user/505")
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data)
-      setData([data]);
-    }).catch((error)=>{
-      console.log('Error fetching data', error);
-    })
-  }
-
-   //example on how to get user information from token
-   async function whoAmI() {
-    const myToken = await retrieveToken();
-    console.log("Token befor sending to fetch and after storing: ", myToken);
-    fetch("http://152.94.160.72:3000/userByToken", {
-      headers: {
-        Authorization: `Bearer ${myToken}`
-      }
-    })
-      .then((response) => {
-        try {
-          return response.json();
-        }
-        catch (error) {
-          console.error('Error parsing response as JSON', error);
-          throw error;
-        }
-      })
-      .then(userInfo => {
-        console.log(userInfo.user);
-        //setData(userInfo.user);
-      })
-      .catch((error) => {
-        console.error('Error fetching data: ', error);
-      });
-    }
+  //Setting userdata with logged in user
+  useEffect(() => {
+    const getData = async () => {
+      const user = await getUser();
+      setData([user.user]);
+    };
+    getData();
+  }, []);
     
   function DeleteUser() {
     Alert.alert(
@@ -70,7 +43,6 @@ function ProfileScreen() {
           text: 'Avbryt',
           style: 'cancel',
         },
-
         {
           text: 'Slett bruker',
           onPress: () => {
@@ -95,40 +67,42 @@ function ProfileScreen() {
     console.log('userId before nav', data[0].id);
     navigation.navigate('Edit', { params: { userId: data[0].id } });
 }
-
-
     
   return (
     <View style={styles.background}>
-        <Button title="Press her for bruker informasjon (test)" onPress={FetchUser}/>
-        {
-          data.map((item) => {
-            return(
-              <View key={item.id} style={styles.container}>
-                <Text>Id: (skal ikke vise){item.id}</Text>
-                <Text>Fornavn: {item.first_name}</Text>
+    
+    <View style={styles.container}>
+      {
+        data === undefined ? 
+          <View><Text> Loading... </Text></View> : 
+          
+            data.map((item: User) => (
+              <View key={item.id} >
+                <Text>Id: (should not show){item.id}</Text>
+                <Text>First name: {item.first_name}</Text>
                 <Text>Email: {item.email}</Text>
-
-                <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.button} onPress={() => EditUser()}>
-                        <Text style={styles.buttonText}>Rediger bruker</Text>
-                    </TouchableOpacity>
-                </View>
-
-                <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.button} onPress={DeleteUser}>
-                        <Text style={styles.buttonText}>Slett bruker</Text>
-                    </TouchableOpacity>
-                </View>
-
               </View>
-            )
-          })
-        }
+            ))
+      }
+    
+    <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.button} onPress={() => EditUser()}>
+            <Text style={styles.buttonText}>Rediger bruker</Text>
+        </TouchableOpacity>
+    </View>
+
+    <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.button} onPress={DeleteUser}>
+            <Text style={styles.buttonText}>Slett bruker</Text>
+        </TouchableOpacity>
+    </View>
+    </View>
     <Footer />
     </View>
   );
 };
+
+
 
 const styles = StyleSheet.create({
   background: {
@@ -166,10 +140,9 @@ const styles = StyleSheet.create({
 
 },
 
-
 })
 
-
-
 export default ProfileScreen;
+
+
 
