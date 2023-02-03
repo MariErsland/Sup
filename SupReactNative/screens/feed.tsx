@@ -62,10 +62,14 @@ const Feed: React.FC<FeedProps> = ({ navigation }) => {
     ];
 
     return (
-        <ScrollView style={styles.background}>
-            {activity ? <ActivityList activities={activity} navigation={navigation}/> : <ActivityList activities={dummyData} navigation={navigation} />}
-            <Footer />
-        </ScrollView>
+        <View style={styles.background}>
+            <ScrollView contentContainerStyle={styles.scrollView}>
+                {activity ? <ActivityList activities={activity} navigation={navigation}/> : <ActivityList activities={dummyData} navigation={navigation} />}
+            </ScrollView>
+            <View style={{flex: 0}}>
+                <Footer  />
+            </View>
+        </View>
     );
 };
 
@@ -73,6 +77,10 @@ const styles = StyleSheet.create({
     background: {
         backgroundColor: '#DEE7E6',
         flex: 1,
+        
+    },
+    scrollView: {
+        flexGrow: 1,
         
     }
 })
