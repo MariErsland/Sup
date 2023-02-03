@@ -1,5 +1,7 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { NavigationActions } from 'react-navigation';
 import { ActivityProps } from '../components/activity';
 import Footer from '../shared/Footer';
 
@@ -16,6 +18,7 @@ const MadeBy = require('../assets/user.png');
 
 const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
     const { activity } = route.params;
+    const navigation = useNavigation();
 
     return (
         <View style={styles.background}>
@@ -33,8 +36,9 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
                 <Text>Beskrivelse: {activity.description}</Text>
                 <Text>Antall påmeldte: {activity.number_of_participants}</Text>
                 <View style={styles.editButtonContainer}>
-                    <TouchableOpacity style={styles.button}>
-                        <Text style={styles.buttonText}>Rediger</Text>
+                    <TouchableOpacity style={styles.button}
+                     onPress={() => navigation.navigate('EditActivity', {activity})}>
+                    <Text style={styles.buttonText}>Rediger</Text>
                     </TouchableOpacity>
                 </View>
             </View>
