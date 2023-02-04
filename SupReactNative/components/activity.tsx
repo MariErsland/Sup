@@ -20,7 +20,8 @@ const TimeActivity = require('../assets/clock.png');
 const Address = require('../assets/map.png');
 const MadeBy = require('../assets/user.png');
 const Category = require('../assets/tree-solid.png');
-
+const County = require('../assets/globeIcon.png');
+const Description = require('../assets/descriptionIcon.png');
 
 const Activity = (props: ActivityProps) => {
     return (
@@ -30,7 +31,7 @@ const Activity = (props: ActivityProps) => {
                 <Text>{props.time}</Text>
             </View>
             <View style={styles.iconText}>
-                <Image source={TimeActivity} style={styles.icons}/>
+                <Image source={County} style={styles.icons}/>
                 <Text>{props.county}</Text>
             </View>
             <View style={styles.iconText}>
@@ -42,7 +43,7 @@ const Activity = (props: ActivityProps) => {
                 <Text>{props.category}</Text>
             </View>
             <View style={styles.iconText}>
-                <Image source={TimeActivity} style={styles.icons}/>
+                <Image source={Description} style={styles.icons}/>
                 <Text>{props.description}</Text>
             </View>
             <View style={styles.iconText}>
@@ -64,7 +65,7 @@ interface ActivityListProps {
 
 const ActivityList = (props: ActivityListProps) => {
     return (
-        <ScrollView>
+        <ScrollView style={styles.scroll}>
             {props.activities.map(activity => (
                 <Activity key={activity.id} {...activity} navigation={props.navigation} />
             ))}
@@ -90,6 +91,9 @@ const styles = StyleSheet.create({
     iconText: {
         flexDirection: 'row',
         alignItems: 'center',
+    },
+    scroll: {
+        marginBottom: 100,
     }
 })
 
