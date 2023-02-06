@@ -5,8 +5,6 @@ import { LoginContext } from '../App';
 import { useAuth } from '../auth';
 import Footer from '../shared/Footer';
 
-
-
 const Edit = () => {
 
   const navigation = useNavigation();

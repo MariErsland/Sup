@@ -1,7 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { NavigationActions } from 'react-navigation';
 import { ActivityProps } from '../components/activity';
 import Footer from '../shared/Footer';
 

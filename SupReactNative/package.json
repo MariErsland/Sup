@@ -38,6 +38,7 @@
     "@types/jest": "^29.2.1",
     "@types/node": "^18.11.18",
     "@types/react": "^18.0.24",
+    "@types/react-native-modern-datepicker": "^1.0.1",
     "@types/react-test-renderer": "^18.0.0",
     "babel-jest": "^29.2.1",
     "eslint": "^8.19.0",
