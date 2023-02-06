@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Image, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 export interface ActivityProps {
     id: number;

@@ -4,48 +4,57 @@ import { SelectList } from 'react-native-dropdown-select-list'
 import Footer from '../shared/Footer';
 import DatePicker from 'react-native-modern-datepicker';
 import React from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { act } from 'react-test-renderer';
+import { useActivityState, categories, counties } from '../state/ActivityState';
 
-interface EditActivity {
-  id: string,
-  time: string,
-  county: string,
-  address: string,
-  category: string,
-  description: string,
-  number_of_participants: string,
-  created_by: string,
+interface EditActivityProps {
+    route: {
+        params: {
+            activity: EditActivityProps; 
+        }
+    }
+
+    id: number,
+    time: string,
+    county: string,
+    address: string,
+    category: string,
+    description: string,
+    number_of_participants: number,
+    created_by: string,
 }
 
-const EditActivity = ({ id }: EditActivity) => {
-    const [selectedCategory, setSelectedCategory] = useState(null);
-    const [selectedCounty, setSelectedCounty] = useState(null);
-    const [selectedDate, setSelectedDate] = useState('');
-    const [address, setAddress] = useState('');
-    const [showDatePicker, setShowDatePicker] = useState(false);
 
-    const [category] = useState([
-        { label: 'Friluft', value: 'Tur'},
-        { label: 'Trening', value: 'Jogging'},
-        { label: 'Matlaging', value: 'Matlaging'}, 
-        { label: 'Annet', value: 'Annet'}, 
-    ]);
-  
-    const [county] = useState([
-        { label: 'Rogaland', value: 'Rogaland'},
-        { label: 'Agder', value: 'Agder'},
-    ]);
-  
-    const [description, setDescription] = useState('');
-    const [number_of_participants, setNumberOfParticipants] = useState('');
-    const [created_by, setCreatedBy] = useState('');
+const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
+    const {activity} = route.params;
+    const {
+        selectedCategory,
+        setSelectedCategory,
+        selectedCounty,
+        setSelectedCounty,
+        selectedDate,
+        setSelectedDate,
+        showDatePicker,
+        setShowDatePicker,
+    } = useActivityState();
+
+    // To get this value prefilled I set the value localy here
+    const [description, setDescription] = useState(activity.description);
+    const [address, setAddress] = useState(activity.address);
+    
+    
+    const navigation = useNavigation();
+    console.log(activity.id);
 
     const handleEditActivity = async () => {
+        //const response = await fetch(`http://152.94.160.72:3000/activity/${activity.id}
         const response = await fetch(`http://152.94.160.72:3000/activity/1`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ time: selectedDate, county: selectedCounty, address, category: selectedCategory, description, number_of_participants, created_by }),
+            body: JSON.stringify({ time: selectedDate, county: selectedCounty, address, category: selectedCategory, description }),
         });
         
     
@@ -56,6 +65,8 @@ const EditActivity = ({ id }: EditActivity) => {
     
         const data = await response.json();
         console.log('Success:', data);
+        console.log('User updated successfully', data);
+        navigation.navigate('DetailsActivity', {params: {activity: data}});
     }
     
 
@@ -68,21 +79,21 @@ const EditActivity = ({ id }: EditActivity) => {
             <TouchableOpacity onPress={() => setShowDatePicker(!showDatePicker)}>
                 <Text style={{fontSize: 16}}>Dato og tidspunkt</Text>
                 <Text>
-                    {selectedDate}
+                    {selectedDate} 
                 </Text>
                 {showDatePicker && (
                     <DatePicker
-                        date={selectedDate}
+                        selected={selectedDate}
                         onSelectedChange={setSelectedDate}
                     />
                 )}
             </TouchableOpacity>
             
             <Text></Text>
-            
+
             <SelectList
                  setSelected={setSelectedCounty}
-                 data={category}
+                 data={categories}
                  save="value"
                  placeholder='Kategori'
             />
@@ -90,10 +101,11 @@ const EditActivity = ({ id }: EditActivity) => {
 
             <SelectList
                 setSelected={setSelectedCategory}
-                data={county}
+                data={counties}
                 save="value"
                 placeholder='Fylke'
             />
+           
             <TextInput
                 placeholder="Møtested"
                 value={address}
@@ -104,18 +116,9 @@ const EditActivity = ({ id }: EditActivity) => {
                 value={description}
                 onChangeText={setDescription}
             />
-            <TextInput
-                placeholder="Må være tall(skal bort)"
-                value={number_of_participants}
-                onChangeText={setNumberOfParticipants}
-            />
-            <TextInput
-                placeholder="Laget av (Denne skal bort)"
-                value={created_by}
-                onChangeText={setCreatedBy}
-            />
             <TouchableOpacity style={styles.button} onPress={handleEditActivity} >
                     <Text style={styles.buttonText}>Endre aktivitet</Text>
+
                 </TouchableOpacity>
             </View>
         </ScrollView>

@@ -4,47 +4,37 @@ import { SelectList } from 'react-native-dropdown-select-list'
 import Footer from '../shared/Footer';
 import DatePicker from 'react-native-modern-datepicker';
 import React from 'react';
+import { useActivityState, categories, counties } from '../state/ActivityState';
 
 interface NewActivity {
     }
 
 const NewActivity = () => {
 
-    const [selectedCategory, setSelectedCategory] = useState(null);
-    const [selectedCounty, setSelectedCounty] = useState(null);
 
-    const [selectedDate, setSelectedDate] = useState('');
-    console.log(selectedDate);
-    
+    const {
+        selectedCategory,
+        setSelectedCategory,
+        selectedCounty,
+        setSelectedCounty,
+        selectedDate,
+        setSelectedDate,
+        address,
+        setAddress,
+        description,
+        setDescription,
+        showDatePicker,
+        setShowDatePicker,
+    } = useActivityState();
 
-    const [address, setAddress] = useState('');
-
-    const [showDatePicker, setShowDatePicker] = useState(false);
-    console.log(showDatePicker)
-
-
-    const [category] = useState([
-        { label: 'Friluft', value: 'Tur'},
-        { label: 'Trening', value: 'Jogging'},
-        { label: 'Matlaging', value: 'Matlaging'}, 
-        { label: 'Annet', value: 'Annet'}, 
-
-        ])
-
-  
-     const [county] = useState([
-        { label: 'Rogaland', value: 'Rogaland'},
-        { label: 'Agder', value: 'Agder'},
-        ])
-         
-
-    const [description, setDescription] = useState('');
     const [number_of_participants, setNumberOfParticipants] = useState('');
     const [created_by, setCreatedBy] = useState('');
 
+         
+
     const handleCreateActivity = async () => {
-        console.log(selectedDate, county, category);
-        console.log(JSON.stringify({ selectedDate, county, address, category, description, number_of_participants, created_by }));
+        console.log(selectedDate, counties, categories);
+        console.log(JSON.stringify({ selectedDate, counties, address, categories, description, number_of_participants, created_by }));
         const response = await fetch('http://152.94.160.72:3000/create-activity', {
             method: 'POST',
             headers: {
@@ -63,10 +53,6 @@ const NewActivity = () => {
     }
     
 
-
-
-    //{'Rogaland','Agder', 'Innland', 'Møre og Romsdal', 'Nordland', 'Oslo', 'Vestfold og Telemark', 'Troms of Finnmark', 'Trøndelag', 'Vestland', 'Viken'};
-
     return (
         <View style={{flex: 1}}>
             <ScrollView style= {styles.background}>
@@ -80,7 +66,7 @@ const NewActivity = () => {
                 </Text>
                 {showDatePicker && (
                     <DatePicker
-                        date={selectedDate}
+                        selected={selectedDate}
                         onSelectedChange={setSelectedDate}
                     />
                 )}
@@ -90,7 +76,7 @@ const NewActivity = () => {
             
             <SelectList
                  setSelected={setSelectedCounty}
-                 data={category}
+                 data={categories}
                  save="value"
                  placeholder='Kategori'
             />
@@ -98,7 +84,7 @@ const NewActivity = () => {
 
             <SelectList
                 setSelected={setSelectedCategory}
-                data={county}
+                data={counties}
                 save="value"
                 placeholder='Fylke'
             />
@@ -124,13 +110,8 @@ const NewActivity = () => {
             />
             <TouchableOpacity style={styles.button} onPress={handleCreateActivity} >
                     <Text style={styles.buttonText}>Opprett ny aktivitet</Text>
-
                 </TouchableOpacity>
-        
-            
-            
             </View>
-        
         </ScrollView>
         <Footer />
         </View>

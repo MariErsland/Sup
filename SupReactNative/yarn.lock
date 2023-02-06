@@ -1870,6 +1870,13 @@
   "resolved" "https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.5.tgz"
   "version" "15.7.5"
 
+"@types/react-native-modern-datepicker@^1.0.1":
+  "integrity" "sha512-sJXhq9p+J2rlRQrx2sxZRmK3gzlls7VEvZxjlTsfPfRq2OUhz3pbpT1e15DVWYRlUGvBBddjhKC638BcUX3+cg=="
+  "resolved" "https://registry.npmjs.org/@types/react-native-modern-datepicker/-/react-native-modern-datepicker-1.0.1.tgz"
+  "version" "1.0.1"
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-test-renderer@^18.0.0":
   "integrity" "sha512-C7/5FBJ3g3sqUahguGi03O79b8afNeSD6T8/GU50oQrJCU0bVCCGQHaGKUbg2Ce8VQEEqTw8/HiS6lXHHdgkdQ=="
   "resolved" "https://registry.npmjs.org/@types/react-test-renderer/-/react-test-renderer-18.0.0.tgz"
