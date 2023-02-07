@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 const FeedButton = require('../assets/HouseHome.png');
 const MakeNewActivityButton = require('../assets/+.png');
 const UserButton = require('../assets/user.png');
+const MyCreatedActivitiesButton = require('../assets/myactivities_icon.png')
 
 const Footer = () => {
     const navigation = useNavigation();
@@ -15,6 +16,9 @@ const Footer = () => {
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('NewActivity')}>
                 <Image source={MakeNewActivityButton} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('MyCreatedActivities')}>
+                <Image source={MyCreatedActivitiesButton} />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
                 <Image source={UserButton} />
