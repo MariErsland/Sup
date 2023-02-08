@@ -20,9 +20,20 @@ interface Props {
 
 const FrontPagePhoto = require('../assets/frontPagePhoto.png');
 
+
+export const onSignOut = () => {
+  GoogleSignin.signOut()
+    .then(async () => {
+      await deleteToken();
+    })
+    .catch((err) => {console.log(err)});
+};
+
+
+
 const LoginScreen = (props: Props) => {
-  const {setIsLoggedIn} = useContext(LoginContext);
   const [loading, setLoading] = useState(false);
+  const {setIsLoggedIn} = useContext(LoginContext);
   let timeoutId = props.timeoutId;
 
   const startTimeout = () => {
@@ -80,16 +91,6 @@ const LoginScreen = (props: Props) => {
       .catch((err) => {
         console.log(err);
     });
-  };
-
-  const onSignOut = () => {
-    GoogleSignin.signOut()
-      .then(async () => {
-        setIsLoggedIn(false);
-        await deleteToken();
-      })
-      .catch((err) => {
-      });
   };
 
   return (

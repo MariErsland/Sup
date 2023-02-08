@@ -6,6 +6,7 @@ import { useAuth } from '../auth';
 import { getUser } from '../components/getUser';
 import Footer from '../shared/Footer';
 import { retrieveToken } from '../token_handling';
+import { onSignOut } from './login';
 
 interface User {
   id: string;
@@ -17,7 +18,7 @@ function ProfileScreen() {
 
   const navigation = useNavigation();
   const [data, setData] = useState<User[]>([]);
-  const {isLoggedIn} = useContext(LoginContext);
+  const {isLoggedIn, setIsLoggedIn} = useContext(LoginContext);
   useAuth({isLoggedIn, navigation});
 
   //Setting userdata with logged in user
@@ -66,7 +67,12 @@ function ProfileScreen() {
     console.log("User: ", data[0]);
     navigation.navigate('Edit', { params: { userId: data[0].id } });
 }
-    
+
+  async function handleOnSignOut(){
+    await onSignOut();
+    setIsLoggedIn(false);
+  }
+      
   return (
     <View style={styles.background}>
     
@@ -95,6 +101,13 @@ function ProfileScreen() {
             <Text style={styles.buttonText}>Slett bruker</Text>
         </TouchableOpacity>
     </View>
+
+    <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.button} onPress={handleOnSignOut}>
+            <Text style={styles.buttonText}>Logg ut</Text>
+        </TouchableOpacity>
+    </View>
+
     </View>
     <Footer />
     </View>
