@@ -4,6 +4,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { LoginContext } from '../App';
 import { useAuth } from '../auth';
 import Footer from '../shared/Footer';
+import { retrieveToken } from '../token_handling';
 
 const Edit = () => {
 
@@ -21,12 +22,13 @@ const Edit = () => {
   const [email, setEmail] = useState('');
 
   async function saveChanges() {
-    console.log("kommer her");
+    const myToken = await retrieveToken();
     try {
-      const response = await fetch(`http://152.94.160.72:3000/user/505`, {
+      const response = await fetch(`http://152.94.160.72:3000/user`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${myToken}`,
         },
         body: JSON.stringify({ first_name: firstName, email: email })
       });

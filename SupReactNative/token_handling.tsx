@@ -18,3 +18,13 @@ export const retrieveToken = async () => {
     }
 };
 
+export const deleteToken = async () => {
+    try {
+        await AsyncStorage.removeItem('userToken');
+    }
+    catch (err){
+        console.log(err);
+    }
+}
+
+

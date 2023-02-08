@@ -3,11 +3,12 @@ import {SafeAreaView, Text, Button, Alert, StyleSheet, View, Image, ImageBackgro
 import {GoogleSignin, GoogleSigninButton} from '@react-native-google-signin/google-signin';
 import { useContext } from 'react';
 import { LoginContext } from '../App';
-import { storeToken } from '../token_handling';
+import { deleteToken, storeToken } from '../token_handling';
 
 GoogleSignin.configure({
   webClientId:
     '793626058046-1vvfcdoglco03l1aitub77m9u8dqbfld.apps.googleusercontent.com',
+    
   offlineAccess: false,
 });
 
@@ -83,8 +84,9 @@ const LoginScreen = (props: Props) => {
 
   const onSignOut = () => {
     GoogleSignin.signOut()
-      .then(() => {
+      .then(async () => {
         setIsLoggedIn(false);
+        await deleteToken();
       })
       .catch((err) => {
       });

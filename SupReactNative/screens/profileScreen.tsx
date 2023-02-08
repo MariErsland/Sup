@@ -5,12 +5,7 @@ import { LoginContext } from '../App';
 import { useAuth } from '../auth';
 import { getUser } from '../components/getUser';
 import Footer from '../shared/Footer';
-
-/*interface ProfileScreen {
-  id: number;
-  email: string;
-  first_name: string;
-}*/
+import { retrieveToken } from '../token_handling';
 
 interface User {
   id: string;
@@ -45,9 +40,13 @@ function ProfileScreen() {
         },
         {
           text: 'Slett bruker',
-          onPress: () => {
-            fetch(`http://152.94.160.72:3000/user/500`, {
-              method: 'DELETE'
+          onPress: async () => {
+            const myToken = await retrieveToken();
+            fetch(`http://152.94.160.72:3000/user`, {
+              method: 'DELETE',
+              headers: {
+                Authorization: `Bearer ${myToken}`,
+              },
             })
             .then(response => response.json())
             .then(data => {
@@ -64,7 +63,7 @@ function ProfileScreen() {
   }
 
   function EditUser() {
-    console.log('userId before nav', data[0].id);
+    console.log("User: ", data[0]);
     navigation.navigate('Edit', { params: { userId: data[0].id } });
 }
     
