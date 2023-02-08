@@ -5,6 +5,7 @@ import Footer from '../shared/Footer';
 import DatePicker from 'react-native-modern-datepicker';
 import React from 'react';
 import { useActivityState, categories, counties } from '../state/ActivityState';
+import { retrieveToken } from '../token_handling';
 
 interface NewActivity {
     }
@@ -29,15 +30,16 @@ const NewActivity = () => {
 
     const [number_of_participants, setNumberOfParticipants] = useState('');
     const [created_by, setCreatedBy] = useState('');
-
-         
+    
 
     const handleCreateActivity = async () => {
+        const myToken = await retrieveToken();
         console.log(selectedDate, counties, categories);
         console.log(JSON.stringify({ selectedDate, counties, address, categories, description, number_of_participants, created_by }));
         const response = await fetch('http://152.94.160.72:3000/create-activity', {
             method: 'POST',
             headers: {
+                Authorization: `Bearer ${myToken}`,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ time: selectedDate, county: selectedCounty, address, category: selectedCategory, description, number_of_participants, created_by }),
@@ -47,17 +49,14 @@ const NewActivity = () => {
             console.error('Error creating activity:', response);
             return;
         }
-    
         const data = await response.json();
         console.log('Success:', data);
     }
     
-
     return (
         <View style={{flex: 1}}>
             <ScrollView style= {styles.background}>
             <View style={styles.container}>
-            
             
             <TouchableOpacity onPress={() => setShowDatePicker(!showDatePicker)}>
                 <Text style={{fontSize: 16}}>Dato og tidspunkt</Text>

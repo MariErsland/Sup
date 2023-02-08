@@ -7,6 +7,7 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { act } from 'react-test-renderer';
 import { useActivityState, categories, counties } from '../state/ActivityState';
+import { retrieveToken } from '../token_handling';
 
 interface EditActivityProps {
     route: {
@@ -39,7 +40,7 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
         setShowDatePicker,
     } = useActivityState();
 
-    // To get this value prefilled I set the value localy here
+    // To get this value prefilled I set the value locally here
     const [description, setDescription] = useState(activity.description);
     const [address, setAddress] = useState(activity.address);
     
@@ -49,27 +50,25 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
 
     const handleEditActivity = async () => {
         //const response = await fetch(`http://152.94.160.72:3000/activity/${activity.id}
+        const myToken = await retrieveToken();
         const response = await fetch(`http://152.94.160.72:3000/activity/1`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
+                Authorization: `Bearer ${myToken}`,
             },
             body: JSON.stringify({ time: selectedDate, county: selectedCounty, address, category: selectedCategory, description }),
         });
-        
-    
         if (!response.ok) {
             console.error('Error updating activity:', response);
             return;
         }
-    
         const data = await response.json();
         console.log('Success:', data);
         console.log('User updated successfully', data);
         navigation.navigate('DetailsActivity', {params: {activity: data}});
     }
     
-
     return (
         <View style={{flex: 1}}>
             <ScrollView style= {styles.background}>

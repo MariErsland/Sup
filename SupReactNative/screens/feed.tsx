@@ -6,6 +6,7 @@ import { RootStackParamList } from '../types';
 import { LoginContext } from '../App';
 import { useAuth } from '../auth';
 import Footer from '../shared/Footer';
+import { retrieveToken } from '../token_handling';
 
 interface FeedProps {
     navigation: NavigationProp<RootStackParamList, 'Feed'>;
@@ -17,16 +18,28 @@ const Feed: React.FC<FeedProps> = ({ navigation }) => {
     useAuth({isLoggedIn, navigation: navigation});
     
     const [activity, setActivity] = useState(null);
+    
+    const handleFetchActivities = async () => {
+        const myToken = await retrieveToken();
+        await fetch(`http://152.94.160.72:3000/activity/`, {
+            headers: {
+                Authorization: `Bearer ${myToken}`,
+            }
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            setActivity(data);
+        })
+        .catch((error) => {
+            console.log('Error fetching activity', error);
+        });
+    }
 
     useEffect(() => {
-        fetch(`http://152.94.160.72:3000/activity/`)
-            .then((response) => response.json())
-            .then((data) => {
-                setActivity(data);
-            })
-            .catch((error) => {
-                console.log('Error fetching activity', error);
-            });
+        const getData = async () => {
+            await handleFetchActivities();
+          };
+          getData();
     }, []);
 
     const dummyData = [
@@ -77,11 +90,9 @@ const styles = StyleSheet.create({
     background: {
         backgroundColor: '#DEE7E6',
         flex: 1,
-        
     },
     scrollView: {
         flexGrow: 1,
-        
     }
 })
 
