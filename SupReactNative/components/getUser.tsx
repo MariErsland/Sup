@@ -1,5 +1,5 @@
 
-import {retrieveToken}  from '../token_handling';
+import {retrieveToken}  from '../security/token_handling';
 
 export async function getUser() {
   const myToken = await retrieveToken();

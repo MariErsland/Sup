@@ -1,16 +1,16 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
-import { RootStackParamList } from './types';
-import Feed from './screens/feed';
-import ProfileScreen from './screens/profileScreen';
-import Edit from './screens/Edit';
-import NewActivity from './screens/CreateActivity'
-import LoginScreen from './screens/login';
-import { LoginProvider } from './App';
-import DetailsActivity from './screens/DetailsActivity';
-import EditActivity from './screens/EditActivity';
-import MyCreatedActivities from './screens/MyCreatedActivities';
+import { RootStackParamList } from '../types';
+import Feed from '../screens/feed';
+import ProfileScreen from '../screens/profileScreen';
+import Edit from '../screens/Edit';
+import NewActivity from '../screens/CreateActivity'
+import LoginScreen from '../screens/login';
+import { LoginProvider } from '../App';
+import DetailsActivity from '../screens/DetailsActivity';
+import EditActivity from '../screens/EditActivity';
+import MyCreatedActivities from '../screens/MyCreatedActivities';
 
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

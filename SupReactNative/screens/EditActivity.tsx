@@ -7,7 +7,7 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { act } from 'react-test-renderer';
 import { useActivityState, categories, counties } from '../state/ActivityState';
-import { retrieveToken } from '../token_handling';
+import { retrieveToken } from '../security/token_handling';
 
 interface EditActivityProps {
     route: {

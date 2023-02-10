@@ -1,5 +1,5 @@
 
-import StackNavigationHome from './StackNavigationHome'
+import StackNavigationHome from './navigation/StackNavigationHome'
 import {createContext, useState} from 'react';
 import React from 'react';
 

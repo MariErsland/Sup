@@ -5,7 +5,7 @@ import Footer from '../shared/Footer';
 import DatePicker from 'react-native-modern-datepicker';
 import React from 'react';
 import { useActivityState, categories, counties } from '../state/ActivityState';
-import { retrieveToken } from '../token_handling';
+import { retrieveToken } from '../security/token_handling';
 
 interface NewActivity {
     }
