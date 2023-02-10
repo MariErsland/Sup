@@ -3,7 +3,7 @@ import {SafeAreaView, Text, Button, Alert, StyleSheet, View, Image, ImageBackgro
 import {GoogleSignin, GoogleSigninButton} from '@react-native-google-signin/google-signin';
 import { useContext } from 'react';
 import { LoginContext } from '../App';
-import { deleteToken, storeToken } from '../token_handling';
+import { deleteToken, storeToken, storeUserToken } from '../security/token_handling';
 
 GoogleSignin.configure({
   webClientId:
@@ -29,8 +29,6 @@ export const onSignOut = () => {
     .catch((err) => {console.log(err)});
 };
 
-
-
 const LoginScreen = (props: Props) => {
   const [loading, setLoading] = useState(false);
   const {setIsLoggedIn} = useContext(LoginContext);
@@ -53,6 +51,8 @@ const LoginScreen = (props: Props) => {
       })
       .then((response) => {
         //Access token for å verifisere bruker i server
+        const text = storeUserToken("My token text");
+        console.log("Crypt: ", text);
         const accessToken = response.idToken;
         //Sending fetch with access token to server. Fetch will send userToken back 
         fetch('http://152.94.160.72:3000/verify-token', {

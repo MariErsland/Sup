@@ -2,10 +2,10 @@ import React, { useContext, useEffect, useState, Component } from 'react';
 import { View, Text, Button, Alert, StyleSheet, TouchableOpacity} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { LoginContext } from '../App';
-import { useAuth } from '../auth';
+import { useAuth } from '../security/auth';
 import { getUser } from '../components/getUser';
 import Footer from '../shared/Footer';
-import { retrieveToken } from '../token_handling';
+import { retrieveToken } from '../security/token_handling';
 import { onSignOut } from './login';
 
 interface User {
@@ -19,7 +19,7 @@ function ProfileScreen() {
   const navigation = useNavigation();
   const [data, setData] = useState<User[]>([]);
   const {isLoggedIn, setIsLoggedIn} = useContext(LoginContext);
-  useAuth({isLoggedIn, navigation});
+  //useAuth({isLoggedIn, navigation});
 
   //Setting userdata with logged in user
   useEffect(() => {

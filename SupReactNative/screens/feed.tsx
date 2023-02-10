@@ -4,9 +4,9 @@ import ActivityList from '../components/activity';
 import { NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../types';
 import { LoginContext } from '../App';
-import { useAuth } from '../auth';
+import { useAuth } from '../security/auth';
 import Footer from '../shared/Footer';
-import { retrieveToken } from '../token_handling';
+import { retrieveToken } from '../security/token_handling';
 
 interface FeedProps {
     navigation: NavigationProp<RootStackParamList, 'Feed'>;
