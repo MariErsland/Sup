@@ -12,7 +12,7 @@ import { retrieveToken } from '../token_handling';
 interface EditActivityProps {
     route: {
         params: {
-            activity: EditActivityProps; 
+            activity: any; 
         }
     }
 
@@ -38,11 +38,15 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
         setSelectedDate,
         showDatePicker,
         setShowDatePicker,
+
     } = useActivityState();
 
     // To get this value prefilled I set the value locally here
     const [description, setDescription] = useState(activity.description);
     const [address, setAddress] = useState(activity.address);
+
+    //This needs to be edited to a fixed number when we get the "Meld på aktivitet" button
+    const [number_of_participants, setNumberOfParticipants] = useState('');
     
     
     const navigation = useNavigation();
@@ -51,13 +55,13 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
     const handleEditActivity = async () => {
         //const response = await fetch(`http://152.94.160.72:3000/activity/${activity.id}
         const myToken = await retrieveToken();
-        const response = await fetch(`http://152.94.160.72:3000/activity/1`, {
+        const response = await fetch(`http://152.94.160.72:3000/activity/id`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${myToken}`,
             },
-            body: JSON.stringify({ time: selectedDate, county: selectedCounty, address, category: selectedCategory, description }),
+            body: JSON.stringify({ selectedDate, selectedCounty, address, selectedCategory, description, number_of_participants}),
         });
         if (!response.ok) {
             console.error('Error updating activity:', response);
@@ -110,6 +114,12 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
                 value={address}
                 onChangeText={setAddress}
             />
+            <TextInput
+                placeholder="Denne skal endre men må være tall nå"
+                value={number_of_participants}
+                onChangeText={setNumberOfParticipants}
+            />
+
             <TextInput
                 placeholder="Beskrivelse"
                 value={description}

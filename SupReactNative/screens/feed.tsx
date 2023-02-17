@@ -28,7 +28,8 @@ const Feed: React.FC<FeedProps> = ({ navigation }) => {
         })
         .then((response) => response.json())
         .then((data) => {
-            setActivity(data);
+            data.sort((a: any, b: any) => new Date(a.time).getTime() - new Date(b.time).getTime()); //sjekk denne når du komme til uis
+            //setActivity(data);
         })
         .catch((error) => {
             console.log('Error fetching activity', error);
@@ -73,6 +74,8 @@ const Feed: React.FC<FeedProps> = ({ navigation }) => {
             created_by: 123,
         },
     ];
+    
+
 
     return (
         <View style={styles.background}>
