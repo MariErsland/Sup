@@ -14,19 +14,20 @@ const MyCreatedActivities: React.FC<MyCreatedActivitiesProps> = ({ navigation })
   
   const handleMyCreatedActivities = async () => { 
     const myToken = await retrieveToken();
-    await fetch("http://152.94.160.72:3000/activities-by-user", {
-    headers: {
-      Authorization: `Bearer ${myToken}`
-    }
-  })
-  .then((response) => response.json())
-  .then((data) => {
+    try {
+      const response = await fetch("http://152.94.160.72:3000/activities-by-user", {
+        headers: {
+          Authorization: `Bearer ${myToken}`
+        }
+      });
+      const data = await response.json();
+      console.log('Data from server:', data);
       setActivity(data);
-  })
-  .catch((error) => {
+    } catch (error) {
       console.log('Error fetching activity', error);
-  });
-}
+    }
+  }
+  
 
 
 useEffect(() => {
