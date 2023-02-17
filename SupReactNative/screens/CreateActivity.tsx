@@ -4,6 +4,7 @@ import { SelectList } from 'react-native-dropdown-select-list'
 import Footer from '../shared/Footer';
 import DatePicker from 'react-native-modern-datepicker';
 import React from 'react';
+import { useNavigation } from '@react-navigation/native';
 import { useActivityState, categories, counties } from '../state/ActivityState';
 import { retrieveToken } from '../security/token_handling';
 
@@ -28,9 +29,10 @@ const NewActivity = () => {
         setShowDatePicker,
     } = useActivityState();
 
-    const [number_of_participants, setNumberOfParticipants] = useState('');
-    const [created_by, setCreatedBy] = useState('');
+    const [number_of_participants] = useState('1');
+    const [created_by] = useState('');
     
+    const navigation = useNavigation();
 
     const handleCreateActivity = async () => {
         const myToken = await retrieveToken();
@@ -51,6 +53,7 @@ const NewActivity = () => {
         }
         const data = await response.json();
         console.log('Success:', data);
+        navigation.navigate('MyCreatedActivities');
     }
     
     return (
@@ -96,16 +99,6 @@ const NewActivity = () => {
                 placeholder="Beskrivelse"
                 value={description}
                 onChangeText={setDescription}
-            />
-            <TextInput
-                placeholder="Må være tall(skal bort)"
-                value={number_of_participants}
-                onChangeText={setNumberOfParticipants}
-            />
-            <TextInput
-                placeholder="Laget av (Denne skal bort)"
-                value={created_by}
-                onChangeText={setCreatedBy}
             />
             <TouchableOpacity style={styles.button} onPress={handleCreateActivity} >
                     <Text style={styles.buttonText}>Opprett ny aktivitet</Text>
