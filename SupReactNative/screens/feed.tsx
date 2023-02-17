@@ -14,34 +14,44 @@ interface FeedProps {
 
 const Feed: React.FC<FeedProps> = ({ navigation }) => {
     const {isLoggedIn} = useContext(LoginContext);
-    console.log('Is logged in: ', isLoggedIn);
+    console.log('Is logged in in feed: ', isLoggedIn);
     useAuth({isLoggedIn, navigation: navigation});
     
     const [activity, setActivity] = useState(null);
-    
+
     const handleFetchActivities = async () => {
+        console.log("Getting token from retrieve token");
         const myToken = await retrieveToken();
-        await fetch(`http://152.94.160.72:3000/activity/`, {
+        console.log("Handle Fetch act");
+        await fetch(`http://152.94.160.72:3000/activities/`, {
             headers: {
                 Authorization: `Bearer ${myToken}`,
             }
         })
+
         .then((response) => response.json())
         .then((data) => {
+            console.log("Setting data in feed");
             setActivity(data);
+            console.log("data: ", data)
         })
         .catch((error) => {
             console.log('Error fetching activity', error);
         });
     }
 
+
+
     useEffect(() => {
         const getData = async () => {
+            console.log("About to fetch act")
             await handleFetchActivities();
-          };
-          getData();
+            };
+            getData();
     }, []);
 
+        
+    
     const dummyData = [
         {
             id: 1,

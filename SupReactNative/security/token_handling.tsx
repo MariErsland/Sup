@@ -36,15 +36,17 @@ async function removeUserSession() {
     }
 }
 
-export const storeToken = async (token: string) => {
+export const storeToken = async (token: any) => {
+    console.log("In store token");
     try {
         await AsyncStorage.setItem('token', token);
     } catch (e) {
-        console.log(e);
+        console.log("Error storing token: ", e);
     }
 };
   
 export const retrieveToken = async () => {
+    console.log("In retrieving token");
     try {
         const token = await AsyncStorage.getItem('token');
         return token;
@@ -53,12 +55,15 @@ export const retrieveToken = async () => {
     }
 };
 
+
 export const deleteToken = async () => {
+    console.log("In deleting token");
     try {
         await AsyncStorage.removeItem('token');
+        console.log("Token deleted");
     }
     catch (err){
-        console.log(err);
+        console.log("error in deleting token",err);
     }
 }
 
