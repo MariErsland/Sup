@@ -4,13 +4,13 @@ import { useNavigation } from '@react-navigation/native';
 
 export interface ActivityProps {
     id: number;
-    time: number;
+    time: string;
     county : string;
     address : string;
     category: string;
     description: string;
     number_of_participants: number;
-    created_by: number;
+    created_by: string;
     onPress: () => void;
     navigation: any;
     activities: ActivityProps[];

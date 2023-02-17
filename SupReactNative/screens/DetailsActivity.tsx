@@ -1,8 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useState, useEffect} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { ActivityProps } from '../components/activity';
 import Footer from '../shared/Footer';
+import {getUser} from '../components/getUser'
 
 interface DetailsProps {
     route: {
@@ -19,6 +20,17 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
     const { activity } = route.params;
     const navigation = useNavigation();
 
+    const [currentUser, setCurrentUser] = useState('');
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const user = await getUser();
+            setCurrentUser(user.id);
+            console.log(setCurrentUser(user.id));
+        };
+        fetchData();
+    }, []);
+
     return (
         <View style={styles.background}>
             <Text style={styles.title}><Image source={Category} style={styles.iconTitle}/>Test for tittel {activity.category}</Text>
@@ -29,17 +41,19 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
                 </TouchableOpacity>
             </View>
             <View style={styles.container}>
-                <Text>Opprettet: {activity.time}</Text>
+                <Text>Når: {activity.time}</Text>
                 <Text>Fylke: {activity.county}</Text>
                 <Text>Addresse: {activity.address}</Text>
                 <Text>Beskrivelse: {activity.description}</Text>
                 <Text>Antall påmeldte: {activity.number_of_participants}</Text>
-                <View style={styles.editButtonContainer}>
-                    <TouchableOpacity style={styles.button}
-                     onPress={() => navigation.navigate('EditActivity', {activity})}>
-                    <Text style={styles.buttonText}>Rediger</Text>
-                    </TouchableOpacity>
-                </View>
+                {currentUser === activity.created_by && (
+                    <View style={styles.editButtonContainer}>
+                        <TouchableOpacity style={styles.button}
+                         onPress={() => navigation.navigate('EditActivity', {activity})}>
+                        <Text style={styles.buttonText}>Rediger</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
             </View>
             <Footer />
         </View>

@@ -83,6 +83,8 @@ const Feed: React.FC<FeedProps> = ({ navigation }) => {
             created_by: 123,
         },
     ];
+    
+
 
     return (
         <View style={styles.background}>
