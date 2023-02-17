@@ -10,8 +10,9 @@ interface DetailsProps {
         params: {
             activity: ActivityProps;
         };
-    };
+    };    
 }
+
 
 const Category = require('../assets/tree-solid.png');
 const MadeBy = require('../assets/user.png');
@@ -19,18 +20,17 @@ const MadeBy = require('../assets/user.png');
 const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
     const { activity } = route.params;
     const navigation = useNavigation();
+    const [currentUserId, setCurrentUserId] = useState();
 
-    const [currentUser, setCurrentUser] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
             const user = await getUser();
-            setCurrentUser(user.id);
-            console.log(setCurrentUser(user.id));
+            setCurrentUserId(user.user.id);
         };
         fetchData();
     }, []);
-
+    
     return (
         <View style={styles.background}>
             <Text style={styles.title}><Image source={Category} style={styles.iconTitle}/>Test for tittel {activity.category}</Text>
@@ -46,7 +46,7 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
                 <Text>Addresse: {activity.address}</Text>
                 <Text>Beskrivelse: {activity.description}</Text>
                 <Text>Antall påmeldte: {activity.number_of_participants}</Text>
-                {currentUser === activity.created_by && (
+                {currentUserId === activity.created_by && (
                     <View style={styles.editButtonContainer}>
                         <TouchableOpacity style={styles.button}
                          onPress={() => navigation.navigate('EditActivity', {activity})}>
