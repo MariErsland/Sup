@@ -2,9 +2,9 @@ import React, { useContext, useState} from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { LoginContext } from '../App';
-import { useAuth } from '../auth';
+import { useAuth } from '../security/auth';
 import Footer from '../shared/Footer';
-import { retrieveToken } from '../token_handling';
+import { retrieveToken } from '../security/token_handling';
 
 const Edit = () => {
 

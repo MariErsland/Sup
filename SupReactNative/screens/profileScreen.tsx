@@ -2,10 +2,11 @@ import React, { useContext, useEffect, useState, Component } from 'react';
 import { View, Text, Button, Alert, StyleSheet, TouchableOpacity} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { LoginContext } from '../App';
-import { useAuth } from '../auth';
+import { useAuth } from '../security/auth';
 import { getUser } from '../components/getUser';
 import Footer from '../shared/Footer';
-import { retrieveToken } from '../token_handling';
+import { deleteToken, retrieveToken } from '../security/token_handling';
+import { onSignOut } from './login';
 
 interface User {
   id: string;
@@ -17,7 +18,7 @@ function ProfileScreen() {
 
   const navigation = useNavigation();
   const [data, setData] = useState<User[]>([]);
-  const {isLoggedIn} = useContext(LoginContext);
+  const {isLoggedIn, setIsLoggedIn} = useContext(LoginContext);
   useAuth({isLoggedIn, navigation});
 
   //Setting userdata with logged in user
@@ -42,15 +43,17 @@ function ProfileScreen() {
           text: 'Slett bruker',
           onPress: async () => {
             const myToken = await retrieveToken();
-            fetch(`http://152.94.160.72:3000/user`, {
+            fetch(`http://152.94.160.72:3000/delete-account`, {
               method: 'DELETE',
               headers: {
                 Authorization: `Bearer ${myToken}`,
               },
             })
             .then(response => response.json())
-            .then(data => {
+            .then(async data => {
               console.log('Bruker slettet = suksess', data);
+              await deleteToken();
+              setIsLoggedIn(false);
             })
             .catch(error => {
               console.log('Feil ved sletting av bruker', error);
@@ -66,7 +69,12 @@ function ProfileScreen() {
     console.log("User: ", data[0]);
     navigation.navigate('Edit', { params: { userId: data[0].id } });
 }
-    
+
+  async function handleOnSignOut(){
+    await onSignOut();
+    setIsLoggedIn(false);
+  }
+      
   return (
     <View style={styles.background}>
     
@@ -95,6 +103,13 @@ function ProfileScreen() {
             <Text style={styles.buttonText}>Slett bruker</Text>
         </TouchableOpacity>
     </View>
+
+    <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.button} onPress={handleOnSignOut}>
+            <Text style={styles.buttonText}>Logg ut</Text>
+        </TouchableOpacity>
+    </View>
+
     </View>
     <Footer />
     </View>

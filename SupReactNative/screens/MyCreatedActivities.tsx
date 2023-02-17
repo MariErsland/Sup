@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import ActivityList from '../components/activity';
 import Footer from '../shared/Footer';
-import {retrieveToken}  from '../token_handling';
+import {retrieveToken}  from '../security/token_handling';
 
 interface MyCreatedActivitiesProps {
   navigation: any;
