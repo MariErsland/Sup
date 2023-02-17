@@ -3,7 +3,7 @@ import {SafeAreaView, Text, Button, Alert, StyleSheet, View, Image, ImageBackgro
 import {GoogleSignin, GoogleSigninButton} from '@react-native-google-signin/google-signin';
 import { useContext } from 'react';
 import { LoginContext } from '../App';
-import { deleteToken, storeToken, storeUserToken } from '../security/token_handling';
+import { deleteToken, retrieveToken, storeToken } from '../security/token_handling';
 
 GoogleSignin.configure({
   webClientId:
@@ -21,8 +21,23 @@ interface Props {
 const FrontPagePhoto = require('../assets/frontPagePhoto.png');
 
 
-export const onSignOut = () => {
-  GoogleSignin.signOut()
+export const onSignOut = async () => {
+  console.log("Running google signout")
+  const myToken = await retrieveToken();
+  await fetch(`http://152.94.160.72:3000/log-out`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${myToken}`,
+    },
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Bruker logget ut = suksess', data);
+  })
+  .catch(error => {
+    console.log('Feil ved logging ut av bruker', error);
+  });
+  await GoogleSignin.signOut()
     .then(async () => {
       await deleteToken();
     })
@@ -39,7 +54,7 @@ const LoginScreen = (props: Props) => {
       console.log("Request timed out");
       setLoading(false);
       Alert.alert("Could not connect to server. Please try again later2.");
-    }, 10 * 1000); //10 seconds
+    }, 20 * 1000); //10 seconds
   };
 
   const onSignIn = () => {
@@ -49,10 +64,7 @@ const LoginScreen = (props: Props) => {
       .then(() => {
         return GoogleSignin.signIn();
       })
-      .then((response) => {
-        //Access token for å verifisere bruker i server
-        const text = storeUserToken("My token text");
-        console.log("Crypt: ", text);
+      .then(async (response) => {
         const accessToken = response.idToken;
         //Sending fetch with access token to server. Fetch will send userToken back 
         fetch('http://152.94.160.72:3000/verify-token', {
@@ -73,10 +85,12 @@ const LoginScreen = (props: Props) => {
           return response.json();
         })
         .then(async data => {
-          const userToken = data.token;
+          console.log("data: ",data)
+          let userToken = data.token;
           await storeToken(userToken);
           setIsLoggedIn(true);
           setLoading(false);
+          console.log("redirecting to feed ");
           props.navigation.reset({
             index: 0,
             routes: [{name: 'Feed'}]
@@ -85,7 +99,8 @@ const LoginScreen = (props: Props) => {
         .catch(error => {
           console.log("Error: ", error);
           setLoading(false);
-          Alert.alert("Could not connect to server. Please try again later.");
+          clearTimeout(timeoutId);
+          Alert.alert("Something went wrong in communicating with server. Please try again later.");
         })
       })
       .catch((err) => {
@@ -121,7 +136,6 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     fontSize: 40,
     fontWeight: 'bold',
-    
   },
 
   description: {

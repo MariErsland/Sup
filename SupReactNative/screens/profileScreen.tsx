@@ -5,7 +5,7 @@ import { LoginContext } from '../App';
 import { useAuth } from '../security/auth';
 import { getUser } from '../components/getUser';
 import Footer from '../shared/Footer';
-import { retrieveToken } from '../security/token_handling';
+import { deleteToken, retrieveToken } from '../security/token_handling';
 import { onSignOut } from './login';
 
 interface User {
@@ -19,7 +19,7 @@ function ProfileScreen() {
   const navigation = useNavigation();
   const [data, setData] = useState<User[]>([]);
   const {isLoggedIn, setIsLoggedIn} = useContext(LoginContext);
-  //useAuth({isLoggedIn, navigation});
+  useAuth({isLoggedIn, navigation});
 
   //Setting userdata with logged in user
   useEffect(() => {
@@ -43,15 +43,17 @@ function ProfileScreen() {
           text: 'Slett bruker',
           onPress: async () => {
             const myToken = await retrieveToken();
-            fetch(`http://152.94.160.72:3000/user`, {
+            fetch(`http://152.94.160.72:3000/delete-account`, {
               method: 'DELETE',
               headers: {
                 Authorization: `Bearer ${myToken}`,
               },
             })
             .then(response => response.json())
-            .then(data => {
+            .then(async data => {
               console.log('Bruker slettet = suksess', data);
+              await deleteToken();
+              setIsLoggedIn(false);
             })
             .catch(error => {
               console.log('Feil ved sletting av bruker', error);
