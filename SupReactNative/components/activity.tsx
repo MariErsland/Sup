@@ -10,7 +10,10 @@ export interface ActivityProps {
     category: string;
     description: string;
     number_of_participants: number;
-    created_by: string;
+    created_by: {
+        user_id: number;
+        first_name: string;
+    };
     onPress: () => void;
     navigation: any;
     activities: ActivityProps[];
@@ -23,6 +26,7 @@ const MadeBy = require('../assets/user.png');
 const Category = require('../assets/tree-solid.png');
 const County = require('../assets/globeIcon.png');
 const Description = require('../assets/descriptionIcon.png');
+
 
 const Activity = (props: ActivityProps) => {
     return (
@@ -53,7 +57,8 @@ const Activity = (props: ActivityProps) => {
             </View>
             <View style={styles.iconText}>
                 <Image source={MadeBy} style={styles.icons}/>
-                <Text>{props.created_by}</Text>
+                <Text>{props.created_by.first_name}</Text>
+                
             </View>
         </TouchableOpacity>
     );
