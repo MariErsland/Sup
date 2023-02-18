@@ -77,7 +77,7 @@ const NewActivity = () => {
             <Text></Text>
             
             <SelectList
-                 setSelected={setSelectedCounty}
+                 setSelected={setSelectedCategory}
                  data={categories}
                  save="value"
                  placeholder='Kategori'
@@ -85,7 +85,7 @@ const NewActivity = () => {
             <Text></Text>
 
             <SelectList
-                setSelected={setSelectedCategory}
+                setSelected={setSelectedCounty}
                 data={counties}
                 save="value"
                 placeholder='Fylke'
