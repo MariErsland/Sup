@@ -17,6 +17,7 @@ export interface ActivityProps {
     onPress: () => void;
     navigation: any;
     activities: ActivityProps[];
+    hideCreatedBy?: boolean;
 }
 
 const PersonAttending = require('../assets/person-solid.png');
@@ -55,11 +56,12 @@ const Activity = (props: ActivityProps) => {
                 <Image source={PersonAttending} style={styles.icons}/>
                 <Text>{props.number_of_participants} påmeldt</Text>
             </View>
-            <View style={styles.iconText}>
-                <Image source={MadeBy} style={styles.icons}/>
-                <Text>{props.created_by.first_name}</Text>
-                
-            </View>
+            {!props.hideCreatedBy && (
+              <View style={styles.iconText}>
+                  <Image source={MadeBy} style={styles.icons}/>
+                  <Text>{props.created_by.first_name}</Text>
+              </View>
+            )}
         </TouchableOpacity>
     );
 }
@@ -67,13 +69,14 @@ const Activity = (props: ActivityProps) => {
 interface ActivityListProps {
     activities: ActivityProps[];
     navigation: any;
+    hideCreatedBy: boolean;
 }
 
 const ActivityList = (props: ActivityListProps) => {
     return (
         <ScrollView style={styles.scroll}>
             {props.activities.map(activity => (
-                <Activity key={activity.id} {...activity} navigation={props.navigation} />
+                <Activity key={activity.id} {...activity} navigation={props.navigation} hideCreatedBy={props.hideCreatedBy} />
             ))}
         </ScrollView>
     );

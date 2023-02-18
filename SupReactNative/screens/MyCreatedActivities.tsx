@@ -42,7 +42,7 @@ useEffect(() => {
   return (
     <View style={styles.background}>
       <ScrollView contentContainerStyle={styles.scrollView}>
-        {activity ? <ActivityList activities={activity} navigation={navigation} /> : <Text>Du har ikke laget noen aktiviteter enda... </Text>}
+        {activity ? <ActivityList activities={activity} navigation={navigation} hideCreatedBy={true} /> : <Text>Du har ikke laget noen aktiviteter enda... </Text>}
       </ScrollView>
       <View style={{ flex: 0 }}>
         <Footer />
