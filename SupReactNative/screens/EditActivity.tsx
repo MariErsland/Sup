@@ -27,6 +27,7 @@ interface EditActivityProps {
 }
 
 
+
 const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
     const {activity} = route.params;
     const {
@@ -42,36 +43,44 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
     } = useActivityState();
 
     // To get this value prefilled I set the value locally here
+    const [created_by] = useState(activity.created_by)
     const [description, setDescription] = useState(activity.description);
     const [address, setAddress] = useState(activity.address);
 
     //This needs to be edited to a fixed number when we get the "Meld på aktivitet" button
-    const [number_of_participants, setNumberOfParticipants] = useState('');
+    const [number_of_participants] = useState(activity.number_of_participants);
     
     
     const navigation = useNavigation();
-    console.log(activity.id);
+    console.log("ID="+activity.id);
+    console.log("selectedCategory:" +selectedCategory);
+
 
     const handleEditActivity = async () => {
-        //const response = await fetch(`http://152.94.160.72:3000/activity/${activity.id}
-        const myToken = await retrieveToken();
-        const response = await fetch(`http://152.94.160.72:3000/activity/id`, {
+        try {
+          const myToken = await retrieveToken();
+      
+          const response = await fetch(`http://152.94.160.72:3000/activity/${activity.id}`, {
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${myToken}`,
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${myToken}`,
             },
-            body: JSON.stringify({ selectedDate, selectedCounty, address, selectedCategory, description, number_of_participants}),
-        });
-        if (!response.ok) {
-            console.error('Error updating activity:', response);
-            return;
+            body: JSON.stringify({ time: selectedDate, category: selectedCategory, county: selectedCounty, address,  description, number_of_participants, created_by  }),
+          });
+      
+          if (!response.ok) {
+            throw new Error(`Failed to update activity. Server responded with ${response.status}.`);
+          }
+      
+          const data = await response.json();
+          console.log('Activity updated successfully', data);
+          //navigation.navigate('DetailsActivity', { params: { activity: data } }); this need to be solved
+        } catch (error) {
+          console.error('Error updating activity:', error);
         }
-        const data = await response.json();
-        console.log('Success:', data);
-        console.log('User updated successfully', data);
-        navigation.navigate('DetailsActivity', {params: {activity: data}});
-    }
+      };
+
     
     return (
         <View style={{flex: 1}}>
@@ -95,7 +104,7 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
             <Text></Text>
 
             <SelectList
-                 setSelected={setSelectedCounty}
+                 setSelected={setSelectedCategory}
                  data={categories}
                  save="value"
                  placeholder='Kategori'
@@ -103,7 +112,7 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
             <Text></Text>
 
             <SelectList
-                setSelected={setSelectedCategory}
+                setSelected={setSelectedCounty}
                 data={counties}
                 save="value"
                 placeholder='Fylke'
@@ -113,11 +122,6 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
                 placeholder="Møtested"
                 value={address}
                 onChangeText={setAddress}
-            />
-            <TextInput
-                placeholder="Denne skal endre men må være tall nå"
-                value={number_of_participants}
-                onChangeText={setNumberOfParticipants}
             />
 
             <TextInput

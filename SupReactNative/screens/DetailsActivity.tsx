@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { ActivityProps } from '../components/activity';
 import Footer from '../shared/Footer';
 import {getUser} from '../components/getUser'
+import { act } from 'react-test-renderer';
 
 interface DetailsProps {
     route: {
@@ -30,6 +31,7 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
         };
         fetchData();
     }, []);
+    console.log(activity.category);
     
     return (
         <View style={styles.background}>
