@@ -36,7 +36,7 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
     return (
         <View style={styles.background}>
             <Text style={styles.title}><Image source={Category} style={styles.iconTitle}/>Test for tittel {activity.category}</Text>
-            <Text style={styles.madeby}><Image source={MadeBy} style={styles.iconMadeBy}/> Laget av: {activity.created_by}</Text>
+            <Text style={styles.madeby}><Image source={MadeBy} style={styles.iconMadeBy}/> Laget av: {activity.created_by.first_name}</Text>
             <View style={styles.participateButtonContainer}>
                 <TouchableOpacity style={styles.button}>
                     <Text style={styles.buttonText}>Jeg vil være med!</Text>
@@ -48,7 +48,7 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
                 <Text>Addresse: {activity.address}</Text>
                 <Text>Beskrivelse: {activity.description}</Text>
                 <Text>Antall påmeldte: {activity.number_of_participants}</Text>
-                {currentUserId === activity.created_by && (
+                {currentUserId === activity.created_by.user_id && (
                     <View style={styles.editButtonContainer}>
                         <TouchableOpacity style={styles.button}
                          onPress={() => navigation.navigate('EditActivity', {activity})}>
