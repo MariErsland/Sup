@@ -28,15 +28,8 @@ export async function retrieveUserToken() {
     }
 }
 
-async function removeUserSession() {
-    try {
-        await EncryptedStorage.removeItem("user_token");
-    } catch (error) {
-        console.log(error);
-    }
-}
 
-export const storeToken = async (token: any) => {
+/*export const storeToken = async (token: any) => {
     console.log("In store token");
     try {
         await AsyncStorage.setItem('token', token);
@@ -53,10 +46,10 @@ export const retrieveToken = async () => {
     } catch (e) {
         console.log(e);
     }
-};
+};*/
 
 
-export const deleteToken = async () => {
+/*export const deleteToken = async () => {
     console.log("In deleting token");
     try {
         await AsyncStorage.removeItem('token');
@@ -65,6 +58,45 @@ export const deleteToken = async () => {
     catch (err){
         console.log("error in deleting token",err);
     }
+}*/
+
+
+
+export async function storeToken(token: any) {
+    try {
+        await EncryptedStorage.setItem("token", token);
+        console.log("Stored token");
+    // Congrats! You've just stored your first value!
+    } catch (error) {
+        console.log("Error: ", error)// There was an error on the native side
+    }
 }
 
+export async function retrieveToken() {
+    try {   
+        const session = await EncryptedStorage.getItem("token");
+        
+        if (session !== undefined) {
+            console.log("Retrieved token: ", session)
+            return session;
+            // Congrats! You've just retrieved your first value!
+        }
+    } catch (error) {
+        console.log("Error in retrieving: ", error);
+        // There was an error on the native side
+    }
+}
+
+export async function deleteToken() {
+    console.log("In deleting token");
+    try {
+        await EncryptedStorage.removeItem("token");
+        console.log("Token deleted");
+        // Congrats! You've just removed your first value!
+    } catch (error) {
+        console.log("error in deleting token: ",error);
+    
+        // There was an error on the native side
+    }
+}
 

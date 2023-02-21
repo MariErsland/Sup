@@ -5,8 +5,9 @@ import { LoginContext } from '../App';
 import { useAuth } from '../security/auth';
 import { getUser } from '../components/getUser';
 import Footer from '../shared/Footer';
-import { deleteToken, retrieveToken } from '../security/token_handling';
+import { deleteToken, retrieveToken} from '../security/token_handling';
 import { onSignOut } from './login';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface User {
   id: string;
@@ -52,8 +53,9 @@ function ProfileScreen() {
             .then(response => response.json())
             .then(async data => {
               console.log('Bruker slettet = suksess', data);
-              await deleteToken();
+              AsyncStorage.setItem('isLoggedIn', 'false');
               setIsLoggedIn(false);
+              await deleteToken();
             })
             .catch(error => {
               console.log('Feil ved sletting av bruker', error);
@@ -72,7 +74,7 @@ function ProfileScreen() {
 
   async function handleOnSignOut(){
     await onSignOut();
-    setIsLoggedIn(false);
+    
   }
       
   return (
