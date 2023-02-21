@@ -89,7 +89,7 @@ const Feed: React.FC<FeedProps> = ({ navigation }) => {
     return (
         <View style={styles.background}>
             <ScrollView contentContainerStyle={styles.scrollView}>
-                {activity ? <ActivityList activities={activity} navigation={navigation}/> : <ActivityList activities={dummyData} navigation={navigation} />}
+                {activity ? <ActivityList activities={activity} navigation={navigation} hideCreatedBy={false}/> : <ActivityList activities={dummyData} navigation={navigation} />}
             </ScrollView>
             <View style={{flex: 0}}>
                 <Footer  />

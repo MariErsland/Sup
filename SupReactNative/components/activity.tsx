@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Image, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
@@ -18,6 +18,7 @@ export interface ActivityProps {
     navigation: any;
     activities: ActivityProps[];
     hideCreatedBy?: boolean;
+    isUpcoming: boolean;
 }
 
 const PersonAttending = require('../assets/person-solid.png');
@@ -28,10 +29,14 @@ const Category = require('../assets/tree-solid.png');
 const County = require('../assets/globeIcon.png');
 const Description = require('../assets/descriptionIcon.png');
 
-
 const Activity = (props: ActivityProps) => {
+    const activityDate = new Date(props.time);
+    const currentDate = new Date();
+
+    const backgroundColor = activityDate < currentDate ? 'lightgray' : 'white';
+
     return (
-        <TouchableOpacity key={props.id} style={styles.activityBox} onPress={() => props.navigation.navigate('DetailsActivity', {activity: props})}>
+        <TouchableOpacity key={props.id} style={[styles.activityBox, { backgroundColor }]} onPress={() => props.navigation.navigate('DetailsActivity', {activity: props})}>
             <View style={styles.iconText}>
                 <Image source={TimeActivity} style={styles.icons}/>
                 <Text>{props.time}</Text>
@@ -70,13 +75,22 @@ interface ActivityListProps {
     activities: ActivityProps[];
     navigation: any;
     hideCreatedBy: boolean;
+    isUpcoming: boolean;
 }
 
 const ActivityList = (props: ActivityListProps) => {
+    const currentDate = new Date();
+    const sortedActivities = props.activities.sort((a, b) => a.time.localeCompare(b.time));
+
+    // filter past activities and add to the end of the sorted activities array
+    const pastActivities = sortedActivities.filter(activity => new Date(activity.time) < currentDate);
+    const upcomingActivities = sortedActivities.filter(activity => new Date(activity.time) >= currentDate);
+    const sortedUpcomingActivities = [...upcomingActivities, ...pastActivities];
+
     return (
         <ScrollView style={styles.scroll}>
-            {props.activities.map(activity => (
-                <Activity key={activity.id} {...activity} navigation={props.navigation} hideCreatedBy={props.hideCreatedBy} />
+            {sortedUpcomingActivities.map(activity => (
+                <Activity key={activity.id} {...activity} navigation={props.navigation} hideCreatedBy={props.hideCreatedBy} isUpcoming={new Date(activity.time) >= currentDate} />
             ))}
         </ScrollView>
     );
@@ -86,7 +100,6 @@ const styles = StyleSheet.create({
     activityBox: {
         padding: 10,
         margin: 12,
-        backgroundColor: 'white',
         borderRadius: 15,
     },
     icons: {
