@@ -4,6 +4,7 @@ import {GoogleSignin, GoogleSigninButton} from '@react-native-google-signin/goog
 import { useContext } from 'react';
 import { LoginContext } from '../App';
 import { deleteToken, retrieveToken, storeToken } from '../security/token_handling';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 GoogleSignin.configure({
   webClientId:
@@ -22,8 +23,8 @@ const FrontPagePhoto = require('../assets/frontPagePhoto.png');
 
 
 export const onSignOut = async () => {
-  console.log("Running google signout")
   const myToken = await retrieveToken();
+  const {setIsLoggedIn} = useContext(LoginContext);
   await fetch(`http://152.94.160.72:3000/log-out`, {
     method: 'POST',
     headers: {
@@ -39,7 +40,10 @@ export const onSignOut = async () => {
   });
   await GoogleSignin.signOut()
     .then(async () => {
+      AsyncStorage.setItem('isLoggedIn', 'false');
+      setIsLoggedIn(false);
       await deleteToken();
+
     })
     .catch((err) => {console.log(err)});
 };
@@ -88,6 +92,15 @@ const LoginScreen = (props: Props) => {
           console.log("data: ",data)
           let userToken = data.token;
           await storeToken(userToken);
+          
+          try {
+            
+            await AsyncStorage.setItem('isLoggedIn', 'true');
+            console.log("In try");
+            
+          } catch (e) {
+            console.log("Error storing isloggedin: ", e);
+          }
           setIsLoggedIn(true);
           setLoading(false);
           console.log("redirecting to feed ");

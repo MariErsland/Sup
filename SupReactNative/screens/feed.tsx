@@ -11,11 +11,12 @@ import { retrieveToken } from '../security/token_handling';
 interface FeedProps {
     navigation: NavigationProp<RootStackParamList, 'Feed'>;
 }
+  
 
 const Feed: React.FC<FeedProps> = ({ navigation }) => {
     const {isLoggedIn} = useContext(LoginContext);
-    console.log('Is logged in in feed: ', isLoggedIn);
     useAuth({isLoggedIn, navigation: navigation});
+    console.log('Is logged in in feed: ', isLoggedIn);
     
     const [activity, setActivity] = useState(null);
 
@@ -32,26 +33,26 @@ const Feed: React.FC<FeedProps> = ({ navigation }) => {
         .then((response) => response.json())
         .then((data) => {
             console.log("Setting data in feed");
-            setActivity(data);
             console.log("data: ", data)
+            //setActivity(data);
+            
         })
         .catch((error) => {
             console.log('Error fetching activity', error);
         });
     }
 
-
-
+   
     useEffect(() => {
-        const getData = async () => {
-            console.log("About to fetch act")
-            await handleFetchActivities();
-            };
-            getData();
+    const getData = async () => {
+       
+        console.log("About to fetch act")
+        await handleFetchActivities();
+        };
+        getData();
     }, []);
-
-        
     
+
     const dummyData = [
         {
             id: 1,
@@ -84,8 +85,6 @@ const Feed: React.FC<FeedProps> = ({ navigation }) => {
         },
     ];
     
-
-
     return (
         <View style={styles.background}>
             <ScrollView contentContainerStyle={styles.scrollView}>
