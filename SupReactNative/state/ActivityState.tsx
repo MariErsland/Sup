@@ -29,11 +29,12 @@ export const categories = [
   { label: 'Trening', value: 'Jogging' },
   { label: 'Matlaging', value: 'Matlaging' },
   { label: 'Annet', value: 'Annet' },
+  { label: 'Test', value: 'Test' },
 ];
 
 export const counties = [
-  { label: 'Rogaland', value: 'Rogaland' },
-  { label: 'Agder', value: 'Agder' },
+  {label: 'Rogaland', value: 'Rogaland' },
+  {label: 'Agder', value: 'Agder' },
   {label:'Innland', value: 'Innland'},
   {label:'Møre og Romsdal', value: 'Møre og Romsdal'},
   {label:'Nordland', value: 'Norland'},
@@ -44,3 +45,4 @@ export const counties = [
   {label:'Vestland', value: 'Vestland'},
   {label:'Viken', value: 'Viken'},
 ];
+
