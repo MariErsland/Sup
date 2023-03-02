@@ -28,7 +28,7 @@ export const useAuth = (props: Props) => {
       const value = await AsyncStorage.getItem('isLoggedIn');
       console.log("In auth. Value of async: ", value, " Value of isLoggedIn: ", props.isLoggedIn);
       console.log("Value: ", value);
-      if ((props.isLoggedIn == false) && (value == 'false')) {
+      if ((props.isLoggedIn == false) && (value == 'false') || (props.isLoggedIn == false) && (value == null)) {
         console.log("Redirecting to login.. ")
         props.navigation.reset({
           index: 0,
