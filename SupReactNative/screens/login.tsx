@@ -23,29 +23,7 @@ const FrontPagePhoto = require('../assets/frontPagePhoto.png');
 
 
 export const onSignOut = async () => {
-  const myToken = await retrieveToken();
-  const {setIsLoggedIn} = useContext(LoginContext);
-  await fetch(`http://152.94.160.72:3000/log-out`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${myToken}`,
-    },
-  })
-  .then(response => response.json())
-  .then(data => {
-    console.log('Bruker logget ut = suksess', data);
-  })
-  .catch(error => {
-    console.log('Feil ved logging ut av bruker', error);
-  });
   await GoogleSignin.signOut()
-    .then(async () => {
-      AsyncStorage.setItem('isLoggedIn', 'false');
-      setIsLoggedIn(false);
-      await deleteToken();
-
-    })
-    .catch((err) => {console.log(err)});
 };
 
 const LoginScreen = (props: Props) => {
@@ -57,7 +35,7 @@ const LoginScreen = (props: Props) => {
     timeoutId = setTimeout(() => {
       console.log("Request timed out");
       setLoading(false);
-      Alert.alert("Could not connect to server. Please try again later2.");
+      Alert.alert("2Could not connect to server. Please try again later.");
     }, 20 * 1000); //10 seconds
   };
 

@@ -50,7 +50,14 @@ function ProfileScreen() {
                 Authorization: `Bearer ${myToken}`,
               },
             })
-            .then(response => response.json())
+            .then(response => {
+              if (response.status === 500) {
+                return response.json().then(error => {
+                  throw new Error(JSON.stringify(error.message.message));
+                });
+              }
+              return response.json();
+            })
             .then(async data => {
               console.log('Bruker slettet = suksess', data);
               AsyncStorage.setItem('isLoggedIn', 'false');
@@ -59,7 +66,16 @@ function ProfileScreen() {
             })
             .catch(error => {
               console.log('Feil ved sletting av bruker', error);
-            });
+              
+              if (error.toString().includes('Cannot delete or update a parent row: a foreign key constraint fails')) {
+                console.log("User has stuff attached to it, for example an activity");
+                Alert.alert(
+                  'Sorry',
+                  'Delete all your activities before deleting your user',
+                  [{ text: 'OK' }]
+                );
+              } 
+              })
           },
         },
       ],
@@ -72,9 +88,82 @@ function ProfileScreen() {
     navigation.navigate('Edit', { params: { userId: data[0].id } });
 }
 
+function OnSignOut() {
+  Alert.alert(
+    'Logg av',
+    'Er du helt sikker på at du vil logge av brukeren din?',
+    [
+      {
+        text: 'Avbryt',
+        style: 'cancel',
+      },
+      {
+        text: 'Logg av',
+        onPress: async () => {
+          const myToken = await retrieveToken();
+          fetch(`http://152.94.160.72:3000/log-out`, {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${myToken}`,
+            },
+          })
+          .then(response => {
+            if (response.status === 500) {
+              return response.json().then(error => {
+                throw new Error(JSON.stringify(error.message.message));
+              });
+            }
+            return response.json();
+          })
+          .then(async data => {
+            console.log('Bruker logget av  = suksess', data);
+            AsyncStorage.setItem('isLoggedIn', 'false');
+            await deleteToken();
+            setIsLoggedIn(false);
+            console.log("Ferdig logget av");
+            navigation.navigate('Feed', {});
+          })
+          .catch(error => {
+            console.log('Feil ved logging av bruker', error);
+            
+            if (error.toString().includes('Cannot delete or update a parent row: a foreign key constraint fails')) {
+              console.log("User has stuff attached to it, for example an activity");
+              Alert.alert(
+                'Sorry',
+                'Delete all your activities before deleting your user',
+                [{ text: 'OK' }]
+              );
+            } 
+            })
+        },
+      },
+    ],
+    { cancelable: false },
+  );
+}
+
   async function handleOnSignOut(){
-    await onSignOut();
-    
+    const {setIsLoggedIn} = useContext(LoginContext);
+      const myToken = await retrieveToken();
+      console.log("Retrieved token", myToken);
+      
+      await fetch(`http://152.94.160.72:3000/log-out`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${myToken}`,
+        },
+      })
+      .then(response => response.json())
+      .then(async data => {
+        console.log('Bruker logget ut = suksess', data);
+      })
+      .catch(error => {
+        console.log('Feil ved logging ut av bruker', error);
+      });
+      await onSignOut();
+      AsyncStorage.setItem('isLoggedIn', 'false');
+      setIsLoggedIn(false);
+      await deleteToken();
   }
       
   return (
@@ -107,7 +196,7 @@ function ProfileScreen() {
     </View>
 
     <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleOnSignOut}>
+        <TouchableOpacity style={styles.button} onPress={OnSignOut}>
             <Text style={styles.buttonText}>Logg ut</Text>
         </TouchableOpacity>
     </View>
