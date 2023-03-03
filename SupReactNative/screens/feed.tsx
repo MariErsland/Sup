@@ -14,13 +14,16 @@ import { FilterContext } from '../components/FilterContext';
 interface FeedProps {
   navigation: NavigationProp<RootStackParamList, 'Feed'>;
 }
+  
 
 const Feed: React.FC<FeedProps> = ({ navigation }) => {
   const { isLoggedIn } = useContext(LoginContext);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedCounties, setSelectedCounties] = useState<string[]>([]);
+  useAuth({isLoggedIn, navigation: navigation});
+  console.log('Is logged in in feed: ', isLoggedIn);
+  //const [activity, setActivity] = useState(null);
 
-  useAuth({ isLoggedIn, navigation: navigation });
 
   const [activities, setActivities] = useState<ActivityProps[]>([]);
   const [filteredActivities, setFilteredActivities] = useState<ActivityProps[] | null>(null);
