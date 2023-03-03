@@ -8,48 +8,43 @@ const Filter = (
   props: { onPress: () => void; activities: ActivityProps[]; }
 ) => {
   const { selectedCategories, setSelectedCategories } = useContext(FilterContext);
-  const { selectedCounties = [], setSelectedCounties } = useContext(FilterContext);
-  const [showCategories, setShowCategories] = useState(false);
+  const { selectedCounties, setSelectedCounties } = useContext(FilterContext);
+  const [showSubCategories, setShowSubCategories] = useState(false);
   const [showCounties, setShowCounties] = useState(false);
   const [filteredActivities, setFilteredActivities] = useState<ActivityProps[]>([]);
-  const [isCategorySelected, setIsCategorySelected] = useState(false);
-  const [isCountySelected, setIsCountySelected] = useState(false);
-
 
   const handleCategoryPress = () => {
-    setShowCategories((prevState) => !prevState);
+    setShowSubCategories(prevState => !prevState);
     setShowCounties(false);
-    setIsCategorySelected((prevState) => !prevState);
-    setIsCountySelected(false);
     setSelectedCategories([]);
   };
-  
+
   const handleCountyPress = () => {
-    setShowCounties((prevState) => !prevState);
-    setShowCategories(false);
-    setIsCountySelected((prevState) => !prevState);
-    setIsCategorySelected(false);
+    setShowSubCategories(false);
+    setShowCounties(true);
     setSelectedCounties([]);
   };
-  
-  const handleFilter = (category: string) => {
-    if (selectedCategories && selectedCategories.includes(category)) {
-      setSelectedCategories(selectedCategories.filter(c => c !== category));
-    } else {
-      setSelectedCategories([...selectedCategories, category]);
-    }
-  };
-  
-  const handleCountyFilter = (county: string) => {
-    if (selectedCounties.includes(county)) {
-      setSelectedCounties(selectedCounties.filter(c => c !== county));
-    } else {
-      setSelectedCounties([...selectedCounties, county]);
-    }
-  };
-  
 
-  
+  const handleFilter = (category: string) => {
+    setSelectedCategories(prevSelectedCategories => {
+      if (prevSelectedCategories.includes(category)) {
+        return prevSelectedCategories.filter(c => c !== category);
+      } else {
+        return [...prevSelectedCategories, category];
+      }
+    });
+  };
+
+  const handleCountyFilter = (county: string) => {
+    setSelectedCounties(prevSelectedCounties => {
+      if (prevSelectedCounties.includes(county)) {
+        return prevSelectedCounties.filter(c => c !== county);
+      } else {
+        return [...prevSelectedCounties, county];
+      }
+    });
+  };
+
   const handleSearch = () => {
     const filtered = props.activities.filter((activity: ActivityProps) =>
       selectedCategories.some((category: string) => activity.category === category) &&
@@ -65,18 +60,18 @@ const Filter = (
         <View style={styles.categoryContainer}>
           <TouchableOpacity onPress={handleCategoryPress}>
             <Text style={[
-              styles.filterText, 
-              styles.filterButton, 
-              isCategorySelected && styles.filterButtonSelected
+              styles.filterText,
+              styles.filterButton,
+              selectedCategories.length > 0 && styles.filterButtonSelected
             ]}>
               Kategori
             </Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleCountyPress}>
             <Text style={[
-              styles.filterText, 
-              styles.filterButton, 
-              isCountySelected && styles.filterButtonSelected
+              styles.filterText,
+              styles.filterButton,
+              selectedCounties.length > 0 && styles.filterButtonSelected
             ]}>
               Sted
             </Text>
@@ -89,7 +84,7 @@ const Filter = (
           </TouchableOpacity>
         </View>
       </View>
-      {showCategories && (
+      {showSubCategories && (
         <ScrollView horizontal={true} contentContainerStyle={[styles.subMenu, { marginBottom: 20 }]}>
           {categories.map((category, index) => (
             <TouchableOpacity
@@ -98,7 +93,7 @@ const Filter = (
                 styles.filterButton,
                 selectedCategories.includes(category.value) && styles.filterButtonSelected,
               ]}
-              onPress={() => handleFilter(category.value)} 
+              onPress={() => handleFilter(category.value)}
             >
               <Text
                 style={[
@@ -121,7 +116,7 @@ const Filter = (
                 styles.filterButton,
                 selectedCounties.includes(county.value) && styles.filterButtonSelected,
               ]}
-              onPress={() => handleCountyFilter(county.value)} 
+              onPress={() => handleCountyFilter(county.value)}
             >
               <Text
                 style={[
@@ -145,40 +140,40 @@ const Filter = (
 
 };
 
-  
-  const styles = StyleSheet.create({
-    container: {
-      flexDirection: 'row',
-      alignItems:   'center',
-      justifyContent: 'center',
-    },
-    categoryContainer: {
-      flexDirection: 'row',
-      paddingTop: 10,
-      paddingRight: 10,
-    },
-    subMenu: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginTop: 10,
-    },
-    filterButton: {
-      paddingVertical: 10,
-      paddingHorizontal: 20,
-      backgroundColor: '#145D6E',
-      borderRadius: 20,
-      marginHorizontal: 5,
-    },
-    filterButtonSelected: {
-      backgroundColor: '#EB7B31',
-    },
-    filterText: {
-      fontSize: 16,
-      fontWeight: 'bold',
-      color: '#fff',
-    },
-    filterTextSelected: {
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  categoryContainer: {
+    flexDirection: 'row',
+    paddingTop: 10,
+    paddingRight: 10,
+  },
+  subMenu: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
+  },
+  filterButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#145D6E',
+    borderRadius: 20,
+    marginHorizontal: 5,
+  },
+  filterButtonSelected: {
+    backgroundColor: '#EB7B31',
+  },
+  filterText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  filterTextSelected: {
     color: '#fff',
   },
 });

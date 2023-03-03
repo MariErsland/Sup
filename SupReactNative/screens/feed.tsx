@@ -73,6 +73,7 @@ const Feed: React.FC<FeedProps> = ({ navigation }) => {
     setSelectedCounties([]);
     setFilteredActivities(activities);
   };
+  
 
   return (
     <FilterContext.Provider value={{ selectedCategories, setSelectedCategories, selectedCounties, setSelectedCounties }}>

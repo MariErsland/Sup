@@ -1,24 +1,19 @@
-import { createContext } from 'react';
+import React from 'react';
 
-interface FilterContextType {
+interface FilterContextProps {
   selectedCategories: string[];
-  setSelectedCategories: (categories: string[]) => void;
-
+  setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>;
   selectedCounties: string[];
-  setSelectedCounties: (counties: string[]) => void;
-
- 
+  setSelectedCounties: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-
-export const FilterContext = createContext<FilterContextType>({
+export const FilterContext = React.createContext<FilterContextProps>({
   selectedCategories: [],
-  setSelectedCategories: (categories: string[]) => {},
-
+  setSelectedCategories: () => {},
   selectedCounties: [],
-  setSelectedCounties: (counties: string[]) => {},
-
+  setSelectedCounties: () => {},
 });
+
 
 
 
