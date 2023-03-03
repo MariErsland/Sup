@@ -1,11 +1,26 @@
 import { createContext } from 'react';
 
 interface FilterContextType {
-  selectedCategory: string;
-  setSelectedCategory: (category: string) => void;
+  selectedCategories: string[];
+  setSelectedCategories: (categories: string[]) => void;
+
+  selectedCounties: string[];
+  setSelectedCounties: (counties: string[]) => void;
+
+ 
 }
 
+
 export const FilterContext = createContext<FilterContextType>({
-  selectedCategory: '',
-  setSelectedCategory: (category: string) => {},
+  selectedCategories: [],
+  setSelectedCategories: (categories: string[]) => {},
+
+  selectedCounties: [],
+  setSelectedCounties: (counties: string[]) => {},
+
 });
+
+
+
+
+

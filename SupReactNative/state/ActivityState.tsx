@@ -25,8 +25,8 @@ export const useActivityState = () => {
 };
 
 export const categories = [
-  { label: 'Friluft', value: 'Tur' },
-  { label: 'Trening', value: 'Jogging' },
+  { label: 'Tur', value: 'Tur' },
+  { label: 'Trening', value: 'Trening' },
   { label: 'Matlaging', value: 'Matlaging' },
   { label: 'Annet', value: 'Annet' },
   { label: 'Test', value: 'Test' },

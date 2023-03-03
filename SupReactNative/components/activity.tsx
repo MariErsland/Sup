@@ -3,6 +3,7 @@ import { View, Image, Text, TouchableOpacity, ScrollView, StyleSheet } from 'rea
 import { useNavigation } from '@react-navigation/native';
 
 export interface ActivityProps {
+    title: string;
     id: number;
     time: string;
     county : string;

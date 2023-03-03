@@ -1,16 +1,15 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import ActivityList from '../components/activity';
+import ActivityList, { ActivityProps } from '../components/activity';
 import { NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../types';
 import { LoginContext } from '../App';
 import { useAuth } from '../security/auth';
 import Footer from '../shared/Footer';
 import { retrieveToken } from '../security/token_handling';
-import { useActivityState } from '../state/ActivityState';
+import { categories } from '../state/ActivityState';
 import Filter from '../components/Filter';
 import { FilterContext } from '../components/FilterContext';
-
 
 interface FeedProps {
   navigation: NavigationProp<RootStackParamList, 'Feed'>;
@@ -18,16 +17,16 @@ interface FeedProps {
 
 const Feed: React.FC<FeedProps> = ({ navigation }) => {
   const { isLoggedIn } = useContext(LoginContext);
-  const { selectedCategory, setSelectedCategory } = useActivityState();
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedCounties, setSelectedCounties] = useState<string[]>([]);
+
   useAuth({ isLoggedIn, navigation: navigation });
 
-  const [activities, setActivities] = useState(null);
-  const [filteredActivities, setFilteredActivities] = useState(null);
+  const [activities, setActivities] = useState<ActivityProps[]>([]);
+  const [filteredActivities, setFilteredActivities] = useState<ActivityProps[] | null>(null);
 
   const handleFetchActivities = async () => {
-    console.log('Getting token from retrieve token');
     const myToken = await retrieveToken();
-    console.log('Handle Fetch act');
     await fetch(`http://152.94.160.72:3000/activities/`, {
       headers: {
         Authorization: `Bearer ${myToken}`,
@@ -35,10 +34,9 @@ const Feed: React.FC<FeedProps> = ({ navigation }) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log('Setting data in feed');
+        console.log('json' + JSON.stringify(data)) // add this console.log statement.. ?
         setActivities(data);
         setFilteredActivities(data); // set filtered activities to all activities initially
-        console.log('data: ', data);
       })
       .catch((error) => {
         console.log('Error fetching activity', error);
@@ -47,33 +45,36 @@ const Feed: React.FC<FeedProps> = ({ navigation }) => {
 
   useEffect(() => {
     const getData = async () => {
-      console.log('About to fetch act');
       await handleFetchActivities();
     };
     getData();
   }, []);
 
-  const handleSetSelectedCategory = (category: string) => {
-    setSelectedCategory(category);
+  useEffect(() => {
+    let filtered = activities;
+    if (selectedCategories.length) {
+      filtered = filtered.filter((activity: ActivityProps) =>
+        selectedCategories.some((category: string) => activity.category === category)
+      );
+    }
+    if (selectedCounties.length) {
+      filtered = filtered.filter((activity: ActivityProps) =>
+        selectedCounties.includes(activity.county)
+      );
+    }
+    setFilteredActivities(filtered);
+  }, [selectedCategories, selectedCounties, activities]);
+
+  const handleFilterReset = () => {
+    setSelectedCategories([]);
+    setSelectedCounties([]);
+    setFilteredActivities(activities);
   };
 
-  useEffect(() => {
-    if (!selectedCategory) {
-      setFilteredActivities(activities);
-    } else {
-      const filtered = activities.filter(
-        (activity: { category: string }) => activity.category === selectedCategory
-      );
-      setFilteredActivities(filtered);
-    }
-  }, [selectedCategory, activities]);
-
   return (
-    <FilterContext.Provider
-      value={{ selectedCategory, setSelectedCategory: handleSetSelectedCategory }}
-    >
+    <FilterContext.Provider value={{ selectedCategories, setSelectedCategories, selectedCounties, setSelectedCounties }}>
       <View style={styles.background}>
-        <Filter onPress={() => setFilteredActivities(activities)} handleFilter={handleSetSelectedCategory} selectedCategory={selectedCategory} />
+        <Filter onPress={handleFilterReset} activities={activities} />
         <ScrollView contentContainerStyle={styles.scrollView}>
           {filteredActivities ? (
             <ActivityList
@@ -83,7 +84,12 @@ const Feed: React.FC<FeedProps> = ({ navigation }) => {
               isUpcoming={false}
             />
           ) : (
-            <ActivityList activities={[]} navigation={navigation} hideCreatedBy={false} isUpcoming={false} />
+            <ActivityList
+              activities={[]}
+              navigation={navigation}
+              hideCreatedBy={false}
+              isUpcoming={false}
+            />
           )}
         </ScrollView>
         <View style={{ flex: 0 }}>
@@ -93,6 +99,7 @@ const Feed: React.FC<FeedProps> = ({ navigation }) => {
     </FilterContext.Provider>
   );
 };
+
 
 const styles = StyleSheet.create({
   background: {
@@ -105,4 +112,3 @@ const styles = StyleSheet.create({
 });
 
 export default Feed;
-
