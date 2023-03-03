@@ -45,15 +45,6 @@ const Filter = (
     });
   };
 
-  const handleSearch = () => {
-    const filtered = props.activities.filter((activity: ActivityProps) =>
-      selectedCategories.some((category: string) => activity.category === category) &&
-      (!selectedCounties.length || selectedCounties.includes(activity.county))
-    );
-    setFilteredActivities(filtered);
-    props.onPress();
-  };
-
   return (
     <View>
       <View style={styles.container}>
@@ -79,7 +70,7 @@ const Filter = (
           <TouchableOpacity>
             <Text style={[styles.filterText, styles.filterButton]}>Dato</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleSearch}>
+          <TouchableOpacity>
             <Text style={[styles.filterText, styles.filterButton]}>Søk:    </Text>
           </TouchableOpacity>
         </View>
