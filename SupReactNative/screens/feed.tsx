@@ -1,7 +1,7 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import ActivityList, { ActivityProps } from '../components/activity';
-import { NavigationProp } from '@react-navigation/native';
+import { NavigationProp, useFocusEffect } from '@react-navigation/native';
 import { RootStackParamList } from '../types';
 import { LoginContext } from '../App';
 import { useAuth } from '../security/auth';
@@ -14,7 +14,6 @@ import { FilterContext } from '../components/FilterContext';
 interface FeedProps {
   navigation: NavigationProp<RootStackParamList, 'Feed'>;
 }
-  
 
 const Feed: React.FC<FeedProps> = ({ navigation }) => {
   const { isLoggedIn } = useContext(LoginContext);
@@ -22,8 +21,6 @@ const Feed: React.FC<FeedProps> = ({ navigation }) => {
   const [selectedCounties, setSelectedCounties] = useState<string[]>([]);
   useAuth({isLoggedIn, navigation: navigation});
   console.log('Is logged in in feed: ', isLoggedIn);
-  //const [activity, setActivity] = useState(null);
-
 
   const [activities, setActivities] = useState<ActivityProps[]>([]);
   const [filteredActivities, setFilteredActivities] = useState<ActivityProps[] | null>(null);
@@ -37,9 +34,9 @@ const Feed: React.FC<FeedProps> = ({ navigation }) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log('json' + JSON.stringify(data)) // add this console.log statement.. ?
+        console.log('json' + JSON.stringify(data));
         setActivities(data);
-        setFilteredActivities(data); // set filtered activities to all activities initially
+        setFilteredActivities(data);
       })
       .catch((error) => {
         console.log('Error fetching activity', error);
@@ -73,14 +70,22 @@ const Feed: React.FC<FeedProps> = ({ navigation }) => {
     setSelectedCounties([]);
     setFilteredActivities(activities);
   };
-  
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const getData = async () => {
+        await handleFetchActivities();
+      };
+      getData();
+    }, [])
+  );
 
   return (
     <FilterContext.Provider value={{ selectedCategories, setSelectedCategories, selectedCounties, setSelectedCounties }}>
       <View style={styles.background}>
         <Filter onPress={handleFilterReset} activities={activities} />
         <ScrollView contentContainerStyle={styles.scrollView}>
-          {filteredActivities ? (
+          {filteredActivities && filteredActivities.length > 0 ? (
             <ActivityList
               activities={filteredActivities}
               navigation={navigation}
@@ -88,12 +93,7 @@ const Feed: React.FC<FeedProps> = ({ navigation }) => {
               isUpcoming={false}
             />
           ) : (
-            <ActivityList
-              activities={[]}
-              navigation={navigation}
-              hideCreatedBy={false}
-              isUpcoming={false}
-            />
+            <Text>No activities found.</Text>
           )}
         </ScrollView>
         <View style={{ flex: 0 }}>
@@ -103,6 +103,7 @@ const Feed: React.FC<FeedProps> = ({ navigation }) => {
     </FilterContext.Provider>
   );
 };
+
 
 
 const styles = StyleSheet.create({
