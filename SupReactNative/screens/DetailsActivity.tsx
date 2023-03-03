@@ -5,6 +5,7 @@ import { ActivityProps } from '../components/activity';
 import Footer from '../shared/Footer';
 import {getUser} from '../components/getUser'
 import { act } from 'react-test-renderer';
+import { retrieveToken } from '../security/token_handling';
 
 interface DetailsProps {
     route: {
@@ -22,25 +23,118 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
     const { activity } = route.params;
     const navigation = useNavigation();
     const [currentUserId, setCurrentUserId] = useState();
-
+    const [activityParticipants, setActivityParticipants] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
-            const user = await getUser();
-            setCurrentUserId(user.user.id);
+            try{
+                const user = await getUser();
+                setCurrentUserId(user.user.id);
+                const myToken = retrieveToken();
+                let response = await fetch(`http://152.94.160.72:3000/getActivityParticipants/${activity.id}`, {
+                    headers: {
+                        Authorization: `Bearer ${myToken}`
+                      }
+                });
+                console.log("Response: ", response);
+                if (!response.ok) {
+                    throw new Error(`Failed to get activity participants. Server responded with ${response.status}.`);
+                }
+                const data = await response.json();
+                console.log('Activity participants collected successfully', data);
+                //console.log('Activity updated successfully userid', data[0].user_id);
+                setActivityParticipants(data);
+            } catch (error) {
+                console.error('Error updating activity:', error);
+            }
         };
         fetchData();
     }, []);
-    console.log(activity.category);
+
+    async function updateStatusOfActivityParticipants(){
+        try{
+            const myToken = retrieveToken();
+            let response = await fetch(`http://152.94.160.72:3000/getActivityParticipants/${activity.id}`, {
+                headers: 
+                {
+                    Authorization: `Bearer ${myToken}`
+                }
+            });
+        if (!response.ok) {
+            throw new Error(`Failed to get activity participants. Server responded with ${response.status}.`);
+        }
+        const data = await response.json();
+        console.log('Activity participants collected successfully', data);
+        setActivityParticipants(data);
+        } catch (error) {
+            console.error('Error updating activity:', error);
+        }
+    }
+
+    async function handleSignUpForActivity(){
+        try{
+            console.log("Inni sign up for activity");
+            const myToken = await retrieveToken();
+            const response = await fetch(`http://152.94.160.72:3000/addParticipantToActivity/${activity.id}`, {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${myToken}`,
+                },
+            });
+              if (!response.ok) {
+                throw new Error(`Failed to update activity. Server responded with ${response.status}.`);
+              }
+              const data = await response.json();
+              console.log('Activity updated successfully', data);
+              await updateStatusOfActivityParticipants();
+        } catch (error) {
+          console.error('Error updating activity:', error);
+        }
+    };
+
+    async function handleSignOffActivity(){
+        try{
+            console.log("Inni sign off activity");
+            const myToken = await retrieveToken();
+            const response = await fetch(`http://152.94.160.72:3000/removeParticipantFromActivity/${activity.id}`, {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${myToken}`,
+                },
+            });
+              if (!response.ok) {
+                throw new Error(`Failed to update activity. Server responded with ${response.status}.`);
+              }
+              const data = await response.json();
+              console.log('Activity updated successfully', data);
+              await updateStatusOfActivityParticipants();
+        } catch (error) {
+          console.error('Error updating activity:', error);
+        }
+    };
     
     return (
         <View style={styles.background}>
             <Text style={styles.title}><Image source={Category} style={styles.iconTitle}/>Test for tittel {activity.category}</Text>
             <Text style={styles.madeby}><Image source={MadeBy} style={styles.iconMadeBy}/> Laget av: {activity.created_by.first_name}</Text>
+            
             <View style={styles.participateButtonContainer}>
-                <TouchableOpacity style={styles.button}>
+                {currentUserId && activityParticipants.some(participant => {
+                    
+                    console.log(participant.user_id);
+                    return participant.user_id === currentUserId;
+                
+                }) ? (
+                <TouchableOpacity style={styles.button} onPress={handleSignOffActivity}>
+                    <Text style={styles.buttonText}>Meld meg av!</Text>
+                </TouchableOpacity>
+            ) : (
+                <TouchableOpacity style={styles.button} onPress={handleSignUpForActivity}>
                     <Text style={styles.buttonText}>Jeg vil være med!</Text>
                 </TouchableOpacity>
+            )}
             </View>
             <View style={styles.container}>
                 <Text>Når: {activity.time}</Text>

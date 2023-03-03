@@ -26,8 +26,6 @@ interface EditActivityProps {
     created_by: string,
 }
 
-
-
 const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
     const {activity} = route.params;
     const {
@@ -75,7 +73,7 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
       
           const data = await response.json();
           console.log('Activity updated successfully', data);
-          //navigation.navigate('DetailsActivity', { params: { activity: data } }); this need to be solved
+          
         } catch (error) {
           console.error('Error updating activity:', error);
         }
