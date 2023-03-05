@@ -1,9 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useState, useEffect} from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
 import { ActivityProps } from '../components/activity';
 import Footer from '../shared/Footer';
-import {getUser} from '../components/getUser'
+import { getUser } from '../components/getUser'
 import { act } from 'react-test-renderer';
 import { retrieveToken } from '../security/token_handling';
 
@@ -12,7 +12,7 @@ interface DetailsProps {
         params: {
             activity: ActivityProps;
         };
-    };    
+    };
 }
 
 
@@ -27,14 +27,14 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            try{
+            try {
                 const user = await getUser();
                 setCurrentUserId(user.user.id);
                 const myToken = retrieveToken();
                 let response = await fetch(`http://152.94.160.72:3000/getActivityParticipants/${activity.id}`, {
                     headers: {
                         Authorization: `Bearer ${myToken}`
-                      }
+                    }
                 });
                 console.log("Response: ", response);
                 if (!response.ok) {
@@ -51,90 +51,125 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
         fetchData();
     }, []);
 
-    async function updateStatusOfActivityParticipants(){
-        try{
+    async function updateStatusOfActivityParticipants() {
+        try {
             const myToken = retrieveToken();
             let response = await fetch(`http://152.94.160.72:3000/getActivityParticipants/${activity.id}`, {
-                headers: 
+                headers:
                 {
                     Authorization: `Bearer ${myToken}`
                 }
             });
-        if (!response.ok) {
-            throw new Error(`Failed to get activity participants. Server responded with ${response.status}.`);
-        }
-        const data = await response.json();
-        console.log('Activity participants collected successfully', data);
-        setActivityParticipants(data);
+            if (!response.ok) {
+                throw new Error(`Failed to get activity participants. Server responded with ${response.status}.`);
+            }
+            const data = await response.json();
+            console.log('Activity participants collected successfully', data);
+            setActivityParticipants(data);
         } catch (error) {
             console.error('Error updating activity:', error);
         }
     }
 
-    async function handleSignUpForActivity(){
-        try{
+    async function handleSignUpForActivity() {
+        try {
             console.log("Inni sign up for activity");
             const myToken = await retrieveToken();
             const response = await fetch(`http://152.94.160.72:3000/addParticipantToActivity/${activity.id}`, {
                 method: 'PUT',
                 headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: `Bearer ${myToken}`,
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${myToken}`,
                 },
             });
-              if (!response.ok) {
+            if (!response.ok) {
                 throw new Error(`Failed to update activity. Server responded with ${response.status}.`);
-              }
-              const data = await response.json();
-              console.log('Activity updated successfully', data);
-              await updateStatusOfActivityParticipants();
+            }
+            const data = await response.json();
+            console.log('Activity updated successfully', data);
+            await updateStatusOfActivityParticipants();
         } catch (error) {
-          console.error('Error updating activity:', error);
+            console.error('Error updating activity:', error);
         }
     };
 
-    async function handleSignOffActivity(){
-        try{
+    async function handleSignOffActivity() {
+        try {
             console.log("Inni sign off activity");
             const myToken = await retrieveToken();
             const response = await fetch(`http://152.94.160.72:3000/removeParticipantFromActivity/${activity.id}`, {
                 method: 'PUT',
                 headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: `Bearer ${myToken}`,
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${myToken}`,
                 },
             });
-              if (!response.ok) {
+            if (!response.ok) {
                 throw new Error(`Failed to update activity. Server responded with ${response.status}.`);
-              }
-              const data = await response.json();
-              console.log('Activity updated successfully', data);
-              await updateStatusOfActivityParticipants();
+            }
+            const data = await response.json();
+            console.log('Activity updated successfully', data);
+            await updateStatusOfActivityParticipants();
         } catch (error) {
-          console.error('Error updating activity:', error);
+            console.error('Error updating activity:', error);
         }
     };
+
+    async function handleDeleteActivity() {
+        console.log('activity id:' + activity.id);
+        try {
+          const myToken = await retrieveToken();
+          Alert.alert(
+            'Er du sikker på at du vil slette aktiviteten?',
+            'Denne handlingen kan ikke angres.',
+            [
+              { text: 'Avbryt', style: 'cancel' },
+              {
+                text: 'Slett',
+                onPress: async () => {
+                  console.log('inni onPress' + activity.id);
+                  const response = await fetch(`http://152.94.160.72:3000/activity/${activity.id}`, {
+                    method: 'DELETE',
+                    headers: {
+                      Authorization: `Bearer ${myToken}`,
+                    },
+                  });
+                  if (!response.ok) {
+                    throw new Error(`Failed to delete activity. Server responded with ${response.status}.`);
+                  }
+                  navigation.navigate('MyCreatedActivities');
+                },
+              },
+            ],
+            { cancelable: false }
+          );
+        } catch (error) {
+          console.error('Error deleting activity:', error);
+        }
+      }
+      
     
+
     return (
         <View style={styles.background}>
-            <Text style={styles.title}><Image source={Category} style={styles.iconTitle}/>Test for tittel {activity.category}</Text>
-            <Text style={styles.madeby}><Image source={MadeBy} style={styles.iconMadeBy}/> Laget av: {activity.created_by.first_name}</Text>
-            
+            <Text style={styles.title}><Image source={Category} style={styles.iconTitle} />Test for tittel {activity.category}</Text>
+            <Text style={styles.madeby}><Image source={MadeBy} style={styles.iconMadeBy} /> Laget av: {activity.created_by.first_name}</Text>
+
             <View style={styles.participateButtonContainer}>
                 {currentUserId && activityParticipants.some(participant => {
-                    
+
                     console.log(participant.user_id);
                     return participant.user_id === currentUserId;
-                
+
                 }) ? (
-                <TouchableOpacity style={styles.button} onPress={handleSignOffActivity}>
-                    <Text style={styles.buttonText}>Meld meg av!</Text>
-                </TouchableOpacity>
-            ) : (
-                <TouchableOpacity style={styles.button} onPress={handleSignUpForActivity}>
-                    <Text style={styles.buttonText}>Jeg vil være med!</Text>
-                </TouchableOpacity>
-            )}
+                    <TouchableOpacity style={styles.button} onPress={handleSignOffActivity}>
+                        <Text style={styles.buttonText}>Meld meg av!</Text>
+                    </TouchableOpacity>
+                ) : (
+                    <TouchableOpacity style={styles.button} onPress={handleSignUpForActivity}>
+                        <Text style={styles.buttonText}>Jeg vil være med!</Text>
+                    </TouchableOpacity>
+                )}
             </View>
             <View style={styles.container}>
                 <Text>Når: {activity.time}</Text>
@@ -144,12 +179,18 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
                 <Text>Antall påmeldte: {activity.number_of_participants}</Text>
                 {currentUserId === activity.created_by.user_id && (
                     <View style={styles.editButtonContainer}>
-                        <TouchableOpacity style={styles.button}
-                         onPress={() => navigation.navigate('EditActivity', {activity})}>
-                        <Text style={styles.buttonText}>Rediger</Text>
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('EditActivity', { activity })}>
+                            <Text style={styles.buttonText}>Rediger</Text>
                         </TouchableOpacity>
                     </View>
-                )}
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity onPress={handleDeleteActivity}>
+                            <Text style={styles.buttonText}>Slett aktivitet</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            )}
             </View>
             <Footer />
         </View>
@@ -191,6 +232,7 @@ const styles = StyleSheet.create({
         width: '30%',
         backgroundColor: '#EB7B31',
         borderRadius: 10,
+        marginBottom: 10,
     },
     button: {
         alignItems: 'center',
@@ -203,7 +245,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     title: {
-        fontFamily:'Inter',
+        fontFamily: 'Inter',
         fontStyle: 'normal',
         fontSize: 25,
         marginBottom: 20,
@@ -238,6 +280,9 @@ const styles = StyleSheet.create({
         marginTop: 3,
         resizeMode: 'contain',
 
+    },
+    buttonContainer: {
+        marginBottom: 10,
     }
 });
 
