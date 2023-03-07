@@ -6,6 +6,8 @@ import Footer from '../shared/Footer';
 import { getUser } from '../components/getUser'
 import { act } from 'react-test-renderer';
 import { retrieveToken } from '../security/token_handling';
+import { Moment } from 'moment';
+
 
 interface DetailsProps {
     route: {
@@ -15,15 +17,17 @@ interface DetailsProps {
     };
 }
 
-
 const Category = require('../assets/tree-solid.png');
 const MadeBy = require('../assets/user.png');
 
 const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
     const { activity } = route.params;
     const navigation = useNavigation();
-    const [currentUserId, setCurrentUserId] = useState();
-    const [activityParticipants, setActivityParticipants] = useState([]);
+    const [currentUserId, setCurrentUserId] = useState(String);
+    const [activityParticipants, setActivityParticipants] = useState([{}]);
+    let [number_of_participants, setNumberOfParticipants] = useState(activity.number_of_participants);
+    const now = new Date();
+    const actDate = new Date(activity.time);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -88,6 +92,7 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
             const data = await response.json();
             console.log('Activity updated successfully', data);
             await updateStatusOfActivityParticipants();
+            setNumberOfParticipants(number_of_participants + 1);
         } catch (error) {
             console.error('Error updating activity:', error);
         }
@@ -110,6 +115,7 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
             const data = await response.json();
             console.log('Activity updated successfully', data);
             await updateStatusOfActivityParticipants();
+            setNumberOfParticipants(number_of_participants - 1);
         } catch (error) {
             console.error('Error updating activity:', error);
         }
@@ -148,7 +154,6 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
         }
       }
       
-    
 
     return (
         <View style={styles.background}>
@@ -156,28 +161,35 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
             <Text style={styles.madeby}><Image source={MadeBy} style={styles.iconMadeBy} /> Laget av: {activity.created_by.first_name}</Text>
 
             <View style={styles.participateButtonContainer}>
-                {currentUserId && activityParticipants.some(participant => {
 
-                    console.log(participant.user_id);
-                    return participant.user_id === currentUserId;
-
-                }) ? (
-                    <TouchableOpacity style={styles.button} onPress={handleSignOffActivity}>
-                        <Text style={styles.buttonText}>Meld meg av!</Text>
-                    </TouchableOpacity>
+            {currentUserId === String(activity.created_by.user_id) || actDate < now
+             ? (
+            <View style={[styles.button, {backgroundColor: '#DDB08C'}]} onPress={handleSignOffActivity}>
+                <Text style={styles.buttonText}>Jeg vil være med!</Text>
+            </View>
+            ) : (
+             <>
+            {currentUserId && activityParticipants.some(participant => participant.user_id === currentUserId) ? (
+                <TouchableOpacity style={styles.button} onPress={handleSignOffActivity}>
+                    <Text style={styles.buttonText}>Meld meg av!</Text>
+                </TouchableOpacity>
                 ) : (
-                    <TouchableOpacity style={styles.button} onPress={handleSignUpForActivity}>
-                        <Text style={styles.buttonText}>Jeg vil være med!</Text>
-                    </TouchableOpacity>
-                )}
+                <TouchableOpacity style={styles.button} onPress={handleSignUpForActivity}>
+                    <Text style={styles.buttonText}>Jeg vil være med!</Text>
+                </TouchableOpacity>
+                        )}
+                    </>
+                )
+            }
+
             </View>
             <View style={styles.container}>
                 <Text>Når: {activity.time}</Text>
                 <Text>Fylke: {activity.county}</Text>
                 <Text>Addresse: {activity.address}</Text>
                 <Text>Beskrivelse: {activity.description}</Text>
-                <Text>Antall påmeldte: {activity.number_of_participants}</Text>
-                {currentUserId === activity.created_by.user_id && (
+                <Text>Antall påmeldte: {number_of_participants}</Text>
+                {currentUserId === String(activity.created_by.user_id) && (
                     <View style={styles.editButtonContainer}>
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('EditActivity', { activity })}>
