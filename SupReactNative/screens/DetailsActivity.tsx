@@ -8,6 +8,8 @@ import { act } from 'react-test-renderer';
 import { retrieveToken } from '../security/token_handling';
 import { Moment } from 'moment';
 
+import Feed from './feed';
+import Filter from '../components/Filter';
 
 interface DetailsProps {
     route: {
@@ -15,6 +17,7 @@ interface DetailsProps {
             activity: ActivityProps;
         };
     };
+    activityParticipants: any;
 }
 
 const Category = require('../assets/tree-solid.png');
@@ -48,6 +51,9 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
                 console.log('Activity participants collected successfully', data);
                 //console.log('Activity updated successfully userid', data[0].user_id);
                 setActivityParticipants(data);
+                
+                console.log("Activity Participants:", activityParticipants);
+
             } catch (error) {
                 console.error('Error updating activity:', error);
             }
