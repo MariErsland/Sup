@@ -1,17 +1,29 @@
 import React, { useContext, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { categories, counties } from '../state/ActivityState';
-import { ActivityProps } from './activity';
+import activity, { ActivityProps } from './activity';
 import { FilterContext } from './FilterContext';
+import { getUser } from '../components/getUser';
+import { retrieveToken } from '../security/token_handling';
 
-const Filter = (
-  props: { onPress: () => void; activities: ActivityProps[]; }
-) => {
+interface FilterProps {
+  onPress: () => void;
+  activities: ActivityProps[];
+  filteredActivities: ActivityProps[] | null;
+  activityParticipants: any;
+  handleParticipantFilter: () => Promise<void>;
+  setFilteredActivities: (activities: ActivityProps[] | null) => void;
+}
+
+
+const Filter = (props: FilterProps) => {
   const { selectedCategories, setSelectedCategories } = useContext(FilterContext);
   const { selectedCounties, setSelectedCounties } = useContext(FilterContext);
   const [showSubCategories, setShowSubCategories] = useState(false);
   const [showCounties, setShowCounties] = useState(false);
+  const [showActivityParticipants, setShowActivityParticipants] = useState(false);
   const [filteredActivities, setFilteredActivities] = useState<ActivityProps[]>([]);
+  const [isParticipantFilterSelected, setIsParticipantFilterSelected] = useState(false); // 
 
   const handleCategoryPress = () => {
     setShowSubCategories(prevState => !prevState);
@@ -45,6 +57,45 @@ const Filter = (
     });
   };
 
+  const handleParticipantFilter = async (callback: (activities: ActivityProps[]) => void) => {
+    console.log("er inne i HandleParticipantFilter");
+    const user = await getUser();
+    console.log("userid " + user?.user?.id);
+    try {
+      const myToken = retrieveToken();
+      const response = await fetch(`http://152.94.160.72:3000/activities-by-participants/${user.user.id}`, {
+        headers: {
+          Authorization: `Bearer ${myToken}`
+        }
+      });
+      console.log("Response: ", response);
+      if (!response.ok) {
+        throw new Error(`Failed to get activity participants ${response.status}.`);
+      }
+      const activities = await response.json();
+      console.log('Activity participants collected successfully', activities);
+      console.log("activities" + activities);
+      callback(activities);
+      setIsParticipantFilterSelected(true); // Set state variable to true when filter is applied
+    } catch (error) {
+      console.error('Error updating activity:', error);
+    }
+  };
+
+  const handleParticipantFilterReset = () => {
+    setSelectedCategories([]);
+    setSelectedCounties([]);
+    setIsParticipantFilterSelected(false);
+  };
+
+  const handleParticipantFilterPress = (callback: (activities: ActivityProps[]) => void) => {
+    if (isParticipantFilterSelected) {
+      handleParticipantFilterReset();
+    } else {
+      handleParticipantFilter(callback);
+    }
+  };
+
   return (
     <View>
       <View style={styles.container}>
@@ -67,11 +118,14 @@ const Filter = (
               Sted
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity>
-            <Text style={[styles.filterText, styles.filterButton]}>Dato</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text style={[styles.filterText, styles.filterButton]}>Søk:    </Text>
+          <TouchableOpacity onPress={() => handleParticipantFilterPress(props.setFilteredActivities)}>
+            <Text style={[
+              styles.filterText,
+              styles.filterButton,
+              isParticipantFilterSelected && styles.filterButtonSelected
+            ]}>
+              Påmeldte aktiviteter
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -122,12 +176,20 @@ const Filter = (
         </ScrollView>
       )}
       <View>
-        {filteredActivities.map(activity => (
-          <Text>{activity.title}</Text>
-        ))}
+        {filteredActivities.length > 0 ? (
+          filteredActivities.map(activity => (
+            <Text>{activity.title}</Text>
+          ))
+        ) : (
+          props.activities.map(activity => (
+            <Text>{activity.title}</Text>
+          ))
+        )}
       </View>
     </View>
   );
+
+
 
 };
 
