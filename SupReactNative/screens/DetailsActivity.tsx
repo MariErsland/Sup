@@ -7,6 +7,7 @@ import { getUser } from '../components/getUser'
 import { act } from 'react-test-renderer';
 import { retrieveToken } from '../security/token_handling';
 import { Moment } from 'moment';
+import { formatDate } from '../components/formatDate';
 
 
 interface DetailsProps {
@@ -184,7 +185,7 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
 
             </View>
             <View style={styles.container}>
-                <Text>Når: {activity.time}</Text>
+                <Text>Når: {formatDate(activity.time)}</Text>
                 <Text>Fylke: {activity.county}</Text>
                 <Text>Addresse: {activity.address}</Text>
                 <Text>Beskrivelse: {activity.description}</Text>

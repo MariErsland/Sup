@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list'
 import Footer from '../shared/Footer';
@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import { act } from 'react-test-renderer';
 import { useActivityState, categories, counties } from '../state/ActivityState';
 import { retrieveToken } from '../security/token_handling';
+import { formatDate } from '../components/formatDate';
 
 interface EditActivityProps {
     route: {
@@ -28,33 +29,34 @@ interface EditActivityProps {
 
 const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
     const { activity } = route.params;
+    const [selectedDate, setSelectedDate] = useState(activity.time);
     const {
         selectedCategory,
         setSelectedCategory,
         selectedCounty,
         setSelectedCounty,
-        selectedDate,
-        setSelectedDate,
         showDatePicker,
         setShowDatePicker,
-
     } = useActivityState();
+
+    useEffect(() => {
+        setSelectedDate(formatDate(selectedDate));
+        setSelectedCounty(activity.county)
+        setSelectedCategory(activity.category)
+    }, []);
 
     // To get this value prefilled I set the value locally here
     const [description, setDescription] = useState(activity.description);
     const [address, setAddress] = useState(activity.address);
 
-
-
     const navigation = useNavigation();
+
     console.log("ID=" + activity.id);
     console.log("selectedCategory:" + selectedCategory);
-
 
     const handleEditActivity = async () => {
         try {
             const myToken = await retrieveToken();
-
             const response = await fetch(`http://152.94.160.72:3000/activity/${activity.id}`, {
                 method: 'PUT',
                 headers: {
@@ -69,28 +71,24 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
                     description: description
                 }),
             });
-
             if (!response.ok) {
                 throw new Error(`Failed to update activity. Server responded with ${response.status}.`);
             }
-
             const data = await response.json();
             console.log('Activity updated successfully', data);
+            navigation.navigate('Feed', {});
 
         } catch (error) {
             console.error('Error updating activity:', error);
         }
     };
 
-
     return (
         <View style={{ flex: 1 }}>
-            <ScrollView style={styles.background}>
+            <ScrollView style={[styles.background, styles.scroll]}>
                 <View style={styles.container}>
-
-
                     <TouchableOpacity onPress={() => setShowDatePicker(!showDatePicker)}>
-                        <Text style={{ fontSize: 16 }}>Dato og tidspunkt</Text>
+                        <Text style={styles.label}>Dato og tidspunkt</Text>
                         <Text>
                             {selectedDate}
                         </Text>
@@ -108,7 +106,8 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
                         setSelected={setSelectedCategory}
                         data={categories}
                         save="value"
-                        placeholder='Kategori'
+                        placeholder={activity.category}
+                        defaultOption={activity.category ? activity.category : ''}
                     />
                     <Text></Text>
 
@@ -116,20 +115,31 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
                         setSelected={setSelectedCounty}
                         data={counties}
                         save="value"
-                        placeholder='Fylke'
+                        placeholder={activity.county}
+                        defaultOption={activity.county}
                     />
 
-                    <TextInput
-                        placeholder="Møtested"
+                    
+                    <Text style={styles.label}>Møtested: </Text>
+                    <View style={styles.inputContainer}>
+                        <TextInput
                         value={address}
                         onChangeText={setAddress}
-                    />
+                        style={[styles.input, {maxHeight: 200}]}
+                        multiline={true}
+                        />
+                    </View>
 
+                    <Text style={styles.label}>Beskrivelse: </Text>
+                    <View style={styles.inputContainer}>
                     <TextInput
-                        placeholder="Beskrivelse"
                         value={description}
                         onChangeText={setDescription}
+                        multiline={true}
+                        style={[styles.input, {maxHeight: 200}]}
                     />
+                    </View>
+
                     <TouchableOpacity style={styles.button} onPress={handleEditActivity} >
                         <Text style={styles.buttonText}>Endre aktivitet</Text>
 
@@ -160,8 +170,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#EB7B31',
         borderRadius: 10,
         marginTop: 15,
-        height: '10%',
-        width: '85%',
+        height: '12%',
+        width: '100%',
         alignItems: 'center',
         justifyContent: 'center'
     },
@@ -169,6 +179,25 @@ const styles = StyleSheet.create({
         color: 'white',
         textAlign: 'center',
     },
+    inputContainer: {
+        borderRadius: 10,
+        paddingLeft: 15,
+        marginTop: 0,
+        borderWidth: 1,
+        borderColor: 'grey'
+      },
+      input: {
+        fontSize: 16,
+        color: 'grey'
+      },
+      label: {
+        marginTop: 10,
+        fontWeight: 'bold',
+        fontSize: 16,
+      },
+      scroll: {
+        marginBottom: 100,
+    }
 })
 
 export default EditActivity;
