@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Image, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { formatDate } from './formatDate';
 
 export interface ActivityProps {
     title: string;
@@ -40,7 +41,7 @@ const Activity = (props: ActivityProps) => {
         <TouchableOpacity key={props.id} style={[styles.activityBox, { backgroundColor }]} onPress={() => props.navigation.navigate('DetailsActivity', {activity: props})}>
             <View style={styles.iconText}>
                 <Image source={TimeActivity} style={styles.icons}/>
-                <Text>{props.time}</Text>
+                <Text>{formatDate(props.time)}</Text>
             </View>
             <View style={styles.iconText}>
                 <Image source={County} style={styles.icons}/>
@@ -114,6 +115,7 @@ const styles = StyleSheet.create({
     iconText: {
         flexDirection: 'row',
         alignItems: 'center',
+        marginRight: 10
     },
     scroll: {
         marginBottom: 100,
