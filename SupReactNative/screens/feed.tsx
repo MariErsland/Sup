@@ -27,6 +27,8 @@ const Feed: React.FC<FeedProps> = ({ navigation }) => {
 
   const [activities, setActivities] = useState<ActivityProps[]>([]);
   const [filteredActivities, setFilteredActivities] = useState<ActivityProps[] | null>(null);
+  console.log("filter activities: ",filteredActivities)
+  const [pastActivities, setPastActivities] = useState<ActivityProps[]>([]); // define pastActivities in state
 
   const handleFetchActivities = async () => {
     const myToken = await retrieveToken();
@@ -39,6 +41,10 @@ const Feed: React.FC<FeedProps> = ({ navigation }) => {
       .then((data) => {
         console.log('json' + JSON.stringify(data));
         setActivities(data);
+        const currenDate = new Date();
+        const pastActivities = data.filter(activity => new Date(activity.time) < currenDate);
+        setPastActivities(pastActivities);
+        console.log('past activities inside feed.tsx: ', pastActivities);
         setFilteredActivities(data);
       })
       .catch((error) => {
@@ -90,7 +96,9 @@ const Feed: React.FC<FeedProps> = ({ navigation }) => {
         <Filter onPress={handleFilterReset}
           activities={activities} 
           filteredActivities={filteredActivities}
-          setFilteredActivities={setFilteredActivities}/>
+          setFilteredActivities={setFilteredActivities}
+          pastActivities={pastActivities}/>
+
         <ScrollView contentContainerStyle={styles.scrollView}>
           {filteredActivities && filteredActivities.length > 0 ? (
             <ActivityList

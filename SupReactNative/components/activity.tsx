@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Image, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+//import { pseudoRandomBytes } from 'crypto'; hva er dette? kan den fjernes? brukes ikke?
 import { formatDate } from './formatDate';
 
 export interface ActivityProps {
@@ -78,6 +79,7 @@ interface ActivityListProps {
     navigation: any;
     hideCreatedBy: boolean;
     isUpcoming: boolean;
+    showPast: boolean;
 }
 
 const ActivityList = (props: ActivityListProps) => {
@@ -88,6 +90,7 @@ const ActivityList = (props: ActivityListProps) => {
     const pastActivities = sortedActivities.filter(activity => new Date(activity.time) < currentDate);
     const upcomingActivities = sortedActivities.filter(activity => new Date(activity.time) >= currentDate);
     const sortedUpcomingActivities = [...upcomingActivities, ...pastActivities];
+    console.log('upcoming inni activity.tsx:', sortedUpcomingActivities)
 
     return (
         <ScrollView style={styles.scroll}>

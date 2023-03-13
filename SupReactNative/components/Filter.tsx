@@ -6,6 +6,7 @@ import { FilterContext } from './FilterContext';
 import { getUser } from '../components/getUser';
 import { retrieveToken } from '../security/token_handling';
 
+
 interface FilterProps {
   onPress: () => void;
   activities: ActivityProps[];
@@ -13,6 +14,7 @@ interface FilterProps {
   activityParticipants: any;
   handleParticipantFilter: () => Promise<void>;
   setFilteredActivities: (activities: ActivityProps[] | null) => void;
+  pastActivities: ActivityProps[];
 }
 
 
@@ -21,10 +23,12 @@ const Filter = (props: FilterProps) => {
   const { selectedCounties, setSelectedCounties } = useContext(FilterContext);
   const [showSubCategories, setShowSubCategories] = useState(false);
   const [showCounties, setShowCounties] = useState(false);
-  const [showActivityParticipants, setShowActivityParticipants] = useState(false);
   const [filteredActivities, setFilteredActivities] = useState<ActivityProps[]>([]);
   const [isParticipantFilterSelected, setIsParticipantFilterSelected] = useState(false); // 
+  const [isPastDateSelected, setIsPastDateSelected] = useState(false);
+  const [showPastActivities, setShowPastActivities] = useState(false);
 
+  console.log('shoPastActivities', showPastActivities);
   const handleCategoryPress = () => {
     setShowSubCategories(prevState => !prevState);
     setShowCounties(false);
@@ -76,7 +80,7 @@ const Filter = (props: FilterProps) => {
       console.log('Activity participants collected successfully', activities);
       console.log("activities" + activities);
       callback(activities);
-      setIsParticipantFilterSelected(true); // Set state variable to true when filter is applied
+      setIsParticipantFilterSelected(true);
     } catch (error) {
       console.error('Error updating activity:', error);
     }
@@ -86,6 +90,7 @@ const Filter = (props: FilterProps) => {
     setSelectedCategories([]);
     setSelectedCounties([]);
     setIsParticipantFilterSelected(false);
+    setIsPastDateSelected(false);
   };
 
   const handleParticipantFilterPress = (callback: (activities: ActivityProps[]) => void) => {
@@ -95,6 +100,18 @@ const Filter = (props: FilterProps) => {
       handleParticipantFilter(callback);
     }
   };
+
+  const handlePastActivitiesFilter = () => {
+    if (showPastActivities) {
+      handleParticipantFilterReset();
+    } else {
+      props.setFilteredActivities(props.pastActivities);
+    }
+    setShowPastActivities(prevState => !prevState);
+    console.log("filteredActivities after setFilteredActivities:", props.filteredActivities);
+  };
+  
+  
 
   return (
     <View>
@@ -109,6 +126,7 @@ const Filter = (props: FilterProps) => {
               Kategori
             </Text>
           </TouchableOpacity>
+
           <TouchableOpacity onPress={handleCountyPress}>
             <Text style={[
               styles.filterText,
@@ -118,17 +136,27 @@ const Filter = (props: FilterProps) => {
               Sted
             </Text>
           </TouchableOpacity>
+          <TouchableOpacity onPress={handlePastActivitiesFilter}>
+            <Text style={[
+              styles.filterText,
+              styles.filterButton,
+              showPastActivities && styles.filterButtonSelected
+            ]}>
+              Dato
+            </Text>
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => handleParticipantFilterPress(props.setFilteredActivities)}>
             <Text style={[
               styles.filterText,
               styles.filterButton,
               isParticipantFilterSelected && styles.filterButtonSelected
             ]}>
-              Påmeldte aktiviteter
+              Påmeldte
             </Text>
           </TouchableOpacity>
         </View>
       </View>
+
       {showSubCategories && (
         <ScrollView horizontal={true} contentContainerStyle={[styles.subMenu, { marginBottom: 20 }]}>
           {categories.map((category, index) => (
@@ -175,21 +203,8 @@ const Filter = (props: FilterProps) => {
           ))}
         </ScrollView>
       )}
-      <View>
-        {filteredActivities.length > 0 ? (
-          filteredActivities.map(activity => (
-            <Text>{activity.title}</Text>
-          ))
-        ) : (
-          props.activities.map(activity => (
-            <Text>{activity.title}</Text>
-          ))
-        )}
-      </View>
     </View>
   );
-
-
 
 };
 
