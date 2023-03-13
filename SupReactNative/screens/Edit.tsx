@@ -5,6 +5,7 @@ import { LoginContext } from '../App';
 import { useAuth } from '../security/auth';
 import Footer from '../shared/Footer';
 import { retrieveToken } from '../security/token_handling';
+import { validateInputCharacters, validateInputLength } from '../components/inputValiation';
 
 const Edit = () => {
 
@@ -12,6 +13,8 @@ const Edit = () => {
   const route = useRoute();
   const {isLoggedIn} = useContext(LoginContext);
   useAuth({isLoggedIn, navigation});
+  const [error, setError] = useState('');
+  const nameMaxLength = 30;
 
   
   if(!route.params) return <View><Text>Test her...</Text></View>
@@ -42,19 +45,32 @@ const Edit = () => {
     }
   }
 
+  function handleSetFirstName(text: string ){
+    const errorMessageLength = validateInputLength(text, nameMaxLength);
+    const errorMessageCharacters = validateInputCharacters(text);
+    if (errorMessageCharacters !== '')
+    {
+        setError(errorMessageLength + ' ' + errorMessageCharacters)
+    }
+    else {
+        setError(errorMessageLength + ' ' + errorMessageCharacters)
+        setFirstName(text)
+    }
+}
+
   return (
     <View style={styles.background}>
       <View style={styles.container}>
+      <Text>Navn: {email}</Text>
       <TextInput
         placeholder="Fornavn"
-        onChangeText={text => setFirstName(text)}
+        onChangeText={text => handleSetFirstName(text)}
         value={firstName}
+        maxLength={(nameMaxLength+1)}
       />
-      <TextInput
-        placeholder="Email"
-        onChangeText={text => setEmail(text)}
-        value={email}
-      />
+      
+      <Text>Email: {email}</Text>
+      {error && <Text style={{color: 'red'}}>{error}</Text>}
       <View style={styles.buttonContainer}>
                     <TouchableOpacity style={styles.button} onPress={saveChanges}>
                         <Text style={styles.buttonText}>Lagre endringer</Text>
