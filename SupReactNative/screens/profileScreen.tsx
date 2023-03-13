@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, Component } from 'react';
-import { View, Text, Button, Alert, StyleSheet, TouchableOpacity} from 'react-native';
+import { View, Text, Button, Alert, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { LoginContext } from '../App';
 import { useAuth } from '../security/auth';
@@ -20,6 +20,7 @@ function ProfileScreen() {
   const navigation = useNavigation();
   const [data, setData] = useState<User[]>([]);
   const {isLoggedIn, setIsLoggedIn} = useContext(LoginContext);
+  const UserButton = require('../assets/user.png');
   useAuth({isLoggedIn, navigation});
 
   //Setting userdata with logged in user
@@ -86,6 +87,23 @@ function ProfileScreen() {
   function EditUser() {
     console.log("User: ", data[0]);
     navigation.navigate('Edit', { params: { userId: data[0].id } });
+}
+
+function test(){
+  fetch(`https://supapp.info/test`)
+  .then(response => {
+    if (response.ok){
+      console.log("Response ok!")
+      console.log("Response", response);
+    } else {
+      console.log("Response no ok :", response )
+      throw new Error('Network response was not ok.');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+ 
 }
 
 function OnSignOut() {
@@ -170,36 +188,45 @@ function OnSignOut() {
     <View style={styles.background}>
     
     <View style={styles.container}>
-      {
-        data === undefined ? 
-          <View><Text> Loading... </Text></View> : 
-          
-            data.map((item: User) => (
-              <View key={item.id} >
-                <Text>Id: (should not show){item.id}</Text>
-                <Text>First name: {item.first_name}</Text>
-                <Text>Email: {item.email}</Text>
-              </View>
-            ))
-      }
+      <View style={styles.imageContainer}>
+        <View style={styles.imageFrame}>
+          <Image style={styles.image} source={UserButton} />
+        </View>
+      </View>
+      <View style={styles.infoContainer}>
+      
+        {
+          data === undefined ? 
+            <View><Text> Loading... </Text></View> : 
+            
+              data.map((item: User) => (
+                <View  key={item.id} >
+                  <Text style={styles.infoElement}>{item.first_name}</Text>
+                  <Text style={styles.infoElement}>{item.email}</Text>
+                </View>
+              ))
+        }
+      </View>
+      <View style={styles.buttonsContainer}>
+        <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={() => EditUser()}>
+                <Text style={styles.buttonText}>Rediger bruker</Text>
+            </TouchableOpacity>
+        </View>
+
+        <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={test}>
+                <Text style={styles.buttonText}>Slett bruker</Text>
+            </TouchableOpacity>
+        </View>
+
+        <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={OnSignOut}>
+                <Text style={styles.buttonText}>Logg ut</Text>
+            </TouchableOpacity>
+        </View>
+      </View>
     
-    <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => EditUser()}>
-            <Text style={styles.buttonText}>Rediger bruker</Text>
-        </TouchableOpacity>
-    </View>
-
-    <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={DeleteUser}>
-            <Text style={styles.buttonText}>Slett bruker</Text>
-        </TouchableOpacity>
-    </View>
-
-    <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={OnSignOut}>
-            <Text style={styles.buttonText}>Logg ut</Text>
-        </TouchableOpacity>
-    </View>
 
     </View>
     <Footer />
@@ -223,27 +250,54 @@ const styles = StyleSheet.create({
     width: '90%',
     alignSelf: 'center',
     height: '40%',
-},
-  buttonText: {
-    color: 'white',
-    textAlign: 'center',
-},
-  button: {
+    flex: 1,
+  },
+  infoContainer: {
+    flex: 1,
+    justifyContent: 'flex-start' ,
     alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    height: 40,
+  },
+  infoElement: {
+    padding: 5,
+    alignSelf: 'center',
+    fontSize: 20,
+    fontWeight: 'bold'
+  },
+  buttonsContainer: {
+    flex: 1, 
+    justifyContent: 'flex-end',
+    width: '100%'
   },
   buttonContainer: {
-    alignSelf: 'center',
     marginVertical: 10,
     backgroundColor: '#EB7B31',
     borderRadius: 10,
-    width: '85%',
+  },
+  button: {
+    justifyContent: 'center',
+    height: 40,
+  },
+    buttonText: {
+      color: 'white',
+      textAlign: 'center',
+  },
+  imageContainer: {
+    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
-
-},
+    justifyContent: 'center',
+  },
+  imageFrame: {
+    borderWidth: 2, 
+    borderColor: 'grey',
+    borderRadius: 10,
+    padding: 16,
+    backgroundColor: '#F2F2F2',
+  },
+  image: {
+    width: 50, 
+    height: 55,
+  }
+  
 
 })
 
