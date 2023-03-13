@@ -57,6 +57,7 @@ const NewActivity = () => {
     }
     
     return (
+        
         <View style={{flex: 1}}>
             <ScrollView style= {styles.background}>
             <View style={styles.container}>
