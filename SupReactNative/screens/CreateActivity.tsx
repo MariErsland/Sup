@@ -7,6 +7,7 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useActivityState, categories, counties } from '../state/ActivityState';
 import { retrieveToken } from '../security/token_handling';
+import { validateInputCharacters, validateInputLength } from '../components/inputValiation';
 
 interface NewActivity {
     }
@@ -31,6 +32,9 @@ const NewActivity = () => {
 
     const [number_of_participants] = useState('1');
     const [created_by] = useState('');
+    const [error, setError] = useState('');
+    const descriptionMaxLength = 500;
+    const addressMaxLength = 100;
     
     const navigation = useNavigation();
 
@@ -55,6 +59,33 @@ const NewActivity = () => {
         console.log('Success:', data);
         navigation.navigate('MyCreatedActivities');
     }
+
+    function handleDescriptionChange(text: string ){
+        const errorMessageLength = validateInputLength(text, descriptionMaxLength);
+        const errorMessageCharacters = validateInputCharacters(text);
+        if (errorMessageCharacters !== '')
+        {
+            setError(errorMessageLength + ' ' + errorMessageCharacters)
+        }
+        else {
+            setError(errorMessageLength + ' ' + errorMessageCharacters)
+            setDescription(text)
+        }
+        
+    }
+    function handleAddressChange(text: string ){
+        const errorMessageLength = validateInputLength(text, addressMaxLength);
+        const errorMessageCharacters = validateInputCharacters(text);
+        if (errorMessageCharacters !== '')
+        {
+            setError(errorMessageLength + ' ' + errorMessageCharacters)
+        }
+        else {
+            setError(errorMessageLength + ' ' + errorMessageCharacters)
+            setAddress(text)
+        }
+    }
+
     
     return (
         <View style={{flex: 1}}>
@@ -90,16 +121,25 @@ const NewActivity = () => {
                 save="value"
                 placeholder='Fylke'
             />
+            <>
             <TextInput
                 placeholder="Møtested"
                 value={address}
-                onChangeText={setAddress}
+                onChangeText={handleAddressChange}
+                maxLength={(addressMaxLength+1)}
+                
             />
+            </>
+            <>
             <TextInput
                 placeholder="Beskrivelse"
                 value={description}
-                onChangeText={setDescription}
+                onChangeText={handleDescriptionChange}
+                maxLength={(descriptionMaxLength+1)}
+                
             />
+            {error && <Text style={{color: 'red'}}>{error}</Text>}
+            </>
             <TouchableOpacity style={styles.button} onPress={handleCreateActivity} >
                     <Text style={styles.buttonText}>Opprett ny aktivitet</Text>
                 </TouchableOpacity>

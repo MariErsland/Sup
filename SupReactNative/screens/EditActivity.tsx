@@ -9,6 +9,7 @@ import { act } from 'react-test-renderer';
 import { useActivityState, categories, counties } from '../state/ActivityState';
 import { retrieveToken } from '../security/token_handling';
 import { formatDate } from '../components/formatDate';
+import { validateInputCharacters, validateInputLength } from '../components/inputValiation';
 
 interface EditActivityProps {
     route: {
@@ -38,6 +39,9 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
         showDatePicker,
         setShowDatePicker,
     } = useActivityState();
+    const [error, setError] = useState('');
+    const descriptionMaxLength = 300;
+    const addressMaxLength = 100;
 
     useEffect(() => {
         setSelectedDate(formatDate(selectedDate));
@@ -83,6 +87,32 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
         }
     };
 
+    function handleDescriptionChange(text: string ){
+        const errorMessageLength = validateInputLength(text, descriptionMaxLength);
+        const errorMessageCharacters = validateInputCharacters(text);
+        if (errorMessageCharacters !== '')
+        {
+            setError(errorMessageLength + ' ' + errorMessageCharacters)
+        }
+        else {
+            setError(errorMessageLength + ' ' + errorMessageCharacters)
+            setDescription(text)
+        }
+        
+    }
+    function handleAddressChange(text: string ){
+        const errorMessageLength = validateInputLength(text, addressMaxLength);
+        const errorMessageCharacters = validateInputCharacters(text);
+        if (errorMessageCharacters !== '')
+        {
+            setError(errorMessageLength + ' ' + errorMessageCharacters)
+        }
+        else {
+            setError(errorMessageLength + ' ' + errorMessageCharacters)
+            setAddress(text)
+        }
+    }
+
     return (
         <View style={{ flex: 1 }}>
             <ScrollView style={[styles.background, styles.scroll]}>
@@ -119,26 +149,31 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
                         defaultOption={activity.county}
                     />
 
-                    
+                    <>
                     <Text style={styles.label}>Møtested: </Text>
                     <View style={styles.inputContainer}>
                         <TextInput
                         value={address}
-                        onChangeText={setAddress}
+                        onChangeText={handleAddressChange}
+                        maxLength={(addressMaxLength+1)}
                         style={[styles.input, {maxHeight: 200}]}
                         multiline={true}
                         />
                     </View>
-
+                    </>
+                    <>
                     <Text style={styles.label}>Beskrivelse: </Text>
                     <View style={styles.inputContainer}>
                     <TextInput
                         value={description}
-                        onChangeText={setDescription}
+                        onChangeText={handleDescriptionChange}
+                        maxLength={(descriptionMaxLength+1)}
                         multiline={true}
                         style={[styles.input, {maxHeight: 200}]}
                     />
                     </View>
+                    {error && <Text style={{color: 'red'}}>{error}</Text>}
+                    </>
 
                     <TouchableOpacity style={styles.button} onPress={handleEditActivity} >
                         <Text style={styles.buttonText}>Endre aktivitet</Text>
