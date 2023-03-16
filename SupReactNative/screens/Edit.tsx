@@ -15,6 +15,7 @@ const Edit = () => {
   useAuth({isLoggedIn, navigation});
   const [error, setError] = useState('');
   const nameMaxLength = 30;
+  const MIN_LENGHT_FIRST_NAME = 2;
 
   
   if(!route.params) return <View><Text>Test her...</Text></View>
@@ -25,6 +26,12 @@ const Edit = () => {
   const [email, setEmail] = useState('');
 
   async function saveChanges() {
+    if ((!firstName.trim()) || (firstName.length < MIN_LENGHT_FIRST_NAME)) {
+      console.log("selected name: ", firstName);
+      console.log("All input field must be filled out");
+      setError("All input field must be filled out and must be at least " + MIN_LENGHT_FIRST_NAME)
+      return;
+  }
     const myToken = await retrieveToken();
     try {
       const response = await fetch(`http://152.94.160.72:3000/user`, {

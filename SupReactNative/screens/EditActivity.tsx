@@ -40,8 +40,10 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
         setShowDatePicker,
     } = useActivityState();
     const [error, setError] = useState('');
-    const descriptionMaxLength = 300;
+    const descriptionMaxLength = 500;
     const addressMaxLength = 100;
+    const descriptionMinLength = 20;
+    const addressMinLength = 10;
 
     useEffect(() => {
         setSelectedDate(formatDate(selectedDate));
@@ -59,6 +61,25 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
     console.log("selectedCategory:" + selectedCategory);
 
     const handleEditActivity = async () => {
+        if ((!selectedDate) || (!counties) || (!address.trim()) || (!selectedCategory) || (!description.trim())){
+            console.log("selected date: ", selectedDate);
+            console.log("selected county: ", selectedCounty);
+            console.log("selected address: ", address);
+            console.log("selected categories: ", selectedCategory);
+            console.log("selected description: ", description);
+            console.log("All input field must be filled out");
+            return;
+        }
+        if ((address.length < addressMinLength)){
+            console.log("Address cant be less that ", addressMinLength, "characters.")
+            setError("Address cant be less that " + addressMinLength + "characters.")
+            return;
+        }
+        if ((description.length < descriptionMinLength)){
+            console.log("Description cant be less that ", descriptionMinLength, "characters.")
+            setError("Description cant be less that " + descriptionMinLength + "characters.")
+            return;
+        }
         try {
             const myToken = await retrieveToken();
             const response = await fetch(`http://152.94.160.72:3000/activity/${activity.id}`, {
