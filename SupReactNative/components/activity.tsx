@@ -50,7 +50,7 @@ const Activity = (props: ActivityProps) => {
             </View>
             <View style={styles.iconText}>
                 <Image source={Address} style={styles.icons}/>
-                <Text>{props.address}</Text>
+                <Text numberOfLines={1} ellipsizeMode="tail" style={styles.descriptionText}>{props.address}</Text>
             </View>
             <View style={styles.iconText}>
                 <Image source={Category} style={styles.icons}/>
