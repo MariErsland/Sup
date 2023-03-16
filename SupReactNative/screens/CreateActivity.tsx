@@ -30,7 +30,7 @@ const NewActivity = () => {
         setShowDatePicker,
     } = useActivityState();
 
-    const [number_of_participants] = useState('1');
+    const [number_of_participants] = useState('0');
     const [created_by] = useState('');
     const [error, setError] = useState('');
     const descriptionMaxLength = 500;
@@ -51,12 +51,10 @@ const NewActivity = () => {
             return;
         }
         if ((address.length < addressMinLength)){
-            console.log("Address cant be less that ", addressMinLength, "characters.")
             setError("Address cant be less that " + addressMinLength + "characters.")
             return;
         }
         if ((description.length < descriptionMinLength)){
-            console.log("Description cant be less that ", descriptionMinLength, "characters.")
             setError("Description cant be less that " + descriptionMinLength + "characters.")
             return;
         }
