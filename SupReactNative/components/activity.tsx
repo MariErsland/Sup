@@ -58,18 +58,12 @@ const Activity = (props: ActivityProps) => {
             </View>
             <View style={styles.iconText}>
                 <Image source={Description} style={styles.icons}/>
-                <Text>{props.description}</Text>
+                <Text numberOfLines={1} ellipsizeMode="tail" style={styles.descriptionText}>{props.description}</Text>
             </View>
             <View style={styles.iconText}>
                 <Image source={PersonAttending} style={styles.icons}/>
                 <Text>{props.number_of_participants} påmeldt</Text>
             </View>
-            {!props.hideCreatedBy && (
-              <View style={styles.iconText}>
-                  <Image source={MadeBy} style={styles.icons}/>
-                  <Text>{props.created_by.first_name}</Text>
-              </View>
-            )}
         </TouchableOpacity>
     );
 }
@@ -86,15 +80,15 @@ const ActivityList = (props: ActivityListProps) => {
     const currentDate = new Date();
     const sortedActivities = props.activities.sort((a, b) => a.time.localeCompare(b.time));
 
-    // filter past activities and add to the end of the sorted activities array
+    // filter past activities and add to the end of the sorted activities array?
     const pastActivities = sortedActivities.filter(activity => new Date(activity.time) < currentDate);
     const upcomingActivities = sortedActivities.filter(activity => new Date(activity.time) >= currentDate);
-    const sortedUpcomingActivities = [...upcomingActivities, ...pastActivities];
-    console.log('upcoming inni activity.tsx:', sortedUpcomingActivities)
+    const sortedPastUpcomingActivities = [...upcomingActivities, ...pastActivities];
+    console.log('upcoming inni activity.tsx:', sortedPastUpcomingActivities)
 
     return (
         <ScrollView style={styles.scroll}>
-            {sortedUpcomingActivities.map(activity => (
+            {sortedPastUpcomingActivities.map(activity => (
                 <Activity key={activity.id} {...activity} navigation={props.navigation} hideCreatedBy={props.hideCreatedBy} isUpcoming={new Date(activity.time) >= currentDate} />
             ))}
         </ScrollView>
@@ -122,6 +116,10 @@ const styles = StyleSheet.create({
     },
     scroll: {
         marginBottom: 100,
+    },
+    descriptionText: {
+        flex: 1,
+        flexWrap: 'wrap',
     }
 })
 
