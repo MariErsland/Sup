@@ -35,10 +35,31 @@ const NewActivity = () => {
     const [error, setError] = useState('');
     const descriptionMaxLength = 500;
     const addressMaxLength = 100;
+    const descriptionMinLength = 20;
+    const addressMinLength = 10;
     
     const navigation = useNavigation();
 
     const handleCreateActivity = async () => {
+        if ((!selectedDate) || (!counties) || (!address.trim()) || (!selectedCategory) || (!description.trim())){
+            console.log("selected date: ", selectedDate);
+            console.log("selected county: ", selectedCounty);
+            console.log("selected address: ", address);
+            console.log("selected categories: ", selectedCategory);
+            console.log("selected description: ", description);
+            console.log("All input field must be filled out");
+            return;
+        }
+        if ((address.length < addressMinLength)){
+            console.log("Address cant be less that ", addressMinLength, "characters.")
+            setError("Address cant be less that " + addressMinLength + "characters.")
+            return;
+        }
+        if ((description.length < descriptionMinLength)){
+            console.log("Description cant be less that ", descriptionMinLength, "characters.")
+            setError("Description cant be less that " + descriptionMinLength + "characters.")
+            return;
+        }
         const myToken = await retrieveToken();
         console.log(selectedDate, counties, categories);
         console.log(JSON.stringify({ selectedDate, counties, address, categories, description, number_of_participants, created_by }));
