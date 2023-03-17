@@ -113,7 +113,7 @@ const NewActivity = () => {
             <View style={styles.container}>
             
             <TouchableOpacity onPress={() => setShowDatePicker(!showDatePicker)}>
-                <Text style={styles.label}>Dato og tidspunkt</Text>
+                <Text style={styles.label}> - Velg dato og tidspunkt her - </Text>
                 <Text>
                     {selectedDate}
                 </Text>
@@ -121,6 +121,7 @@ const NewActivity = () => {
                     <DatePicker
                         selected={selectedDate}
                         onSelectedChange={setSelectedDate}
+                        minimumDate={new Date().toISOString().slice(0, 10)}
                     />
                 )}
             </TouchableOpacity>
