@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, ScrollView } from 'react-native';
 import { ActivityProps } from '../components/activity';
 import Footer from '../shared/Footer';
 import { getUser } from '../components/getUser'
@@ -23,6 +23,12 @@ interface DetailsProps {
 
 const Category = require('../assets/tree-solid.png');
 const MadeBy = require('../assets/user.png');
+
+const PersonAttending = require('../assets/person-solid.png');
+const TimeActivity = require('../assets/clock.png');
+const Address = require('../assets/map.png');
+const County = require('../assets/globeIcon.png');
+const Description = require('../assets/descriptionIcon.png');
 
 const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
     const { activity } = route.params;
@@ -191,11 +197,16 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
 
             </View>
             <View style={styles.container}>
-                <Text>Når: {formatDate(activity.time)}</Text>
-                <Text>Fylke: {activity.county}</Text>
-                <Text>Addresse: {activity.address}</Text>
-                <Text>Beskrivelse: {activity.description}</Text>
-                <Text>Antall påmeldte: {number_of_participants}</Text>
+                <ScrollView>
+                    
+                <Text ><Image source={Description} style={styles.icons}/> {activity.description}</Text>
+                    <Text><Image source={TimeActivity} style={styles.icons}/> {formatDate(activity.time)}</Text>
+                    <Text><Image source={County} style={styles.icons}/> {activity.county}</Text>
+                    <Text><Image source={Address} style={styles.icons}/> {activity.address}</Text>
+                    <Text><Image source={PersonAttending} style={styles.icons}/> {number_of_participants}</Text>
+
+                </ScrollView>
+                
                 {currentUserId === String(activity.created_by.user_id) && (
                     <View style={styles.editButtonContainer}>
                     <View style={styles.buttonContainer}>
@@ -226,16 +237,16 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: 'white',
         padding: 20,
-        marginBottom: 90,
+        marginBottom: 100,
         borderRadius: 10,
         margin: 10,
         width: '90%',
+        height: 'auto',
         alignSelf: 'center',
-        height: '40%',
     },
     participateButtonContainer: {
         alignSelf: 'center',
-        marginVertical: 30,
+        marginVertical: 20,
         backgroundColor: '#EB7B31',
         borderRadius: 10,
         width: '85%',
@@ -267,7 +278,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Inter',
         fontStyle: 'normal',
         fontSize: 25,
-        marginBottom: 20,
+        marginBottom: 10,
         marginRight: 90,
     },
     madeby: {
@@ -276,33 +287,40 @@ const styles = StyleSheet.create({
         marginRight: 70,
     },
     icons: {
-        width: 35,
-        height: 35,
-        marginRight: 10,
-        marginBottom: 3,
-        marginTop: 3,
-        resizeMode: 'contain',
-    },
-    iconMadeBy: {
         width: 20,
-        height: 25,
+        height: 20,
         marginRight: 10,
         marginBottom: 3,
         marginTop: 3,
         resizeMode: 'contain',
-    },
-    iconTitle: {
-        width: 40,
-        height: 30,
+      },
+      iconMadeBy: {
+        width: 15,
+        height: 20,
         marginRight: 10,
         marginBottom: 3,
         marginTop: 3,
         resizeMode: 'contain',
+      },
+      iconTitle: {
+        width: 25,
+        height: 20,
+        marginRight: 10,
+        marginBottom: 3,
+        marginTop: 3,
+        resizeMode: 'contain',
+      },
 
-    },
+    
     buttonContainer: {
         marginBottom: 10,
-    }
+    },
+    description: {
+        maxHeight: 100,
+        overflow: 'scroll',
+      }
+      
 });
+
 
 export default DetailsActivity;
