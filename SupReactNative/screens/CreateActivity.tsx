@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list'
 import Footer from '../shared/Footer';
 import DatePicker from 'react-native-modern-datepicker';
@@ -10,7 +10,7 @@ import { retrieveToken } from '../security/token_handling';
 import { validateInputCharacters, validateInputLength } from '../components/inputValiation';
 
 interface NewActivity {
-    }
+}
 
 const NewActivity = () => {
 
@@ -28,6 +28,10 @@ const NewActivity = () => {
         setDescription,
         showDatePicker,
         setShowDatePicker,
+        title,
+        setTitle,
+        max_participants,
+        setMax_participants,
     } = useActivityState();
 
     const [number_of_participants] = useState('0');
@@ -37,7 +41,7 @@ const NewActivity = () => {
     const addressMaxLength = 100;
     const descriptionMinLength = 20;
     const addressMinLength = 10;
-    
+
     const navigation = useNavigation();
 
     const handleCreateActivity = async () => {
@@ -45,26 +49,26 @@ const NewActivity = () => {
             setError("All input field must be filled out")
             return;
         }
-        if ((address.length < addressMinLength)){
+        if ((address.length < addressMinLength)) {
             setError("Address cant be less that " + addressMinLength + "characters.")
             return;
         }
-        if ((description.length < descriptionMinLength)){
+        if ((description.length < descriptionMinLength)) {
             setError("Description cant be less that " + descriptionMinLength + "characters.")
             return;
         }
         const myToken = await retrieveToken();
         console.log(selectedDate, counties, categories);
-        console.log(JSON.stringify({ selectedDate, counties, address, categories, description, number_of_participants, created_by }));
+        console.log(JSON.stringify({ selectedDate, counties, address, categories, description, number_of_participants, created_by, title, max_participants  }));
         const response = await fetch('http://152.94.160.72:3000/create-activity', {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${myToken}`,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ time: selectedDate, county: selectedCounty, address, category: selectedCategory, description, number_of_participants, created_by }),
+            body: JSON.stringify({ time: selectedDate, county: selectedCounty, address, category: selectedCategory, description, number_of_participants, created_by, title, max_participants }),
         });
-    
+
         if (!response.ok) {
             console.error('Error creating activity:', response);
             return;
@@ -74,24 +78,36 @@ const NewActivity = () => {
         navigation.navigate('MyCreatedActivities');
     }
 
-    function handleDescriptionChange(text: string ){
+    function handleDescriptionChange(text: string) {
         const errorMessageLength = validateInputLength(text, descriptionMaxLength);
         const errorMessageCharacters = validateInputCharacters(text);
-        if (errorMessageCharacters !== '')
-        {
+        if (errorMessageCharacters !== '') {
             setError(errorMessageLength + ' ' + errorMessageCharacters)
         }
         else {
             setError(errorMessageLength + ' ' + errorMessageCharacters)
             setDescription(text)
         }
-        
+
     }
-    function handleAddressChange(text: string ){
+
+    function handletTitleChange(text: string) {
+        const errorMessageLength = validateInputLength(text, descriptionMaxLength);
+        const errorMessageCharacters = validateInputCharacters(text);
+        if (errorMessageCharacters !== '') {
+            setError(errorMessageLength + ' ' + errorMessageCharacters)
+        }
+        else {
+            setError(errorMessageLength + ' ' + errorMessageCharacters)
+            setTitle(text)
+        }
+
+    }
+
+    function handleAddressChange(text: string) {
         const errorMessageLength = validateInputLength(text, addressMaxLength);
         const errorMessageCharacters = validateInputCharacters(text);
-        if (errorMessageCharacters !== '')
-        {
+        if (errorMessageCharacters !== '') {
             setError(errorMessageLength + ' ' + errorMessageCharacters)
         }
         else {
@@ -99,6 +115,7 @@ const NewActivity = () => {
             setAddress(text)
         }
     }
+
 
     
     return (
@@ -164,6 +181,21 @@ const NewActivity = () => {
                 
             />
             </View>
+
+            <>
+                        <TextInput
+                            placeholder="Max antall deltakere"
+                            value={max_participants}
+                            onChangeText={setMax_participants}
+                        />
+                    </>
+                    <>
+                        <TextInput
+                            placeholder="Tittel"
+                            value={title}
+                            onChangeText={handletTitleChange}
+                        />
+                    </>
             {error && <Text style={{color: 'red'}}>{error}</Text>}
             </>
             <TouchableOpacity style={styles.button} onPress={handleCreateActivity} >
@@ -188,8 +220,8 @@ const styles = StyleSheet.create({
         margin: 20,
         flex: 1,
         paddingBottom: 50,
-    
-      },
+
+    },
     button: {
         alignSelf: 'flex-start',
         backgroundColor: '#EB7B31',
@@ -198,7 +230,7 @@ const styles = StyleSheet.create({
         height: '10%',
         width: '85%',
         alignItems: 'center',
-        justifyContent: 'center' 
+        justifyContent: 'center'
     },
     buttonText: {
         color: 'white',
