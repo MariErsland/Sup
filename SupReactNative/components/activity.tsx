@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Image, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-//import { pseudoRandomBytes } from 'crypto'; hva er dette? kan den fjernes? brukes ikke?
 import { formatDate } from './formatDate';
 
 export interface ActivityProps {
@@ -13,6 +12,7 @@ export interface ActivityProps {
     category: string;
     description: string;
     number_of_participants: number;
+    max_participants: number;
     created_by: {
         user_id: number;
         first_name: string;
@@ -40,6 +40,9 @@ const Activity = (props: ActivityProps) => {
 
     return (
         <TouchableOpacity key={props.id} style={[styles.activityBox, { backgroundColor }]} onPress={() => props.navigation.navigate('DetailsActivity', {activity: props})}>
+            <View style={styles.iconText}>
+                <Text>TITTEL: {props.title}</Text>
+            </View>
             <View style={styles.iconText}>
                 <Image source={TimeActivity} style={styles.icons}/>
                 <Text>{formatDate(props.time)}</Text>

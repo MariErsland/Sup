@@ -170,7 +170,7 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
 
     return (
         <View style={styles.background}>
-            <Text style={styles.title}><Image source={Category} style={styles.iconTitle} />Test for tittel {activity.category}</Text>
+            <Text style={styles.title}> {activity.title}</Text>
             <Text style={styles.madeby}><Image source={MadeBy} style={styles.iconMadeBy} /> Laget av: {activity.created_by.first_name}</Text>
 
             <View style={styles.participateButtonContainer}>
@@ -204,6 +204,7 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
                     <Text><Image source={County} style={styles.icons}/> {activity.county}</Text>
                     <Text><Image source={Address} style={styles.icons}/> {activity.address}</Text>
                     <Text><Image source={PersonAttending} style={styles.icons}/> {number_of_participants}</Text>
+                    <Text><Image source={PersonAttending} style={styles.icons}/> max: {activity.max_participants}</Text>
 
                 </ScrollView>
                 
