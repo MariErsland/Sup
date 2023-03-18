@@ -45,13 +45,8 @@ const NewActivity = () => {
     const navigation = useNavigation();
 
     const handleCreateActivity = async () => {
-        if ((!selectedDate) || (!counties) || (!address.trim()) || (!selectedCategory) || (!description.trim())) {
-            console.log("selected date: ", selectedDate);
-            console.log("selected county: ", selectedCounty);
-            console.log("selected address: ", address);
-            console.log("selected categories: ", selectedCategory);
-            console.log("selected description: ", description);
-            console.log("All input field must be filled out");
+        if ((!selectedDate) || (!counties) || (!address.trim()) || (!selectedCategory) || (!description.trim())){
+            setError("All input field must be filled out")
             return;
         }
         if ((address.length < addressMinLength)) {

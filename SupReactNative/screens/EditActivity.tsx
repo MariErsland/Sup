@@ -71,13 +71,7 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
 
     const handleEditActivity = async () => {
         if ((!selectedDate) || (!counties) || (!address.trim()) || (!selectedCategory) || (!description.trim())){
-            console.log("selected date: ", selectedDate);
-            console.log("selected county: ", selectedCounty);
-            console.log("selected address: ", address);
-            console.log("selected categories: ", selectedCategory);
-            console.log("selected description: ", description);
-            console.log("selected title: ", title);
-            console.log("All input field must be filled out");
+            setError("All input field must be filled out")
             return;
         }
         if ((address.length < addressMinLength)){
