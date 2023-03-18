@@ -122,61 +122,72 @@ const NewActivity = () => {
     }
 
 
+    
     return (
-
-        <View style={{ flex: 1 }}>
-            <ScrollView style={styles.background}>
-                <View style={styles.container}>
-
-                    <TouchableOpacity onPress={() => setShowDatePicker(!showDatePicker)}>
-                        <Text style={{ fontSize: 16 }}>Dato og tidspunkt</Text>
-                        <Text>
-                            {selectedDate}
-                        </Text>
-                        {showDatePicker && (
-                            <DatePicker
-                                selected={selectedDate}
-                                onSelectedChange={setSelectedDate}
-                            />
-                        )}
-                    </TouchableOpacity>
-
-                    <Text></Text>
-
-                    <SelectList
-                        setSelected={setSelectedCategory}
-                        data={categories}
-                        save="value"
-                        placeholder='Kategori'
+        
+        <View style={{flex: 1}}>
+            <ScrollView style= {styles.background, styles.scroll}>
+            <View style={styles.container}>
+            
+            <TouchableOpacity onPress={() => setShowDatePicker(!showDatePicker)}>
+                <Text style={styles.label}> - Velg dato og tidspunkt her - </Text>
+                <Text>
+                    {selectedDate}
+                </Text>
+                {showDatePicker && (
+                    <DatePicker
+                        selected={selectedDate}
+                        onSelectedChange={setSelectedDate}
+                        minimumDate={new Date().toISOString().slice(0, 10)}
                     />
-                    <Text></Text>
+                )}
+            </TouchableOpacity>
+            
+            <Text></Text>
+            
+            <SelectList
+                 setSelected={setSelectedCategory}
+                 data={categories}
+                 save="value"
+                 placeholder='Kategori'
+            />
+            <Text></Text>
 
-                    <SelectList
-                        setSelected={setSelectedCounty}
-                        data={counties}
-                        save="value"
-                        placeholder='Fylke'
-                    />
-                    <>
-                        <TextInput
-                            placeholder="Møtested"
-                            value={address}
-                            onChangeText={handleAddressChange}
-                            maxLength={(addressMaxLength + 1)}
+            <SelectList
+                setSelected={setSelectedCounty}
+                data={counties}
+                save="value"
+                placeholder='Fylke'
+            />
+            <>
+            <Text style={styles.label}>Møtested: </Text>
+            <View style={styles.inputContainer}>
+            <TextInput
+                placeholder="Møtested"
+                value={address}
+                onChangeText={handleAddressChange}
+                maxLength={(addressMaxLength+1)}
+                style={[styles.input, {maxHeight: 200}]}
+                multiline={true}
+                
+            />
+            </View>
+            </>
+            <>
+            <Text style={styles.label}>Beskrivelse: </Text>
+            <View style={styles.inputContainer}>
+            <TextInput
+                placeholder="Beskrivelse"
+                value={description}
+                onChangeText={handleDescriptionChange}
+                maxLength={(descriptionMaxLength+1)}
+                multiline={true}
+                style={[styles.input, {maxHeight: 200}]}
+                
+            />
+            </View>
 
-                        />
-                    </>
-                    <>
-                        <TextInput
-                            placeholder="Beskrivelse"
-                            value={description}
-                            onChangeText={handleDescriptionChange}
-                            maxLength={(descriptionMaxLength + 1)}
-
-                        />
-                        {error && <Text style={{ color: 'red' }}>{error}</Text>}
-                    </>
-                    <>
+            <>
                         <TextInput
                             placeholder="Max antall deltakere"
                             value={max_participants}
@@ -190,13 +201,14 @@ const NewActivity = () => {
                             onChangeText={handletTitleChange}
                         />
                     </>
-
-                    <TouchableOpacity style={styles.button} onPress={handleCreateActivity} >
-                        <Text style={styles.buttonText}>Opprett ny aktivitet</Text>
-                    </TouchableOpacity>
-                </View>
-            </ScrollView>
-            <Footer />
+            {error && <Text style={{color: 'red'}}>{error}</Text>}
+            </>
+            <TouchableOpacity style={styles.button} onPress={handleCreateActivity} >
+                    <Text style={styles.buttonText}>Opprett ny aktivitet</Text>
+                </TouchableOpacity>
+            </View>
+        </ScrollView>
+        <Footer />
         </View>
     );
 }
@@ -229,6 +241,25 @@ const styles = StyleSheet.create({
         color: 'white',
         textAlign: 'center',
     },
+    inputContainer: {
+        borderRadius: 10,
+        paddingLeft: 15,
+        marginTop: 0,
+        borderWidth: 1,
+        borderColor: 'grey'
+      },
+      input: {
+        fontSize: 16,
+        color: 'grey'
+      },
+      label: {
+        marginTop: 10,
+        fontWeight: 'bold',
+        fontSize: 16,
+      },
+      scroll: {
+        marginBottom: 100,
+    }
 })
 
 export default NewActivity;
