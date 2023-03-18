@@ -7,6 +7,8 @@ export const useActivityState = () => {
   const [address, setAddress] = useState('');
   const [description, setDescription] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [title, setTitle] = useState('');
+  const [max_participants, setMax_participants] = useState('');
   
   return {
     selectedCategory,
@@ -21,6 +23,10 @@ export const useActivityState = () => {
     setDescription,
     showDatePicker,
     setShowDatePicker,
+    title,
+    setTitle,
+    max_participants,
+    setMax_participants,
   };
 };
 

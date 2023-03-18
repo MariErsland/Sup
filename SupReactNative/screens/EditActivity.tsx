@@ -26,6 +26,8 @@ interface EditActivityProps {
     description: string,
     number_of_participants: number,
     created_by: string,
+    title: string,
+    max_participants: number,
 }
 
 const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
@@ -52,8 +54,15 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
     }, []);
 
     // To get this value prefilled I set the value locally here
+ 
+    const [max_participants, setMax_participants] = useState(activity.max_participants);
+    console.log("maks participant", activity.max_participants);
+    console.log('participants', activity.number_of_participants);
+    const [numberOfParticipants, setNumberOfParticipants] = useState(activity.number_of_participants);
+
     const [description, setDescription] = useState(activity.description);
     const [address, setAddress] = useState(activity.address);
+    const [title, setTitle] = useState(activity.title);
 
     const navigation = useNavigation();
 
@@ -67,6 +76,7 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
             console.log("selected address: ", address);
             console.log("selected categories: ", selectedCategory);
             console.log("selected description: ", description);
+            console.log("selected title: ", title);
             console.log("All input field must be filled out");
             return;
         }
@@ -79,9 +89,12 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
             console.log("Description cant be less that ", descriptionMinLength, "characters.")
             setError("Description cant be less that " + descriptionMinLength + "characters.")
             return;
+        
         }
         try {
             const myToken = await retrieveToken();
+            console.log('description: ',title);
+            console.log('max_part: ', max_participants);
             const response = await fetch(`http://152.94.160.72:3000/activity/${activity.id}`, {
                 method: 'PUT',
                 headers: {
@@ -93,10 +106,14 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
                     category: selectedCategory,
                     county: selectedCounty,
                     address: address,
-                    description: description
+                    description: description,
+                    title: title,
+                    max_participants: max_participants,
+
                 }),
             });
             if (!response.ok) {
+                console.log('tittel her',title)
                 throw new Error(`Failed to update activity. Server responded with ${response.status}.`);
             }
             const data = await response.json();
@@ -134,6 +151,18 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
         }
     }
 
+    function handleTitleChange(text: string ){
+        const errorMessageLength = validateInputLength(text, addressMaxLength);
+        const errorMessageCharacters = validateInputCharacters(text);
+        if (errorMessageCharacters !== '')
+        {
+            setError(errorMessageLength + ' ' + errorMessageCharacters)
+        }
+        else {
+            setError(errorMessageLength + ' ' + errorMessageCharacters)
+            setTitle(text)
+        }
+    }
     return (
         <View style={{ flex: 1 }}>
             <ScrollView style={[styles.background, styles.scroll]}>
@@ -193,12 +222,29 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
                         style={[styles.input, {maxHeight: 200}]}
                     />
                     </View>
+
+                    <Text>Tittel: </Text>
+                    <View style={styles.inputContainer}>
+                    <TextInput
+                        value={title}
+                        onChangeText={handleTitleChange}
+                    />
+                    </View>
+
+                    <Text>Hvor mange kan maks melde seg på: </Text>
+                    <View style={styles.inputContainer}>
+                    <TextInput
+                        value={max_participants}
+                        onChangeText={setMax_participants}
+                    />
+                    </View>
+                    
+                    <View></View>
                     {error && <Text style={{color: 'red'}}>{error}</Text>}
                     </>
 
                     <TouchableOpacity style={styles.button} onPress={handleEditActivity} >
                         <Text style={styles.buttonText}>Endre aktivitet</Text>
-
                     </TouchableOpacity>
                 </View>
             </ScrollView>
