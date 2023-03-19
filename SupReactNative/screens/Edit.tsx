@@ -1,5 +1,5 @@
 import React, { useContext, useState} from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { LoginContext } from '../App';
 import { useAuth } from '../security/auth';
@@ -16,6 +16,7 @@ const Edit = () => {
   const [error, setError] = useState('');
   const nameMaxLength = 30;
   const MIN_LENGHT_FIRST_NAME = 2;
+  const UserButton = require('../assets/user.png');
 
   
   if(!route.params) return <View><Text>Test her...</Text></View>
@@ -68,16 +69,27 @@ const Edit = () => {
   return (
     <View style={styles.background}>
       <View style={styles.container}>
-      <Text>Navn: {email}</Text>
-      <TextInput
-        placeholder="Fornavn"
-        onChangeText={text => handleSetFirstName(text)}
-        value={firstName}
-        maxLength={(nameMaxLength+1)}
-      />
-      
-      <Text>Email: {email}</Text>
+      <View style={styles.imageContainer}>
+        <View style={styles.imageFrame}>
+          <Image style={styles.image} source={UserButton} />
+        </View>
+      </View>
+
+      <View style={styles.infoContainer}>
+        <Text style={styles.label}> Navn: </Text>
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder={firstName}
+            onChangeText={text => handleSetFirstName(text)}
+            value={firstName}
+            maxLength={(nameMaxLength+1)}
+            style={styles.input}
+          />
+        </View>
+      <Text style={styles.label}>{email}</Text>
       {error && <Text style={{color: 'red'}}>{error}</Text>}
+      </View>
+
       <View style={styles.buttonContainer}>
                     <TouchableOpacity style={styles.button} onPress={saveChanges}>
                         <Text style={styles.buttonText}>Lagre endringer</Text>
@@ -94,36 +106,69 @@ const styles = StyleSheet.create({
   background: {
     backgroundColor: '#DEE7E6',
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-},
+  },
   container: {
     backgroundColor: 'white',
     padding: 20,
+    marginBottom: 90,
     borderRadius: 10,
     margin: 10,
     width: '90%',
-    height: '70%',
-},
-  button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    height: 40,
-},
-  buttonText: {
-    color: 'white',
-    textAlign: 'center',
-},
+    alignSelf: 'center',
+    height: '40%',
+    flex: 1,
+  },
+  infoContainer: {
+    flex: 1,
+    justifyContent: 'flex-start' ,
+  },
   buttonContainer: {
-    alignSelf: 'flex-end',
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    width: '30%',
+    marginVertical: 10,
     backgroundColor: '#EB7B31',
     borderRadius: 10,
-},
+  },
+  button: {
+    justifyContent: 'center',
+    height: 40,
+  },
+    buttonText: {
+      color: 'white',
+      textAlign: 'center',
+  },
+  imageContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  imageFrame: {
+    borderWidth: 2, 
+    borderColor: 'grey',
+    borderRadius: 10,
+    padding: 16,
+    backgroundColor: '#F2F2F2',
+  },
+  image: {
+    width: 50, 
+    height: 55,
+  },
+  inputContainer: {
+    borderRadius: 10,
+    paddingLeft: 15,
+    marginTop: 5,
+    borderWidth: 1,
+    borderColor: 'grey',
+    width: '100%',
+    height: 40
+  },
+  input: {
+    fontSize: 16,
+    color: 'grey'
+  },
+  label: {
+    marginTop: 15,
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
 })
 
 export default Edit;
