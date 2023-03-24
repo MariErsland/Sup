@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, TouchableWithoutFeedback, Alert } from 'react-native';
 import { retrieveToken } from '../security/token_handling';
 import { getUser } from './getUser';
 import { formatDate } from '../components/formatDate';
@@ -22,11 +22,15 @@ interface CommentsProps {
 const Comments: React.FC<CommentsProps> = ({ activityId }) => {
     const [comments, setComments] = useState<Comment[]>([]);
     const [newComment, setNewComment] = useState('');
+    const [currentUserId, setCurrentUserId] = useState(String);
 
     console.log("Activity id inne i Comments", activityId);
 
+
     useEffect(() => {
         async function fetchComments() {
+            const user = await getUser()
+            setCurrentUserId(user.user.id);
             console.log("activity id inni fetch ocmments:", activityId)
             const response = await fetch(`http://152.94.160.72:3000/activity/${activityId}/comments`);
             if (!response.ok) {
@@ -73,65 +77,82 @@ const Comments: React.FC<CommentsProps> = ({ activityId }) => {
     }
 
     async function handleDeleteComment(comment: Comment) {
-        try{
+        try {
             console.log('handleDeletecomment hehe');
             const myToken = retrieveToken();
             console.log('comment id= ', comment.id)
-            const response = await fetch(`http://152.94.160.72:3000/activity/${comment.id}/comments`, {
-            method: 'DELETE',
-            headers: {
-                Authorization: `Bearer ${myToken}`,
-            },
-        });
-        if (!response.ok) {
-            throw new Error(`Failed to delete comment ${comment.id}. Server responded with ${response.status}.`);
-        }
-        
-        //fjerne kommentar fra kommentar-arrayen
-        const updatedComments = Array.isArray(comments) ? comments.filter(c => c.id !== comment.id) : [];
-        setComments(updatedComments);
+            Alert.alert(
+                'Er du sikker på du vil slette denne kommentaren?',
+                'Hvis du sletter denne kommentaren, kan du ikke angre',
+                [
+                { text: 'Avbryt', style: 'cancel'},
+                {
+                    text: 'Slett',
+                    onPress: async () => {
+                        const response = await fetch(`http://152.94.160.72:3000/activity/${comment.id}/comments`, {
+                            method: 'DELETE',
+                            headers: {
+                                Authorization: `Bearer ${myToken}`,
+                            },
+                        });
+                        if (!response.ok) {
+                            throw new Error(`Failed to delete comment ${comment.id}. Server responded with ${response.status}.`);
+                        }
 
+                        //fjerne kommentar fra kommentar-arrayen
+                        const updatedComments = Array.isArray(comments) ? comments.filter(c => c.id !== comment.id) : [];
+                        setComments(updatedComments);
+
+                    },
+                },
+            
+
+            ],
+            { cancelable: false }
+                
+
+            );      
+            
         } catch (error) {
-            console.error("Error blablaba in handleDeleteComments", error);
-        }
-        
+        console.error("Error blablaba in handleDeleteComments", error);
     }
 
+}
 
-    return (
-        <View>
-            <View style={styles.commentFrame}>
-                {comments.map(comment => (
-                    <View key={comment.id} style={styles.commentContainer}>
+
+return (
+    <View>
+        <View style={styles.commentFrame}>
+            {comments.map(comment => (
+                <View key={comment.id} style={styles.commentContainer}>
+                    {(comment.user_id) === currentUserId && (
                         <TouchableWithoutFeedback onPress={() => handleDeleteComment(comment)}>
                             <View style={styles.deleteButton}>
-                                <Text>slett</Text>
-
-
+                                <Text style={styles.deleteText}>[X]</Text>
                             </View>
-
                         </TouchableWithoutFeedback>
-                        <Text style={styles.commentDate}>{formatDate(comment.created_at)}</Text>
-                        <Text style={styles.commentText}>{comment.user_first_name + ":\n"}<Text style={{ fontWeight: 'normal' }}>{comment.comment} </Text></Text>
-                        
-                    </View>
-                ))}
-            </View>
-            <View style={styles.inputContainer}>
-                <TextInput
-                    placeholder="Skriv en kommentar..."
-                    value={newComment}
-                    onChangeText={text => setNewComment(text)}
-                    multiline={true}
-                    style={[styles.input, { maxHeight: 300 }]}
-                />
-            </View>
+                    )}
+                    <Text style={styles.commentDate}>{formatDate(comment.created_at)}</Text>
+                    <Text style={styles.commentText}>{comment.user_first_name + ":\n"}<Text style={{ fontWeight: 'normal' }}>{comment.comment} </Text></Text>
 
-            <TouchableOpacity style={styles.button} onPress={handleAddComment}>
-                <Text style={styles.buttonText}>Legg til kommentar</Text>
-            </TouchableOpacity>
+                </View>
+            ))}
         </View>
-    );
+        <View style={styles.inputContainer}>
+            <TextInput
+                placeholder="Skriv en kommentar..."
+                value={newComment}
+                onChangeText={text => setNewComment(text)}
+                multiline={true}
+                style={[styles.input, { maxHeight: 300 }]}
+            />
+        </View>
+
+        <TouchableOpacity style={styles.button} onPress={handleAddComment}>
+            <Text style={styles.buttonText}>Legg til kommentar</Text>
+        </TouchableOpacity>
+    </View>
+);
 }
 
 const styles = StyleSheet.create({
@@ -187,8 +208,13 @@ const styles = StyleSheet.create({
         width: "85%",
     },
     deleteButton: {
-        color: 'red',
+        fontWeight: 'bold',
+    },
+
+    deleteText: {
+        color: 'red'
     }
+
 });
 
 
