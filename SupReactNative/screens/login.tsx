@@ -19,6 +19,7 @@ interface Props {
   timeoutId: any;
 }
 
+const LogoSup = require('../assets/supLogo.png');
 const FrontPagePhoto = require('../assets/frontPagePhoto.png');
 
 
@@ -103,7 +104,7 @@ const LoginScreen = (props: Props) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
         <ImageBackground source={FrontPagePhoto} resizeMode="cover" style={styles.image}>
-        <Text style={styles.logo}>SUP!</Text>
+          <Image source={LogoSup} style={styles.logo} />
         <Text style={styles.description}>SUP lar deg finne aktiviteter med nye venner....</Text>
         {loading ? <Text>Loading...</Text> : <GoogleSigninButton style={styles.googleSigninButton} onPress={onSignIn} />}
         </ImageBackground>
@@ -121,14 +122,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   logo: {
-    color: 'white',
-    justifyContent: 'center',
     alignSelf: 'center',
-    marginBottom: 30,
-    fontSize: 40,
-    fontWeight: 'bold',
+    width: '50%',
+    height: '50%',
+    resizeMode: 'contain',
+    marginVertical: 'auto',
   },
-
   description: {
     color: 'white',
     justifyContent: 'center',

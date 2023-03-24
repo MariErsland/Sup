@@ -230,9 +230,10 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
             <ScrollView style={styles.chatcontainer}>
 
             <View style={styles.commentsSection}>
-                <Text style={styles.commentsTitle}>Kommentarer</Text>
+                <Text style={styles.commentsTitle}>Lurer du på noe?</Text>
                 <ScrollView style={styles.chatcontainer}>
-                    <Comment activityId={activity.id} />
+                    <Comment activityId={activity.id} 
+/>
                 </ScrollView>
             </View>
 
@@ -258,7 +259,7 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: 'white',
         padding: 20,
-        width: '95%',
+        width: '98%',
         height: 'auto',
         alignSelf: 'center',
         marginBottom: 20,
@@ -269,7 +270,7 @@ const styles = StyleSheet.create({
         marginVertical: 20,
         backgroundColor: '#EB7B31',
         borderRadius: 10,
-        width: '95%',
+        width: '98%',
         alignItems: 'center',
         justifyContent: 'center'
 
@@ -353,12 +354,10 @@ const styles = StyleSheet.create({
     chatcontainer: {
         backgroundColor: 'white',
         padding: 10,
-        width: '95%',
+        width: '98%',
         height: 'auto',
         alignSelf: 'center',
-        marginBottom: 20,
-        borderRadius: 10,
-        
+        borderRadius: 15,
     },
 
 });
