@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import { retrieveToken } from '../security/token_handling';
 import { getUser } from './getUser';
 import { formatDate } from '../components/formatDate';
@@ -10,14 +10,13 @@ interface Comment {
     user_id: string;
     comment: string;
     created_at: string;
-    username: string;
-}
+    user_first_name: string;
 
+}
 
 interface CommentsProps {
     activityId: number;
 }
-
 
 
 const Comments: React.FC<CommentsProps> = ({ activityId }) => {
@@ -42,12 +41,7 @@ const Comments: React.FC<CommentsProps> = ({ activityId }) => {
     async function handleAddComment() {
         try {
             const user = await getUser()
-            console.log("er her inne i handleAddComment")
             const myToken = retrieveToken();
-
-            console.log("New comment:", newComment);
-            console.log("Activity id inne i handleAddComment", activityId);
-
             const response = await fetch(`http://152.94.160.72:3000/activity/${activityId}/comments`, {
                 method: 'POST',
                 headers: {
@@ -57,6 +51,7 @@ const Comments: React.FC<CommentsProps> = ({ activityId }) => {
                 body: JSON.stringify({
                     activity_id: activityId,
                     userId: user.user.id,
+                    userFirstName: user.user.first_name,
                     comment: newComment,
                 })
             });
@@ -77,7 +72,30 @@ const Comments: React.FC<CommentsProps> = ({ activityId }) => {
         }
     }
 
+    async function handleDeleteComment(comment: Comment) {
+        try{
+            console.log('handleDeletecomment hehe');
+            const myToken = retrieveToken();
+            console.log('comment id= ', comment.id)
+            const response = await fetch(`http://152.94.160.72:3000/activity/${comment.id}/comments`, {
+            method: 'DELETE',
+            headers: {
+                Authorization: `Bearer ${myToken}`,
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`Failed to delete comment ${comment.id}. Server responded with ${response.status}.`);
+        }
+        
+        //fjerne kommentar fra kommentar-arrayen
+        const updatedComments = Array.isArray(comments) ? comments.filter(c => c.id !== comment.id) : [];
+        setComments(updatedComments);
 
+        } catch (error) {
+            console.error("Error blablaba in handleDeleteComments", error);
+        }
+        
+    }
 
 
     return (
@@ -85,17 +103,30 @@ const Comments: React.FC<CommentsProps> = ({ activityId }) => {
             <View style={styles.commentFrame}>
                 {comments.map(comment => (
                     <View key={comment.id} style={styles.commentContainer}>
+                        <TouchableWithoutFeedback onPress={() => handleDeleteComment(comment)}>
+                            <View style={styles.deleteButton}>
+                                <Text>slett</Text>
+
+
+                            </View>
+
+                        </TouchableWithoutFeedback>
                         <Text style={styles.commentDate}>{formatDate(comment.created_at)}</Text>
-                        <Text style={styles.commentText}>{comment.user_id + ":\n"}<Text style={{ fontWeight: 'normal' }}>{comment.comment}</Text></Text>
+                        <Text style={styles.commentText}>{comment.user_first_name + ":\n"}<Text style={{ fontWeight: 'normal' }}>{comment.comment} </Text></Text>
+                        
                     </View>
                 ))}
             </View>
-            <TextInput
-                style={styles.input}
-                placeholder="Skriv en kommentar..."
-                onChangeText={text => setNewComment(text)}
-                value={newComment}
-            />
+            <View style={styles.inputContainer}>
+                <TextInput
+                    placeholder="Skriv en kommentar..."
+                    value={newComment}
+                    onChangeText={text => setNewComment(text)}
+                    multiline={true}
+                    style={[styles.input, { maxHeight: 300 }]}
+                />
+            </View>
+
             <TouchableOpacity style={styles.button} onPress={handleAddComment}>
                 <Text style={styles.buttonText}>Legg til kommentar</Text>
             </TouchableOpacity>
@@ -105,12 +136,17 @@ const Comments: React.FC<CommentsProps> = ({ activityId }) => {
 
 const styles = StyleSheet.create({
     input: {
-        height: 40,
-        margin: 12,
+        fontSize: 16,
+        color: 'grey'
+    },
+    inputContainer: {
+        borderRadius: 10,
+        paddingLeft: 15,
+        marginTop: 0,
         borderWidth: 1,
-        padding: 10,
-        borderRadius: 5,
-        width: '70%',
+        borderColor: 'grey',
+        width: '85%',
+        height: 80,
     },
     button: {
         alignItems: 'center',
@@ -149,6 +185,9 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginBottom: 10,
         width: "85%",
+    },
+    deleteButton: {
+        color: 'red',
     }
 });
 
