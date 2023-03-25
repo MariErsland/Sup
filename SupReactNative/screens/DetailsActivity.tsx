@@ -8,7 +8,7 @@ import { act } from 'react-test-renderer';
 import { retrieveToken } from '../security/token_handling';
 import { Moment } from 'moment';
 import { formatDate } from '../components/formatDate';
-
+import Comment from '../components/Comments';
 import Feed from './feed';
 import Filter from '../components/Filter';
 
@@ -143,33 +143,33 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
     async function handleDeleteActivity() {
         console.log('activity id:' + activity.id);
         try {
-          const myToken = await retrieveToken();
-          Alert.alert(
-            'Er du sikker på at du vil slette aktiviteten?',
-            'Denne handlingen kan ikke angres.',
-            [
-              { text: 'Avbryt', style: 'cancel' },
-              {
-                text: 'Slett',
-                onPress: async () => {
-                  console.log('inni onPress' + activity.id);
-                  const response = await fetch(`http://152.94.160.72:3000/activity/${activity.id}`, {
-                    method: 'DELETE',
-                    headers: {
-                      Authorization: `Bearer ${myToken}`,
+            const myToken = await retrieveToken();
+            Alert.alert(
+                'Er du sikker på at du vil slette aktiviteten?',
+                'Denne handlingen kan ikke angres.',
+                [
+                    { text: 'Avbryt', style: 'cancel' },
+                    {
+                        text: 'Slett',
+                        onPress: async () => {
+                            console.log('inni onPress' + activity.id);
+                            const response = await fetch(`http://152.94.160.72:3000/activity/${activity.id}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    Authorization: `Bearer ${myToken}`,
+                                },
+                            });
+                            if (!response.ok) {
+                                throw new Error(`Failed to delete activity. Server responded with ${response.status}.`);
+                            }
+                            navigation.navigate('MyCreatedActivities');
+                        },
                     },
-                  });
-                  if (!response.ok) {
-                    throw new Error(`Failed to delete activity. Server responded with ${response.status}.`);
-                  }
-                  navigation.navigate('MyCreatedActivities');
-                },
-              },
-            ],
-            { cancelable: false }
-          );
+                ],
+                { cancelable: false }
+            );
         } catch (error) {
-          console.error('Error deleting activity:', error);
+            console.error('Error deleting activity:', error);
         }
       }
 
@@ -261,6 +261,7 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
 
     return (
         <View style={styles.background}>
+        <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center', flexGrow: 1 }}>
             <Text style={styles.title}> {activity.title}</Text>
             <Text style={styles.madeby}><Image source={MadeBy} style={styles.iconMadeBy} /> Laget av: {activity.created_by.first_name}</Text>
             
@@ -325,26 +326,45 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
                   
                     
                 </ScrollView>
-                
+                </View>
+
                 {currentUserId === String(activity.created_by.user_id) && (
                     <View style={styles.editButtonContainer}>
-                    <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('EditActivity', { activity })}>
-                            <Text style={styles.buttonText}> Rediger </Text>
-                        </TouchableOpacity>
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('EditActivity', { activity })}>
+                                <Text style={styles.buttonText}>Rediger</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity onPress={handleDeleteActivity}>
+                                <Text style={styles.buttonText}>Slett aktivitet</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                    <View style={styles.buttonContainer}>
-                        <TouchableOpacity onPress={handleDeleteActivity}>
-                            <Text style={styles.buttonText}>Slett aktivitet</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            )}
+                )}
+
+
+            
+
+            <ScrollView style={styles.chatcontainer}>
+
+            <View style={styles.commentsSection}>
+                <Text style={styles.commentsTitle}>Lurer du på noe?</Text>
+                <ScrollView style={styles.chatcontainer}>
+                    <Comment activityId={activity.id} 
+/>
+                </ScrollView>
             </View>
-            <Footer />
+
+            </ScrollView>
+            </ScrollView>
+
+        <Footer />
+
         </View>
+    
     );
-};
+},
 
 const styles = StyleSheet.create({
     background: {
@@ -356,19 +376,18 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: 'white',
         padding: 20,
-        marginBottom: 100,
-        borderRadius: 10,
-        margin: 10,
-        width: '90%',
+        width: '98%',
         height: 'auto',
         alignSelf: 'center',
+        marginBottom: 20,
+        borderRadius: 10,
     },
     participateButtonContainer: {
         alignSelf: 'center',
         marginVertical: 20,
         backgroundColor: '#EB7B31',
         borderRadius: 10,
-        width: '85%',
+        width: '98%',
         alignItems: 'center',
         justifyContent: 'center'
 
@@ -402,7 +421,7 @@ const styles = StyleSheet.create({
     },
     madeby: {
         fontSize: 20,
-        marginBottom: 70,
+        marginBottom: 20,
         marginRight: 70,
     },
     icons: {
@@ -412,33 +431,52 @@ const styles = StyleSheet.create({
         marginBottom: 3,
         marginTop: 3,
         resizeMode: 'contain',
-      },
-      iconMadeBy: {
+    },
+    iconMadeBy: {
         width: 15,
         height: 20,
         marginRight: 10,
         marginBottom: 3,
         marginTop: 3,
         resizeMode: 'contain',
-      },
-      iconTitle: {
+    },
+    iconTitle: {
         width: 25,
         height: 20,
         marginRight: 10,
         marginBottom: 3,
         marginTop: 3,
         resizeMode: 'contain',
-      },
+    },
 
-    
     buttonContainer: {
         marginBottom: 10,
     },
     description: {
         maxHeight: 100,
         overflow: 'scroll',
-      }
-      
+
+    },
+    commentsSection: {
+        width: '120%',
+        marginBottom: 120,
+    },
+    commentsTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        alignSelf: 'flex-start',
+        marginLeft: 20,
+        marginBottom: 10,
+    },
+    chatcontainer: {
+        backgroundColor: 'white',
+        padding: 10,
+        width: '98%',
+        height: 'auto',
+        alignSelf: 'center',
+        borderRadius: 15,
+    },
+
 });
 
 
