@@ -23,7 +23,6 @@ interface DetailsProps {
 
 const Category = require('../assets/tree-solid.png');
 const MadeBy = require('../assets/user.png');
-
 const PersonAttending = require('../assets/person-solid.png');
 const TimeActivity = require('../assets/clock.png');
 const Address = require('../assets/map.png');
@@ -36,7 +35,7 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
     const [currentUserId, setCurrentUserId] = useState(String);
     const [activityParticipants, setActivityParticipants] = useState([{}]);
     let [number_of_participants, setNumberOfParticipants] = useState(activity.number_of_participants);
-    const now = new Date();
+    let now = new Date();
     const actDate = new Date(activity.time);
 
     useEffect(() => {
@@ -52,15 +51,12 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
                 });
                 console.log("Response: ", response);
                 if (!response.ok) {
-                    throw new Error(`Failed to get activity participants. Server responded with ${response.status}.`);
+                    throw new Error(`Failed to get activity participants. Response from server is ${response.status}.`);
                 }
                 const data = await response.json();
-                console.log('Activity participants collected successfully', data);
-                //console.log('Activity updated successfully userid', data[0].user_id);
+                console.log('Activity participants sucess', data);
                 setActivityParticipants(data);
-
                 console.log("Activity Participants:", activityParticipants);
-
             } catch (error) {
                 console.error('Error updating activity:', error);
             }
@@ -78,7 +74,7 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
                 }
             });
             if (!response.ok) {
-                throw new Error(`Failed to get activity participants. Server responded with ${response.status}.`);
+                throw new Error(`Failed to get status of activity participants. Response from server is ${response.status}.`);
             }
             const data = await response.json();
             console.log('Activity participants collected successfully', data);
@@ -100,10 +96,9 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
                 },
             });
             if (!response.ok) {
-                throw new Error(`Failed to update activity. Server responded with ${response.status}.`);
+                throw new Error(`Failed to sign up for activity. Reponse from server was ${response.status}.`);
             }
             const data = await response.json();
-            console.log('Activity updated successfully', data);
             await updateStatusOfActivityParticipants();
             setNumberOfParticipants(number_of_participants + 1);
         } catch (error) {
@@ -170,81 +165,69 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
 
     return (
         <View style={styles.background}>
-        <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center', flexGrow: 1 }}>
-            <Text style={styles.title}> {activity.title}</Text>
-            <Text style={styles.madeby}><Image source={MadeBy} style={styles.iconMadeBy} /> Laget av: {activity.created_by.first_name}</Text>
+            <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center', flexGrow: 1 }}>
+                <Text style={styles.title}> {activity.title}</Text>
+                <Text style={styles.madeby}><Image source={MadeBy} style={styles.iconMadeBy} /> Laget av: {activity.created_by.first_name}</Text>
 
-            <View style={styles.participateButtonContainer}>
+                <View style={styles.participateButtonContainer}>
 
-                {currentUserId === String(activity.created_by.user_id) || actDate < now
-                    ? (
-                        <View style={[styles.button, { backgroundColor: '#DDB08C' }]} onPress={handleSignOffActivity}>
-                            <Text style={styles.buttonText}>Jeg vil være med!</Text>
+                    {currentUserId === String(activity.created_by.user_id) || actDate < now
+                        ? (
+                            <View style={[styles.button, { backgroundColor: '#DDB08C' }]} onPress={handleSignOffActivity}>
+                                <Text style={styles.buttonText}>Jeg vil være med!</Text>
+                            </View>
+                        ) : (
+                            <>
+                                {currentUserId && activityParticipants.some(participant => participant.user_id === currentUserId) ? (
+                                    <TouchableOpacity style={styles.button} onPress={handleSignOffActivity}>
+                                        <Text style={styles.buttonText}>Meld meg av!</Text>
+                                    </TouchableOpacity>
+                                ) : (
+                                    <TouchableOpacity style={styles.button} onPress={handleSignUpForActivity}>
+                                        <Text style={styles.buttonText}>Jeg vil være med!</Text>
+                                    </TouchableOpacity>
+                                )}
+                            </>
+                        )
+                    }
+                </View>
+                <ScrollView style={styles.container}>
+                    <ScrollView>
+                        <Text ><Image source={Description} style={styles.icons} /> {activity.description}</Text>
+                        <Text><Image source={Address} style={styles.icons} /> {activity.address}</Text>
+                        <Text><Image source={TimeActivity} style={styles.icons} /> {formatDate(activity.time)}</Text>
+                        <Text><Image source={County} style={styles.icons} /> {activity.county}</Text>
+                        <Text><Image source={PersonAttending} style={styles.icons} /> {number_of_participants}</Text>
+                        <Text><Image source={PersonAttending} style={styles.icons} /> max: {activity.max_participants}</Text>
+                    </ScrollView>
+
+                    {currentUserId === String(activity.created_by.user_id) && (
+                        <View style={styles.editButtonContainer}>
+                            <View style={styles.buttonContainer}>
+                                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('EditActivity', { activity })}>
+                                    <Text style={styles.buttonText}>Rediger</Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={styles.buttonContainer}>
+                                <TouchableOpacity onPress={handleDeleteActivity}>
+                                    <Text style={styles.buttonText}>Slett aktivitet</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
-                    ) : (
-                        <>
-                            {currentUserId && activityParticipants.some(participant => participant.user_id === currentUserId) ? (
-                                <TouchableOpacity style={styles.button} onPress={handleSignOffActivity}>
-                                    <Text style={styles.buttonText}>Meld meg av!</Text>
-                                </TouchableOpacity>
-                            ) : (
-                                <TouchableOpacity style={styles.button} onPress={handleSignUpForActivity}>
-                                    <Text style={styles.buttonText}>Jeg vil være med!</Text>
-                                </TouchableOpacity>
-                            )}
-                        </>
-                    )
-                }
-            </View>
-            <ScrollView style={styles.container}>
-                <ScrollView>
-
-                    <Text ><Image source={Description} style={styles.icons} /> {activity.description}</Text>
-                    <Text><Image source={Address} style={styles.icons} /> {activity.address}</Text>
-                    <Text><Image source={TimeActivity} style={styles.icons} /> {formatDate(activity.time)}</Text>
-                    <Text><Image source={County} style={styles.icons} /> {activity.county}</Text>
-                    <Text><Image source={PersonAttending} style={styles.icons} /> {number_of_participants}</Text>
-                    <Text><Image source={PersonAttending} style={styles.icons} /> max: {activity.max_participants}</Text>
-
-
+                    )}
                 </ScrollView>
 
-                {currentUserId === String(activity.created_by.user_id) && (
-                    <View style={styles.editButtonContainer}>
-                        <View style={styles.buttonContainer}>
-                            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('EditActivity', { activity })}>
-                                <Text style={styles.buttonText}>Rediger</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.buttonContainer}>
-                            <TouchableOpacity onPress={handleDeleteActivity}>
-                                <Text style={styles.buttonText}>Slett aktivitet</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                )}
-
-
-            </ScrollView>
-
-            <ScrollView style={styles.chatcontainer}>
-
-            <View style={styles.commentsSection}>
-                <Text style={styles.commentsTitle}>Lurer du på noe?</Text>
                 <ScrollView style={styles.chatcontainer}>
-                    <Comment activityId={activity.id} 
-/>
+                    <View style={styles.commentsSection}>
+                        <Text style={styles.commentsTitle}>Lurer du på noe?</Text>
+                        <ScrollView style={styles.chatcontainer}>
+                            <Comment activityId={activity.id}
+                            />
+                        </ScrollView>
+                    </View>
                 </ScrollView>
-            </View>
-
             </ScrollView>
-
-            
-        </ScrollView>
-        
-
-        <Footer />
-
+            <Footer />
         </View>
     );
 };
@@ -259,7 +242,7 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: 'white',
         padding: 20,
-        width: '98%',
+        minWidth: '98%',
         height: 'auto',
         alignSelf: 'center',
         marginBottom: 20,
@@ -331,14 +314,12 @@ const styles = StyleSheet.create({
         marginTop: 3,
         resizeMode: 'contain',
     },
-
     buttonContainer: {
         marginBottom: 10,
     },
     description: {
         maxHeight: 100,
         overflow: 'scroll',
-
     },
     commentsSection: {
         width: '120%',
@@ -359,7 +340,6 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         borderRadius: 15,
     },
-
 });
 
 

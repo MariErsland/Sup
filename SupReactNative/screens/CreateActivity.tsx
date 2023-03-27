@@ -45,21 +45,21 @@ const NewActivity = () => {
     const navigation = useNavigation();
 
     const handleCreateActivity = async () => {
-        if ((!selectedDate) || (!counties) || (!address.trim()) || (!selectedCategory) || (!description.trim())){
-            setError("All input field must be filled out")
+        if ((!selectedDate) || (!counties) || (!address.trim()) || (!selectedCategory) || (!description.trim())) {
+            setError("Alle felt må fylles ut")
             return;
         }
         if ((address.length < addressMinLength)) {
-            setError("Address cant be less that " + addressMinLength + "characters.")
+            setError("Addressen kan ikke være mindre enn " + addressMinLength + "tegn.")
             return;
         }
         if ((description.length < descriptionMinLength)) {
-            setError("Description cant be less that " + descriptionMinLength + "characters.")
+            setError("Beskrivelsen kan ikke være mindre enn " + descriptionMinLength + "tegn.")
             return;
         }
         const myToken = await retrieveToken();
         console.log(selectedDate, counties, categories);
-        console.log(JSON.stringify({ selectedDate, counties, address, categories, description, number_of_participants, created_by, title, max_participants  }));
+        console.log(JSON.stringify({ selectedDate, counties, address, categories, description, number_of_participants, created_by, title, max_participants }));
         const response = await fetch('http://152.94.160.72:3000/create-activity', {
             method: 'POST',
             headers: {
@@ -116,94 +116,91 @@ const NewActivity = () => {
         }
     }
 
-
-    
     return (
-        
-        <View style={{flex: 1}}>
-            <ScrollView style= {styles.background, styles.scroll}>
-            <View style={styles.container}>
-            
-            <TouchableOpacity onPress={() => setShowDatePicker(!showDatePicker)}>
-                <Text style={styles.label}> - Velg dato og tidspunkt her - </Text>
-                <Text>
-                    {selectedDate}
-                </Text>
-                {showDatePicker && (
-                    <DatePicker
-                        selected={selectedDate}
-                        onSelectedChange={setSelectedDate}
-                        minimumDate={new Date().toISOString().slice(0, 10)}
+        <View style={{ flex: 1 }}>
+            <ScrollView style={styles.background, styles.scroll}>
+                <View style={styles.container}>
+
+                    <TouchableOpacity onPress={() => setShowDatePicker(!showDatePicker)}>
+                        <Text style={styles.label}> - Velg dato og tidspunkt her - </Text>
+                        <Text>
+                            {selectedDate}
+                        </Text>
+                        {showDatePicker && (
+                            <DatePicker
+                                selected={selectedDate}
+                                onSelectedChange={setSelectedDate}
+                                minimumDate={new Date().toISOString().slice(0, 10)}
+                            />
+                        )}
+                    </TouchableOpacity>
+
+                    <Text></Text>
+
+                    <SelectList
+                        setSelected={setSelectedCategory}
+                        data={categories}
+                        save="value"
+                        placeholder='Kategori'
                     />
-                )}
-            </TouchableOpacity>
-            
-            <Text></Text>
-            
-            <SelectList
-                 setSelected={setSelectedCategory}
-                 data={categories}
-                 save="value"
-                 placeholder='Kategori'
-            />
-            <Text></Text>
+                    <Text></Text>
 
-            <SelectList
-                setSelected={setSelectedCounty}
-                data={counties}
-                save="value"
-                placeholder='Fylke'
-            />
-            <>
-            <Text style={styles.label}>Møtested: </Text>
-            <View style={styles.inputContainer}>
-            <TextInput
-                placeholder="Møtested"
-                value={address}
-                onChangeText={handleAddressChange}
-                maxLength={(addressMaxLength+1)}
-                style={[styles.input, {maxHeight: 200}]}
-                multiline={true}
-                
-            />
-            </View>
-            </>
-            <>
-            <Text style={styles.label}>Beskrivelse: </Text>
-            <View style={styles.inputContainer}>
-            <TextInput
-                placeholder="Beskrivelse"
-                value={description}
-                onChangeText={handleDescriptionChange}
-                maxLength={(descriptionMaxLength+1)}
-                multiline={true}
-                style={[styles.input, {maxHeight: 200}]}
-                
-            />
-            </View>
+                    <SelectList
+                        setSelected={setSelectedCounty}
+                        data={counties}
+                        save="value"
+                        placeholder='Fylke'
+                    />
+                    <>
+                        <Text style={styles.label}>Møtested: </Text>
+                        <View style={styles.inputContainer}>
+                            <TextInput
+                                placeholder="Møtested"
+                                value={address}
+                                onChangeText={handleAddressChange}
+                                maxLength={(addressMaxLength + 1)}
+                                style={[styles.input, { maxHeight: 200 }]}
+                                multiline={true}
 
-            <>
-                        <TextInput
-                            placeholder="Max antall deltakere"
-                            value={max_participants}
-                            onChangeText={setMax_participants}
-                        />
+                            />
+                        </View>
                     </>
                     <>
-                        <TextInput
-                            placeholder="Tittel"
-                            value={title}
-                            onChangeText={handletTitleChange}
-                        />
+                        <Text style={styles.label}>Beskrivelse: </Text>
+                        <View style={styles.inputContainer}>
+                            <TextInput
+                                placeholder="Beskrivelse"
+                                value={description}
+                                onChangeText={handleDescriptionChange}
+                                maxLength={(descriptionMaxLength + 1)}
+                                multiline={true}
+                                style={[styles.input, { maxHeight: 200 }]}
+
+                            />
+                        </View>
+
+                        <>
+                            <TextInput
+                                placeholder="Max antall deltakere"
+                                value={max_participants}
+                                onChangeText={setMax_participants}
+                            />
+                        </>
+                        <>
+                            <TextInput
+                                placeholder="Tittel"
+                                value={title}
+                                onChangeText={handletTitleChange}
+                            />
+                        </>
+                        {error && <Text style={{ color: 'red' }}>{error}</Text>}
                     </>
-            {error && <Text style={{color: 'red'}}>{error}</Text>}
-            </>
-            <TouchableOpacity style={styles.button} onPress={handleCreateActivity} >
-                    <Text style={styles.buttonText}>Opprett ny aktivitet</Text>
-                </TouchableOpacity>
-            </View>
-        </ScrollView>
-        <Footer />
+                    <TouchableOpacity style={styles.button} onPress={handleCreateActivity} >
+                        <Text style={styles.buttonText}>Opprett ny aktivitet</Text>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
+            <Footer />
         </View>
     );
 }
@@ -242,17 +239,17 @@ const styles = StyleSheet.create({
         marginTop: 0,
         borderWidth: 1,
         borderColor: 'grey'
-      },
-      input: {
+    },
+    input: {
         fontSize: 16,
         color: 'grey'
-      },
-      label: {
+    },
+    label: {
         marginTop: 10,
         fontWeight: 'bold',
         fontSize: 16,
-      },
-      scroll: {
+    },
+    scroll: {
         marginBottom: 100,
     }
 })

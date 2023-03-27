@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Toucha
 import { retrieveToken } from '../security/token_handling';
 import { getUser } from './getUser';
 import { formatDate } from '../components/formatDate';
+import { validateInputCharacters, validateInputLength } from './inputValiation';
 
 interface Comment {
     id: number;
@@ -24,6 +25,11 @@ const Comments: React.FC<CommentsProps> = ({ activityId }) => {
     const [newComment, setNewComment] = useState('');
     const [currentUserId, setCurrentUserId] = useState(String);
 
+    const [error, setError] = useState('');
+    const commentMinLength = 20;
+    const commentMaxLength = 500;
+
+
     console.log("Activity id inne i Comments", activityId);
 
 
@@ -44,6 +50,12 @@ const Comments: React.FC<CommentsProps> = ({ activityId }) => {
 
     async function handleAddComment() {
         try {
+
+            if ((comments.length < commentMinLength)) {
+                setError('Kommentaren må inneholde mins 1 tegn');
+                return; 
+
+            }
             const user = await getUser()
             const myToken = retrieveToken();
             const response = await fetch(`http://152.94.160.72:3000/activity/${activityId}/comments`, {
@@ -119,6 +131,19 @@ const Comments: React.FC<CommentsProps> = ({ activityId }) => {
 
 }
 
+function handleCommentChange(text: string) {
+    const errorMessageLength = validateInputLength(text, commentMaxLength);
+    const errorMessageCharacters = validateInputCharacters(text);
+    if (errorMessageCharacters !== '') {
+        setError(errorMessageLength + ' ' + errorMessageCharacters)
+    }
+    else {
+        setError(errorMessageLength + ' ' + errorMessageCharacters)
+        setNewComment(text);
+    }
+}
+
+
 
 return (
     <View>
@@ -142,16 +167,18 @@ return (
             <TextInput
                 placeholder="Skriv en kommentar..."
                 value={newComment}
-                onChangeText={text => setNewComment(text)}
+                onChangeText={handleCommentChange}
                 multiline={true}
                 style={[styles.input, { maxHeight: 300 }]}
             />
+            {error && <Text style={{color: 'red'}}>{error}</Text>}
         </View>
 
         <TouchableOpacity style={styles.button} onPress={handleAddComment}>
             <Text style={styles.buttonText}>Legg til kommentar</Text>
         </TouchableOpacity>
     </View>
+    
 );
 }
 
@@ -163,7 +190,6 @@ const styles = StyleSheet.create({
     inputContainer: {
         borderRadius: 10,
         paddingLeft: 15,
-        marginTop: 0,
         borderWidth: 1,
         borderColor: 'grey',
         width: '85%',
