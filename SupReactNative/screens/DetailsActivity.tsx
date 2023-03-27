@@ -325,7 +325,6 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
                     <View>
                     {((participantsInQueue.length !== 0) || ((participantsInQueue.length === 0) && (( activity.max_participants-number_of_participants ) === 0)) ) ? (<Text><Image source={orangeMan} style={styles.icons}/> {participantsInQueue.length} på venteliste </Text> ): null}
                     </View>
-                  
                     
                 </ScrollView>
                 </View>
@@ -355,9 +354,7 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
             </ScrollView>
             </ScrollView>
         <Footer />
-
         </View>
-    
     );
 }
 
@@ -473,6 +470,5 @@ const styles = StyleSheet.create({
     },
 
 });
-
 
 export default DetailsActivity;
