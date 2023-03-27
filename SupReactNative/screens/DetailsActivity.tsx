@@ -231,6 +231,7 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
             }
             const data = await response.json();
             console.log('Activity participants in queue collected successfully', data);
+            data.sort((a, b) => a.time - b.time);
             setParticipantsInQueue(data);
         } catch (error) {
             console.error('Error updating activity participants in queue:', error);
@@ -307,7 +308,8 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
             }
             </View>
             <View>
-                {participantsInQueue.some(participant => participant.user_id === currentUserId) ? (<Text> Du er nummer x på venteliste </Text> ): null}
+            {participantsInQueue.findIndex(participant => participant.user_id === currentUserId) >= 0 ? (<Text>Du er nummer {participantsInQueue.findIndex(participant => participant.user_id === currentUserId) + 1} på ventelisten</Text>) : null}
+
             </View>
             <View style={styles.container}>
                 <ScrollView>
@@ -323,7 +325,6 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
                     <View>
                     {((participantsInQueue.length !== 0) || ((participantsInQueue.length === 0) && (( activity.max_participants-number_of_participants ) === 0)) ) ? (<Text><Image source={orangeMan} style={styles.icons}/> {participantsInQueue.length} på venteliste </Text> ): null}
                     </View>
-                  
                     
                 </ScrollView>
                 </View>
@@ -342,12 +343,7 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
                         </View>
                     </View>
                 )}
-
-
-            
-
             <ScrollView style={styles.chatcontainer}>
-
             <View style={styles.commentsSection}>
                 <Text style={styles.commentsTitle}>Lurer du på noe?</Text>
                 <ScrollView style={styles.chatcontainer}>
@@ -355,16 +351,12 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
 />
                 </ScrollView>
             </View>
-
             </ScrollView>
             </ScrollView>
-
         <Footer />
-
         </View>
-    
     );
-},
+}
 
 const styles = StyleSheet.create({
     background: {
@@ -478,6 +470,5 @@ const styles = StyleSheet.create({
     },
 
 });
-
 
 export default DetailsActivity;
