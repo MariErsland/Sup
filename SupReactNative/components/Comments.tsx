@@ -51,11 +51,11 @@ const Comments: React.FC<CommentsProps> = ({ activityId }) => {
     async function handleAddComment() {
         try {
 
-            if ((comments.length < commentMinLength)) {
+            /*if ((comments.length < commentMinLength)) {
                 setError('Kommentaren må inneholde mins 1 tegn');
                 return; 
 
-            }
+            }*/
             const user = await getUser()
             const myToken = retrieveToken();
             const response = await fetch(`http://152.94.160.72:3000/activity/${activityId}/comments`, {
