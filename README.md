@@ -9,6 +9,7 @@ Pull down our code from GitHub
 ### Install Node.js:
 
 ### Install Java JDK:
+1. Go to 
 
 ### Install Android Studio:
 1. Go to [developer.android.com/studio](developer.android.com/studio) and download latest version
