@@ -36,4 +36,8 @@ Pull down our code from GitHub
 ```
 npx react-native run-android
 ```
-3. 
+2. If you have your virtual device installed, it should open on your virtuel device. if not, follow these steps: 
+    1. Connect your phone to you computer with usb
+    2. Turn developer mode on on your phone
+    3. When prompted, allow usb debugging. 
+ 
