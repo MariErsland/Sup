@@ -11,7 +11,7 @@ Pull down our code from GitHub
 ### Install Java JDK:
 
 ### Install Android Studio:
-1. Go to developer.android.com/studio and download latest version
+1. Go to [developer.android.com/studio](developer.android.com/studio) and download latest version
 2. When installing, remember to check the box 'install andriod virtuel device'. The checkbox will be shown in the installationmenu under 'components' 
 
 *To run the project you have to use Android Studio. You can choose to either download a virtuel device when downloading Android Studio, or to connect you android phone directly on your computer. If you choose to use your phone, you can ignore step 2.*
