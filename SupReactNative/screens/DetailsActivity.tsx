@@ -38,7 +38,7 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
     const [activityParticipants, setActivityParticipants] = useState([{}]);
     const [participantsInQueue, setParticipantsInQueue] = useState([{}]);
     let [number_of_participants, setNumberOfParticipants] = useState(activity.number_of_participants);
-    const now = new Date();
+    let now = new Date();
     const actDate = new Date(activity.time);
 
     useEffect(() => {
@@ -69,7 +69,7 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
                 }
             });
             if (!response.ok) {
-                throw new Error(`Failed to get activity participants. Server responded with ${response.status}.`);
+                throw new Error(`Failed to get status of activity participants. Response from server is ${response.status}.`);
             }
             const data = await response.json();
             console.log('Activity participants collected successfully', data);
@@ -92,10 +92,9 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
                 },
             });
             if (!response.ok) {
-                throw new Error(`Failed to update activity. Server responded with ${response.status}.`);
+                throw new Error(`Failed to sign up for activity. Reponse from server was ${response.status}.`);
             }
             const data = await response.json();
-            console.log('Activity updated successfully', data);
             await updateStatusOfActivityParticipants();
             console.log("Signon")
             console.log("current user: ", currentUserId)
@@ -262,9 +261,9 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
 
     return (
         <View style={styles.background}>
-        <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center', flexGrow: 1 }}>
-            <Text style={styles.title}> {activity.title}</Text>
-            <Text style={styles.madeby}><Image source={MadeBy} style={styles.iconMadeBy} /> Laget av: {activity.created_by.first_name}</Text>
+            <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center', flexGrow: 1 }}>
+                <Text style={styles.title}> {activity.title}</Text>
+                <Text style={styles.madeby}><Image source={MadeBy} style={styles.iconMadeBy} /> Laget av: {activity.created_by.first_name}</Text>
             
             <View>
                 {(actDate < now) ? (<Text> Aktiviteten er utløpt </Text> ): null}
@@ -343,6 +342,7 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
                         </View>
                     </View>
                 )}
+           
             <ScrollView style={styles.chatcontainer}>
             <View style={styles.commentsSection}>
                 <Text style={styles.commentsTitle}>Lurer du på noe?</Text>
@@ -440,14 +440,12 @@ const styles = StyleSheet.create({
         marginTop: 3,
         resizeMode: 'contain',
     },
-
     buttonContainer: {
         marginBottom: 10,
     },
     description: {
         maxHeight: 100,
         overflow: 'scroll',
-
     },
     commentsSection: {
         width: '120%',
@@ -468,7 +466,6 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         borderRadius: 15,
     },
-
 });
 
 export default DetailsActivity;
