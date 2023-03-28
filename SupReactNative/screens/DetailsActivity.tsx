@@ -373,6 +373,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         marginBottom: 20,
         borderRadius: 10,
+        
     },
     participateButtonContainer: {
         alignSelf: 'center',
@@ -461,7 +462,8 @@ const styles = StyleSheet.create({
     chatcontainer: {
         backgroundColor: 'white',
         padding: 10,
-        width: '98%',
+        minWidth: '82%',
+        
         height: 'auto',
         alignSelf: 'center',
         borderRadius: 15,
