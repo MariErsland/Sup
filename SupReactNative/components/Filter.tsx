@@ -28,7 +28,7 @@ const Filter = (props: FilterProps) => {
   const [isPastDateSelected, setIsPastDateSelected] = useState(false);
   const [showPastActivities, setShowPastActivities] = useState(false);
 
-  console.log('shoPastActivities', showPastActivities);
+  //console.log('showPastActivities', showPastActivities);
   const handleCategoryPress = () => {
     setShowSubCategories(prevState => !prevState);
     setShowCounties(false);
@@ -64,7 +64,7 @@ const Filter = (props: FilterProps) => {
   const handleParticipantFilter = async (callback: (activities: ActivityProps[]) => void) => {
     console.log("er inne i HandleParticipantFilter");
     const user = await getUser();
-    console.log("userid " + user?.user?.id);
+    //console.log("userid " + user?.user?.id);
     try {
       const myToken = retrieveToken();
       const response = await fetch(`http://152.94.160.72:3000/activities-by-participants/${user.user.id}`, {
@@ -78,7 +78,7 @@ const Filter = (props: FilterProps) => {
       }
       const activities = await response.json();
       console.log('Activity participants collected successfully', activities);
-      console.log("activities" + activities);
+      //console.log("activities" + activities);
       callback(activities);
       setIsParticipantFilterSelected(true);
     } catch (error) {
@@ -108,7 +108,7 @@ const Filter = (props: FilterProps) => {
       props.setFilteredActivities(props.pastActivities);
     }
     setShowPastActivities(prevState => !prevState);
-    console.log("filteredActivities after setFilteredActivities:", props.filteredActivities);
+    //console.log("filteredActivities after setFilteredActivities:", props.filteredActivities);
   };
   
   

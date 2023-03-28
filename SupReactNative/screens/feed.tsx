@@ -23,11 +23,11 @@ const Feed: React.FC<FeedProps> = ({ navigation }) => {
   const [activityParticipants, setActivityParticipants] = useState<ActivityProps[]>([]);
 
   useAuth({ isLoggedIn, navigation: navigation });
-  console.log('Is logged in in feed: ', isLoggedIn);
+  //console.log('Is logged in in feed: ', isLoggedIn);
 
   const [activities, setActivities] = useState<ActivityProps[]>([]);
   const [filteredActivities, setFilteredActivities] = useState<ActivityProps[] | null>(null);
-  console.log("filter activities: ",filteredActivities)
+  //console.log("filter activities: ",filteredActivities)
   const [pastActivities, setPastActivities] = useState<ActivityProps[]>([]); // define pastActivities in state
 
   const handleFetchActivities = async () => {
@@ -39,12 +39,12 @@ const Feed: React.FC<FeedProps> = ({ navigation }) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log('json' + JSON.stringify(data));
+        //console.log('json' + JSON.stringify(data));
         setActivities(data);
         const currenDate = new Date();
         const pastActivities = data.filter(activity => new Date(activity.time) < currenDate);
         setPastActivities(pastActivities);
-        console.log('past activities inside feed.tsx: ', pastActivities);
+        //console.log('past activities inside feed.tsx: ', pastActivities);
         setFilteredActivities(data);
       })
       .catch((error) => {

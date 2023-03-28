@@ -23,6 +23,8 @@ interface DetailsProps {
 
 const Category = require('../assets/tree-solid.png');
 const MadeBy = require('../assets/user.png');
+const greenMan = require('../assets/darkGreenMan.png')
+const orangeMan = require('../assets/orangeMan.png')
 const PersonAttending = require('../assets/person-solid.png');
 const TimeActivity = require('../assets/clock.png');
 const Address = require('../assets/map.png');
@@ -34,6 +36,7 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
     const navigation = useNavigation();
     const [currentUserId, setCurrentUserId] = useState(String);
     const [activityParticipants, setActivityParticipants] = useState([{}]);
+    const [participantsInQueue, setParticipantsInQueue] = useState([{}]);
     let [number_of_participants, setNumberOfParticipants] = useState(activity.number_of_participants);
     let now = new Date();
     const actDate = new Date(activity.time);
@@ -43,22 +46,14 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
             try {
                 const user = await getUser();
                 setCurrentUserId(user.user.id);
-                const myToken = retrieveToken();
-                let response = await fetch(`http://152.94.160.72:3000/getActivityParticipants/${activity.id}`, {
-                    headers: {
-                        Authorization: `Bearer ${myToken}`
-                    }
-                });
-                console.log("Response: ", response);
-                if (!response.ok) {
-                    throw new Error(`Failed to get activity participants. Response from server is ${response.status}.`);
-                }
-                const data = await response.json();
-                console.log('Activity participants sucess', data);
-                setActivityParticipants(data);
-                console.log("Activity Participants:", activityParticipants);
-            } catch (error) {
-                console.error('Error updating activity:', error);
+                await updateStatusOfActivityParticipants();
+                await updateStatusOfParticipantsInQueue();
+                console.log("Current user id: ", currentUserId);
+                console.log("Current user id: ", user.user.id);
+                console.log("Participants in queue in effect: ", participantsInQueue)
+            }
+            catch(err){
+                console.log("Error", err)
             }
         };
         fetchData();
@@ -79,6 +74,7 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
             const data = await response.json();
             console.log('Activity participants collected successfully', data);
             setActivityParticipants(data);
+            setNumberOfParticipants(data.length)
         } catch (error) {
             console.error('Error updating activity:', error);
         }
@@ -100,7 +96,11 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
             }
             const data = await response.json();
             await updateStatusOfActivityParticipants();
-            setNumberOfParticipants(number_of_participants + 1);
+            console.log("Signon")
+            console.log("current user: ", currentUserId)
+            console.log("Number of participants + 1: ",(number_of_participants + 1))
+            console.log("Length from db: ", data.length)
+            setNumberOfParticipants(data.length); 
         } catch (error) {
             console.error('Error updating activity:', error);
         }
@@ -123,7 +123,17 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
             const data = await response.json();
             console.log('Activity updated successfully', data);
             await updateStatusOfActivityParticipants();
-            setNumberOfParticipants(number_of_participants - 1);
+            setNumberOfParticipants(data.length); 
+
+            //Vis maks antall deltakere > antall deltakere, kjør metode som melder opp neste deltaker
+            if (data.length < activity.max_participants){
+                //Finn neste deltaker
+                console.log("Inne her fordi ein frå køen må over")
+                participantsInQueue.sort((a, b) => a.time - b.time);
+                const firstInQueue = participantsInQueue.shift();
+                await handleAddFirstUserToActivityParticipants(firstInQueue)
+            }
+
         } catch (error) {
             console.error('Error updating activity:', error);
         }
@@ -160,77 +170,193 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
         } catch (error) {
             console.error('Error deleting activity:', error);
         }
+      }
+
+      async function handlePutInQueue(){
+        try {
+            console.log("Inni put in queue in activity");
+            const myToken = await retrieveToken();
+            const response = await fetch(`http://152.94.160.72:3000/putInQueue/${activity.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${myToken}`,
+                },
+            });
+            if (!response.ok) {
+                throw new Error(`Failed to put user in queue. Server responded with ${response.status}.`);
+            }
+            const data = await response.json();
+            console.log('Activity updated successfully, user put in queue', data);
+            await updateStatusOfParticipantsInQueue();
+        } catch (error) {
+            console.error('Error updating activity:', error);
+        }
+      }
+
+      async function handleRemoveFromQueue(){
+        try {
+            console.log("Inni remove from queue in activity");
+            const myToken = await retrieveToken();
+            const response = await fetch(`http://152.94.160.72:3000/removeFromQueue/${activity.id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${myToken}`,
+                },
+            });
+            if (!response.ok) {
+                throw new Error(`Failed to remove user from queue. Server responded with ${response.status}.`);
+            }
+            const data = await response.json();
+            console.log('Activity updated successfully', data);
+            await updateStatusOfParticipantsInQueue();
+        } catch (error) {
+            console.error('Error updating activity:', error);
+        }
+      }
+
+      async function updateStatusOfParticipantsInQueue() {
+        try {
+            const myToken = retrieveToken();
+            let response = await fetch(`http://152.94.160.72:3000/getParticipantsInQueue/${activity.id}`, {
+                headers:
+                {
+                    Authorization: `Bearer ${myToken}`
+                }
+            });
+            if (!response.ok) {
+                throw new Error(`Failed to get activity participants  in queue. Server responded with ${response.status}.`);
+            }
+            const data = await response.json();
+            console.log('Activity participants in queue collected successfully', data);
+            data.sort((a, b) => a.time - b.time);
+            setParticipantsInQueue(data);
+        } catch (error) {
+            console.error('Error updating activity participants in queue:', error);
+        }
     }
 
+    async function handleAddFirstUserToActivityParticipants(user: any) {
+        try {
+            let response = await fetch(`http://152.94.160.72:3000/addUserFromQueueToActivityParticipants/${activity.id}`, {
+                method: 'POST',
+                body: JSON.stringify({ user_id: user.user_id }),
+                headers: {
+                'Content-Type': 'application/json'
+                 }
+            });
+            if (!response.ok) {
+                throw new Error(`Failed to add first user to activity participants. Server responded with ${response.status}.`);
+            }
+            const data = await response.json();
+            console.log('Activity participants in queue collected successfully', data);
+            updateStatusOfParticipantsInQueue();
+            updateStatusOfActivityParticipants();
+        } catch (error) {
+            console.error('Error updating activity participants in queue:', error);
+        }
+    }
+    
 
     return (
         <View style={styles.background}>
             <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center', flexGrow: 1 }}>
                 <Text style={styles.title}> {activity.title}</Text>
                 <Text style={styles.madeby}><Image source={MadeBy} style={styles.iconMadeBy} /> Laget av: {activity.created_by.first_name}</Text>
+            
+            <View>
+                {(actDate < now) ? (<Text> Aktiviteten er utløpt </Text> ): null}
+            </View>
 
-                <View style={styles.participateButtonContainer}>
-
-                    {currentUserId === String(activity.created_by.user_id) || actDate < now
-                        ? (
-                            <View style={[styles.button, { backgroundColor: '#DDB08C' }]} onPress={handleSignOffActivity}>
-                                <Text style={styles.buttonText}>Jeg vil være med!</Text>
-                            </View>
+            <View style={styles.participateButtonContainer}>
+            {
+                (currentUserId === String(activity.created_by.user_id) || actDate < now) ? (
+                    <View style={[styles.button, {backgroundColor: '#DDB08C'}]} >
+                    <Text style={styles.buttonText}>Jeg vil være med!</Text>
+                    </View>
+                ) : (
+                    <>
+                    {currentUserId && activityParticipants.some(participant => participant.user_id === currentUserId) ? (
+                        <TouchableOpacity style={styles.button} onPress={handleSignOffActivity}>
+                        <Text style={styles.buttonText}>Meld meg av!</Text>
+                        </TouchableOpacity>
+                    ) : (
+                        <>
+                        {participantsInQueue.some(participant => participant.user_id === currentUserId) ? (
+                            <TouchableOpacity style={styles.button} onPress={handleRemoveFromQueue}>
+                            <Text style={styles.buttonText}>Fjern meg fra køen</Text>
+                            </TouchableOpacity>
                         ) : (
                             <>
-                                {currentUserId && activityParticipants.some(participant => participant.user_id === currentUserId) ? (
-                                    <TouchableOpacity style={styles.button} onPress={handleSignOffActivity}>
-                                        <Text style={styles.buttonText}>Meld meg av!</Text>
-                                    </TouchableOpacity>
-                                ) : (
-                                    <TouchableOpacity style={styles.button} onPress={handleSignUpForActivity}>
-                                        <Text style={styles.buttonText}>Jeg vil være med!</Text>
-                                    </TouchableOpacity>
-                                )}
+                            {activity.max_participants === number_of_participants && currentUserId !== String(activity.created_by.user_id) && !activityParticipants.some(participant => participant.user_id === currentUserId) ? (
+                                <TouchableOpacity style={styles.button} onPress={handlePutInQueue}>
+                                <Text style={styles.buttonText}>Sett meg i kø</Text>
+                                </TouchableOpacity>
+                            ) : (
+                                <TouchableOpacity style={styles.button} onPress={handleSignUpForActivity}>
+                                <Text style={styles.buttonText}>Jeg vil være med!</Text>
+                                </TouchableOpacity>
+                            )}
                             </>
-                        )
-                    }
-                </View>
-                <ScrollView style={styles.container}>
-                    <ScrollView>
-                        <Text ><Image source={Description} style={styles.icons} /> {activity.description}</Text>
-                        <Text><Image source={Address} style={styles.icons} /> {activity.address}</Text>
-                        <Text><Image source={TimeActivity} style={styles.icons} /> {formatDate(activity.time)}</Text>
-                        <Text><Image source={County} style={styles.icons} /> {activity.county}</Text>
-                        <Text><Image source={PersonAttending} style={styles.icons} /> {number_of_participants}</Text>
-                        <Text><Image source={PersonAttending} style={styles.icons} /> max: {activity.max_participants}</Text>
-                    </ScrollView>
-
-                    {currentUserId === String(activity.created_by.user_id) && (
-                        <View style={styles.editButtonContainer}>
-                            <View style={styles.buttonContainer}>
-                                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('EditActivity', { activity })}>
-                                    <Text style={styles.buttonText}>Rediger</Text>
-                                </TouchableOpacity>
-                            </View>
-                            <View style={styles.buttonContainer}>
-                                <TouchableOpacity onPress={handleDeleteActivity}>
-                                    <Text style={styles.buttonText}>Slett aktivitet</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
+                        )}
+                        </>
                     )}
-                </ScrollView>
+                    </>
+                )
+            }
+            </View>
+            <View>
+            {participantsInQueue.findIndex(participant => participant.user_id === currentUserId) >= 0 ? (<Text>Du er nummer {participantsInQueue.findIndex(participant => participant.user_id === currentUserId) + 1} på ventelisten</Text>) : null}
 
-                <ScrollView style={styles.chatcontainer}>
-                    <View style={styles.commentsSection}>
-                        <Text style={styles.commentsTitle}>Lurer du på noe?</Text>
-                        <ScrollView style={styles.chatcontainer}>
-                            <Comment activityId={activity.id}
-                            />
-                        </ScrollView>
+            </View>
+            <View style={styles.container}>
+                <ScrollView>
+                    
+                <Text ><Image source={Description} style={styles.icons}/> {activity.description}</Text>
+                    <Text><Image source={TimeActivity} style={styles.icons}/> {formatDate(activity.time)}</Text>
+                    <Text><Image source={County} style={styles.icons}/> {activity.county}</Text>
+                    <Text><Image source={Address} style={styles.icons}/> {activity.address}</Text>
+                    <Text><Image source={PersonAttending} style={styles.icons}/> {number_of_participants} påmeldt </Text>
+                    <View>
+                    { (( activity.max_participants-number_of_participants ) !== 0) ? (<Text><Image source={greenMan} style={styles.icons}/> {activity.max_participants-number_of_participants} ledig </Text>) : null}
                     </View>
+                    <View>
+                    {((participantsInQueue.length !== 0) || ((participantsInQueue.length === 0) && (( activity.max_participants-number_of_participants ) === 0)) ) ? (<Text><Image source={orangeMan} style={styles.icons}/> {participantsInQueue.length} på venteliste </Text> ): null}
+                    </View>
+                    
                 </ScrollView>
+                </View>
+
+                {currentUserId === String(activity.created_by.user_id) && (
+                    <View style={styles.editButtonContainer}>
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('EditActivity', { activity })}>
+                                <Text style={styles.buttonText}>Rediger</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity onPress={handleDeleteActivity}>
+                                <Text style={styles.buttonText}>Slett aktivitet</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                )}
+           
+            <ScrollView style={styles.chatcontainer}>
+            <View style={styles.commentsSection}>
+                <Text style={styles.commentsTitle}>Lurer du på noe?</Text>
+                <ScrollView style={styles.chatcontainer}>
+                    <Comment activityId={activity.id} 
+/>
+                </ScrollView>
+            </View>
             </ScrollView>
-            <Footer />
+            </ScrollView>
+        <Footer />
         </View>
     );
-};
+}
 
 const styles = StyleSheet.create({
     background: {
@@ -242,7 +368,7 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: 'white',
         padding: 20,
-        minWidth: '98%',
+        width: '98%',
         height: 'auto',
         alignSelf: 'center',
         marginBottom: 20,
@@ -341,6 +467,5 @@ const styles = StyleSheet.create({
         borderRadius: 15,
     },
 });
-
 
 export default DetailsActivity;

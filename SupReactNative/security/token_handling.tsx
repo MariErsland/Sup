@@ -10,7 +10,7 @@ export async function storeUserToken(myToken: string) {
             })
         );
         const token = await EncryptedStorage.getItem("user_token");
-        console.log(token)
+        //console.log(token)
     } catch (error) {
         console.log(error);
     }
@@ -77,7 +77,7 @@ export async function retrieveToken() {
         const session = await EncryptedStorage.getItem("token");
         
         if (session !== undefined) {
-            console.log("Retrieved token: ", session)
+           // console.log("Retrieved token: ", session)
             return session;
             // Congrats! You've just retrieved your first value!
         }

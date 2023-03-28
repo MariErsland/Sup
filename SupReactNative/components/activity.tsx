@@ -87,7 +87,7 @@ const ActivityList = (props: ActivityListProps) => {
     const pastActivities = sortedActivities.filter(activity => new Date(activity.time) < currentDate);
     const upcomingActivities = sortedActivities.filter(activity => new Date(activity.time) >= currentDate);
     const sortedPastUpcomingActivities = [...upcomingActivities, ...pastActivities];
-    console.log('upcoming inni activity.tsx:', sortedPastUpcomingActivities)
+    //console.log('upcoming inni activity.tsx:', sortedPastUpcomingActivities)
 
     return (
         <ScrollView style={styles.scroll}>

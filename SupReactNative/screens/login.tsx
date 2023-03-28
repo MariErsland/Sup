@@ -37,7 +37,7 @@ const LoginScreen = (props: Props) => {
       console.log("Request timed out");
       setLoading(false);
       Alert.alert("2Could not connect to server. Please try again later.");
-    }, 20 * 1000); //10 seconds
+    }, 20 * 1000); //20 seconds
   };
 
   const onSignIn = () => {
