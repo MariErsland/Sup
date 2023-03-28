@@ -30,5 +30,10 @@ Pull down our code from GitHub
     Variable value: *Path to AppData>Local>Android>Sdk*
 12. Finished!
 
-## Run the code with android studio to get a phone simulator:
+## Run the code with android studio:
 
+1. Go to the project folder and write command:  
+```
+npx react-native run-android
+```
+3. 
