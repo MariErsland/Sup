@@ -1,16 +1,19 @@
 # Sup
-Pull down our code from GitHub
+
 
 ## To run the project you will need:
+Install git
 1. Install Node.js?
-2. Install Java JDK
-3. Install Android Studio
+2. Install Java JDK (Java 11)
+3. Install Android Studio - må ha rett image???
 
 ### Install Node.js:
 Install Node here: https://nodejs.org/en/download
 
 ### Install Java JDK:
-1. Go to 
+1. Go to https://www.oracle.com/java/technologies/downloads/#java11-windows and choose Java 11 for Windows x64 installer. 
+2. You will be prompted for username and password in oracle. Click 'create account'.
+3. When you have created an account you can sign in and Java 11 will download. 
 
 ### Install Android Studio:
 1. Go to [developer.android.com/studio](developer.android.com/studio) and download latest version
