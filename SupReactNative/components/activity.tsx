@@ -31,6 +31,7 @@ const MadeBy = require('../assets/user.png');
 const Category = require('../assets/tree-solid.png');
 const County = require('../assets/globeIcon.png');
 const Description = require('../assets/descriptionIcon.png');
+const Title = require('../assets/title1.png');
 
 const Activity = (props: ActivityProps) => {
     const activityDate = new Date(props.time);
@@ -41,7 +42,8 @@ const Activity = (props: ActivityProps) => {
     return (
         <TouchableOpacity key={props.id} style={[styles.activityBox, { backgroundColor }]} onPress={() => props.navigation.navigate('DetailsActivity', {activity: props})}>
             <View style={styles.iconText}>
-                <Text>TITTEL: {props.title}</Text>
+                <Image source={Title} style={styles.icons}/>
+                <Text style={styles.titleText}>{props.title}</Text>
             </View>
             <View style={styles.iconText}>
                 <Image source={TimeActivity} style={styles.icons}/>
@@ -123,6 +125,9 @@ const styles = StyleSheet.create({
     descriptionText: {
         flex: 1,
         flexWrap: 'wrap',
+    },
+    titleText: {   
+        fontWeight: 'bold' 
     }
 })
 
