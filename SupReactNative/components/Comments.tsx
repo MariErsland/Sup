@@ -28,7 +28,7 @@ const Comments: React.FC<CommentsProps> = ({ activityId }) => {
     const [currentUserId, setCurrentUserId] = useState(String);
 
     const [error, setError] = useState('');
-    const commentMinLength = 20;
+    const commentMinLength = 1;
     const commentMaxLength = 500;
 
 
@@ -50,14 +50,25 @@ const Comments: React.FC<CommentsProps> = ({ activityId }) => {
         fetchComments();
     }, [activityId]);
 
+
     async function handleAddComment() {
         try {
+            console.log('lengde:', newComment.length);
 
-            /*if ((comments.length < commentMinLength)) {
+
+            if ((newComment.length < commentMinLength)) {
                 setError('Kommentaren må inneholde mins 1 tegn');
                 return; 
 
-            }*/
+            }
+
+            if (!newComment.trim()) {
+                setError('Kommentaren kan ikke bare inneholde whitespace.')
+                return;
+            }
+
+            
+        
             const user = await getUser()
             const myToken = retrieveToken();
             const response = await fetch(`http://152.94.160.72:3000/activity/${activityId}/comments`, {
