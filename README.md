@@ -16,7 +16,7 @@ Install Node here: https://nodejs.org/en/download
 3. When you have created an account you can sign in and Java 11 will download. 
 
 ### Install Android Studio:
-1. Go to [developer.android.com/studio](developer.android.com/studio) and download latest version
+1. Go to developer.android.com/studio and download latest version
 
 *To run the project you have to use Android Studio. You can choose to either download a virtuel device when downloading Android Studio, or to connect you android phone directly on your computer. If you choose to use your phone, you can ignore step 2-6.*
 
@@ -56,5 +56,5 @@ npx react-native run-android
  
  
  
- #Nye notater 30.03
- last ned docker: https://www.docker.com/products/docker-desktop/
+ # Nye notater 30.03
+ 1. Last ned docker: https://www.docker.com/products/docker-desktop/
