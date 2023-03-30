@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, ScrollView, ActivityIndicator } from 'react-native';
 import { ActivityProps } from '../components/activity';
 import Footer from '../shared/Footer';
 import { getUser } from '../components/getUser'
@@ -40,9 +40,11 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
     let [number_of_participants, setNumberOfParticipants] = useState(activity.number_of_participants);
     let now = new Date();
     const actDate = new Date(activity.time);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
+            setIsLoading(true);
             try {
                 const user = await getUser();
                 setCurrentUserId(user.user.id);
@@ -51,6 +53,7 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
                 console.log("Current user id: ", currentUserId);
                 console.log("Current user id: ", user.user.id);
                 console.log("Participants in queue in effect: ", participantsInQueue)
+                setIsLoading(false);
             }
             catch(err){
                 console.log("Error", err)
@@ -261,6 +264,11 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
 
     return (
         <View style={styles.background}>
+            {isLoading ? (
+                <ActivityIndicator size="large" color="#EB7B31" />
+
+            ) : (
+            
             <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center', flexGrow: 1 }}>
                 <Text style={styles.title}> {activity.title}</Text>
                 <Text style={styles.madeby}><Image source={MadeBy} style={styles.iconMadeBy} /> Laget av: {activity.created_by.first_name}</Text>
@@ -311,8 +319,8 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
 
             </View>
             <View style={styles.container}>
+                
                 <ScrollView>
-                    
                 <Text ><Image source={Description} style={styles.icons}/> {activity.description}</Text>
                     <Text><Image source={TimeActivity} style={styles.icons}/> {formatDate(activity.time)}</Text>
                     <Text><Image source={County} style={styles.icons}/> {activity.county}</Text>
@@ -353,6 +361,7 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route }) => {
             </View>
             </ScrollView>
             </ScrollView>
+            )}
         <Footer />
         </View>
     );

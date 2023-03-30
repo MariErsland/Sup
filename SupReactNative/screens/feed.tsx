@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import ActivityList, { ActivityProps } from '../components/activity';
 import { NavigationProp, useFocusEffect } from '@react-navigation/native';
 import { RootStackParamList } from '../types';
@@ -20,7 +20,7 @@ const Feed: React.FC<FeedProps> = ({ navigation }) => {
   const { isLoggedIn } = useContext(LoginContext);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedCounties, setSelectedCounties] = useState<string[]>([]);
-  const [activityParticipants, setActivityParticipants] = useState<ActivityProps[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useAuth({ isLoggedIn, navigation: navigation });
   //console.log('Is logged in in feed: ', isLoggedIn);
@@ -31,6 +31,8 @@ const Feed: React.FC<FeedProps> = ({ navigation }) => {
   const [pastActivities, setPastActivities] = useState<ActivityProps[]>([]); // define pastActivities in state
 
   const handleFetchActivities = async () => {
+    setIsLoading(true);
+
     const myToken = await retrieveToken();
     await fetch(`http://152.94.160.72:3000/activities/`, {
       headers: {
@@ -44,8 +46,8 @@ const Feed: React.FC<FeedProps> = ({ navigation }) => {
         const currenDate = new Date();
         const pastActivities = data.filter(activity => new Date(activity.time) < currenDate);
         setPastActivities(pastActivities);
-        //console.log('past activities inside feed.tsx: ', pastActivities);
         setFilteredActivities(data);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log('Error fetching activity', error);
@@ -93,28 +95,34 @@ const Feed: React.FC<FeedProps> = ({ navigation }) => {
   return (
     <FilterContext.Provider value={{ selectedCategories, setSelectedCategories, selectedCounties, setSelectedCounties }}>
       <View style={styles.background}>
-        <Filter onPress={handleFilterReset}
-          activities={activities} 
-          filteredActivities={filteredActivities}
-          setFilteredActivities={setFilteredActivities}
-          pastActivities={pastActivities}/>
-
-        <ScrollView contentContainerStyle={styles.scrollView}>
-          {filteredActivities && filteredActivities.length > 0 ? (
-            <ActivityList
-              activities={filteredActivities}
-              navigation={navigation}
-              hideCreatedBy={false}
-              isUpcoming={false}
-            />
-          ) : (
-            <Text>No activities found.</Text>
-          )}
-        </ScrollView>
-
-        <View style={{ flex: 0 }}>
-          <Footer />
-        </View>
+        {isLoading ? (
+          <ActivityIndicator size="large" color="#EB7B31" />
+        ) : (
+          <>
+            <Filter onPress={handleFilterReset}
+              activities={activities} 
+              filteredActivities={filteredActivities}
+              setFilteredActivities={setFilteredActivities}
+              pastActivities={pastActivities}/>
+  
+            <ScrollView contentContainerStyle={styles.scrollView}>
+              {filteredActivities && filteredActivities.length > 0 ? (
+                <ActivityList
+                  activities={filteredActivities}
+                  navigation={navigation}
+                  hideCreatedBy={false}
+                  isUpcoming={false}
+                />
+              ) : (
+                <Text>Ingen kommende aktiviteter....</Text>
+              )}
+            </ScrollView>
+  
+            <View style={{ flex: 0 }}>
+              <Footer />
+            </View>
+          </>
+        )}
       </View>
     </FilterContext.Provider>
   );

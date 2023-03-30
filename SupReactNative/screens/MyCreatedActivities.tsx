@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import ActivityList from '../components/activity';
@@ -9,10 +9,12 @@ interface MyCreatedActivitiesProps {
   navigation: any;
 }
 
+
 const MyCreatedActivities: React.FC<MyCreatedActivitiesProps> = ({ navigation }) => {
   const [activity, setActivity] = useState(null);
   
   const handleMyCreatedActivities = async () => { 
+   
     const myToken = await retrieveToken();
     try {
       const response = await fetch("http://152.94.160.72:3000/activities-by-user", {
@@ -23,6 +25,8 @@ const MyCreatedActivities: React.FC<MyCreatedActivitiesProps> = ({ navigation })
       const data = await response.json();
       console.log('Data from server:', data);
       setActivity(data);
+      
+
     } catch (error) {
       console.log('Error fetching activity', error);
     }
@@ -41,9 +45,15 @@ useEffect(() => {
 
   return (
     <View style={styles.background}>
+      <View>
+        
+      </View>
+      
       <ScrollView contentContainerStyle={styles.scrollView}>
         {activity ? <ActivityList activities={activity} navigation={navigation} hideCreatedBy={true} /> : <Text>Du har ikke laget noen aktiviteter enda... </Text>}
       </ScrollView>
+    
+      
       <View style={{ flex: 0 }}>
         <Footer />
       </View>

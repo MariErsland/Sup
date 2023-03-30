@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, Component } from 'react';
-import { View, Text, Button, Alert, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import { View, Text, Button, Alert, StyleSheet, TouchableOpacity, Image, ActivityIndicator} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { LoginContext } from '../App';
 import { useAuth } from '../security/auth';
@@ -22,14 +22,19 @@ function ProfileScreen() {
   const {isLoggedIn, setIsLoggedIn} = useContext(LoginContext);
   const UserButton = require('../assets/user.png');
   useAuth({isLoggedIn, navigation});
+  const [isLoading, setIsLoading] = useState(true);
+
 
   //Setting userdata with logged in user
   useEffect(() => {
     const getData = async () => {
+      setIsLoading(true);
       const user = await getUser();
       setData([user.user]);
+      setIsLoading(false);
     };
     getData();
+    
   }, []);
     
   function DeleteUser() {
@@ -195,17 +200,20 @@ function OnSignOut() {
       </View>
       <View style={styles.infoContainer}>
       
-        {
-          data === undefined ? 
-            <View><Text> Loading... </Text></View> : 
+        {data === undefined || isLoading ? (
+            <ActivityIndicator size="large" color="#EB7B31" />
+
+            ) : (
             
+
               data.map((item: User) => (
                 <View  key={item.id} >
                   <Text style={styles.infoElement}>{item.first_name}</Text>
                   <Text style={styles.infoElement}>{item.email}</Text>
                 </View>
               ))
-        }
+        
+        )}
       </View>
       <View style={styles.buttonsContainer}>
         <View style={styles.buttonContainer}>
