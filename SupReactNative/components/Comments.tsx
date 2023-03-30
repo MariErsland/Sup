@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, TouchableWithoutFeedback, Alert, Image } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, TouchableWithoutFeedback, Alert, Image, ActivityIndicator } from 'react-native';
 import { retrieveToken } from '../security/token_handling';
 import { getUser } from './getUser';
 import { formatDate } from '../components/formatDate';
@@ -21,13 +21,12 @@ interface CommentsProps {
 
 const Trash = require('../assets/trash.png');
 
-
 const Comments: React.FC<CommentsProps> = ({ activityId }) => {
     const [comments, setComments] = useState<Comment[]>([]);
     const [newComment, setNewComment] = useState('');
     const [currentUserId, setCurrentUserId] = useState(String);
-
     const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
     const commentMinLength = 1;
     const commentMaxLength = 500;
 
@@ -37,6 +36,7 @@ const Comments: React.FC<CommentsProps> = ({ activityId }) => {
 
     useEffect(() => {
         async function fetchComments() {
+            setIsLoading(true);
             const user = await getUser()
             setCurrentUserId(user.user.id);
             console.log("activity id inni fetch ocmments:", activityId)
@@ -46,6 +46,8 @@ const Comments: React.FC<CommentsProps> = ({ activityId }) => {
             }
             const data = await response.json();
             setComments(data);
+            setIsLoading(false);
+            console.log('setIsloading', isLoading);
         }
         fetchComments();
     }, [activityId]);
@@ -54,12 +56,9 @@ const Comments: React.FC<CommentsProps> = ({ activityId }) => {
     async function handleAddComment() {
         try {
             console.log('lengde:', newComment.length);
-
-
             if ((newComment.length < commentMinLength)) {
                 setError('Kommentaren må inneholde mins 1 tegn');
-                return; 
-
+                return;
             }
 
             if (!newComment.trim()) {
@@ -67,8 +66,8 @@ const Comments: React.FC<CommentsProps> = ({ activityId }) => {
                 return;
             }
 
-            
-        
+
+
             const user = await getUser()
             const myToken = retrieveToken();
             const response = await fetch(`http://152.94.160.72:3000/activity/${activityId}/comments`, {
@@ -88,7 +87,7 @@ const Comments: React.FC<CommentsProps> = ({ activityId }) => {
             console.log("Respones: ", response);
 
             if (!response.ok) {
-                throw new Error(`Failed to handle comment successfully ${response.status}`);
+                throw new Error(`Failed to handle comment ${response.status}`);
             }
 
             //add new comment to the comments array
@@ -110,90 +109,96 @@ const Comments: React.FC<CommentsProps> = ({ activityId }) => {
                 'Er du sikker på du vil slette denne kommentaren?',
                 'Hvis du sletter denne kommentaren, kan du ikke angre',
                 [
-                { text: 'Avbryt', style: 'cancel'},
-                {
-                    text: 'Slett',
-                    onPress: async () => {
-                        const response = await fetch(`http://152.94.160.72:3000/activity/${comment.id}/comments`, {
-                            method: 'DELETE',
-                            headers: {
-                                Authorization: `Bearer ${myToken}`,
-                            },
-                        });
-                        if (!response.ok) {
-                            throw new Error(`Failed to delete comment ${comment.id}. Server responded with ${response.status}.`);
-                        }
+                    { text: 'Avbryt', style: 'cancel' },
+                    {
+                        text: 'Slett',
+                        onPress: async () => {
+                            const response = await fetch(`http://152.94.160.72:3000/activity/${comment.id}/comments`, {
+                                method: 'DELETE',
+                                headers: {
+                                    Authorization: `Bearer ${myToken}`,
+                                },
+                            });
+                            if (!response.ok) {
+                                throw new Error(`Failed to delete comment ${comment.id}. Server responded with ${response.status}.`);
+                            }
 
-                        //fjerne kommentar fra kommentar-arrayen
-                        const updatedComments = Array.isArray(comments) ? comments.filter(c => c.id !== comment.id) : [];
-                        setComments(updatedComments);
+                            //fjerne kommentar fra kommentar-arrayen
+                            const updatedComments = Array.isArray(comments) ? comments.filter(c => c.id !== comment.id) : [];
+                            setComments(updatedComments);
 
+                        },
                     },
-                },
-            
 
-            ],
-            { cancelable: false }
-                
 
-            );      
-            
+                ],
+                { cancelable: false }
+
+
+            );
+
         } catch (error) {
-        console.error("Error blablaba in handleDeleteComments", error);
+            console.error("Errorin handleDeleteComments", error);
+        }
+
     }
 
-}
-
-function handleCommentChange(text: string) {
-    const errorMessageLength = validateInputLength(text, commentMaxLength);
-    const errorMessageCharacters = validateInputCharacters(text);
-    if (errorMessageCharacters !== '') {
-        setError(errorMessageLength + ' ' + errorMessageCharacters)
+    function handleCommentChange(text: string) {
+        const errorMessageLength = validateInputLength(text, commentMaxLength);
+        const errorMessageCharacters = validateInputCharacters(text);
+        if (errorMessageCharacters !== '') {
+            setError(errorMessageLength + ' ' + errorMessageCharacters)
+        }
+        else {
+            setError(errorMessageLength + ' ' + errorMessageCharacters)
+            setNewComment(text);
+        }
     }
-    else {
-        setError(errorMessageLength + ' ' + errorMessageCharacters)
-        setNewComment(text);
-    }
-}
 
-return (
-    <View>
-        <View style={styles.commentFrame}>
-            {comments.map(comment => (
-                <View key={comment.id} style={styles.commentContainer}>
-                    <View style={styles.commentHeader}>
-                    <Text style={styles.commentDate}>{formatDate(comment.created_at)}</Text>
-                    {(comment.user_id) === currentUserId && (
-                        <TouchableWithoutFeedback onPress={() => handleDeleteComment(comment)}>
-                            <View style={styles.deleteButton}>
-                               <Image source={Trash} style={styles.icon}></Image>
+
+    return (
+        <View>
+            {isLoading ? (
+                <ActivityIndicator size="large" color="#EB7B31" />
+
+            ) : (
+                <View style={styles.commentFrame}>
+                    {comments.map(comment => (
+                        <View key={comment.id} style={styles.commentContainer}>
+                            <View style={styles.commentHeader}>
+                                <Text style={styles.commentDate}>{formatDate(comment.created_at)}</Text>
+                                {(comment.user_id) === currentUserId && (
+                                    <TouchableWithoutFeedback onPress={() => handleDeleteComment(comment)}>
+                                        <View style={styles.deleteButton}>
+                                            <Image source={Trash} style={styles.icon}></Image>
+                                        </View>
+                                    </TouchableWithoutFeedback>
+                                )}
+
                             </View>
-                        </TouchableWithoutFeedback>
-                    )}
-                    
-                    </View>
-                    <Text style={styles.commentText}>{comment.user_first_name + ":\n"}<Text style={{ fontWeight: 'normal' }}>{comment.comment} </Text></Text>
+                            <Text style={styles.commentText}>{comment.user_first_name + ":\n"}<Text style={{ fontWeight: 'normal' }}>{comment.comment} </Text></Text>
 
+                        </View>
+                    ))}
                 </View>
-            ))}
-        </View>
-        <View style={styles.inputContainer}>
-            <TextInput
-                placeholder="Skriv en kommentar..."
-                value={newComment}
-                onChangeText={handleCommentChange}
-                multiline={true}
-                style={[styles.input, { maxHeight: 300 }]}
-            />
-            {error && <Text style={{color: 'red'}}>{error}</Text>}
+            )}
+            <View style={styles.inputContainer}>
+                <TextInput
+                    placeholder="Skriv en kommentar..."
+                    value={newComment}
+                    onChangeText={handleCommentChange}
+                    multiline={true}
+                    style={[styles.input, { maxHeight: 300 }]}
+                />
+                {error && <Text style={{ color: 'red' }}>{error}</Text>}
+            </View>
+
+            <TouchableOpacity style={styles.button} onPress={handleAddComment}>
+                <Text style={styles.buttonText}>Legg til kommentar</Text>
+            </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.button} onPress={handleAddComment}>
-            <Text style={styles.buttonText}>Legg til kommentar</Text>
-        </TouchableOpacity>
-    </View>
-    
-);
+    );
 }
 
 const styles = StyleSheet.create({
@@ -268,7 +273,7 @@ const styles = StyleSheet.create({
     commentHeader: {
         flexDirection: 'row',
         alignItems: 'center',
-        
+
     }
 
 });
