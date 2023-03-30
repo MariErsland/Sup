@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, TouchableWithoutFeedback, Alert } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, TouchableWithoutFeedback, Alert, Image } from 'react-native';
 import { retrieveToken } from '../security/token_handling';
 import { getUser } from './getUser';
 import { formatDate } from '../components/formatDate';
@@ -18,6 +18,8 @@ interface Comment {
 interface CommentsProps {
     activityId: number;
 }
+
+const Trash = require('../assets/trash.png');
 
 
 const Comments: React.FC<CommentsProps> = ({ activityId }) => {
@@ -143,21 +145,22 @@ function handleCommentChange(text: string) {
     }
 }
 
-
-
 return (
     <View>
         <View style={styles.commentFrame}>
             {comments.map(comment => (
                 <View key={comment.id} style={styles.commentContainer}>
+                    <View style={styles.commentHeader}>
+                    <Text style={styles.commentDate}>{formatDate(comment.created_at)}</Text>
                     {(comment.user_id) === currentUserId && (
                         <TouchableWithoutFeedback onPress={() => handleDeleteComment(comment)}>
                             <View style={styles.deleteButton}>
-                                <Text style={styles.deleteText}>[X]</Text>
+                               <Image source={Trash} style={styles.icon}></Image>
                             </View>
                         </TouchableWithoutFeedback>
                     )}
-                    <Text style={styles.commentDate}>{formatDate(comment.created_at)}</Text>
+                    
+                    </View>
                     <Text style={styles.commentText}>{comment.user_first_name + ":\n"}<Text style={{ fontWeight: 'normal' }}>{comment.comment} </Text></Text>
 
                 </View>
@@ -232,13 +235,29 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginBottom: 10,
         width: "85%",
+
     },
     deleteButton: {
+        paddingLeft: 120,
         fontWeight: 'bold',
     },
 
     deleteText: {
         color: 'red'
+    },
+
+    icon: {
+        width: 20,
+        height: 18,
+        marginRight: 10,
+        marginBottom: 3,
+        marginTop: 3,
+        resizeMode: 'contain',
+    },
+    commentHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        
     }
 
 });
