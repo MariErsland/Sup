@@ -53,3 +53,8 @@ npx react-native run-android
  3. Må installere react native når det dukker opp under kjøring av kommando npx react native
     Må kanskje bruke kommando:  npm install -g react-native
  Fekk det ikkje til. Prøv å last ned android studio igjen. Ta med alle SDK som trengs
+ 
+ 
+ 
+ #Nye notater 30.03
+ last ned docker: https://www.docker.com/products/docker-desktop/
