@@ -1,59 +1,56 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import ActivityList from '../components/activity';
 import Footer from '../shared/Footer';
-import {retrieveToken}  from '../security/token_handling';
+import { retrieveToken } from '../security/token_handling';
 
 interface MyCreatedActivitiesProps {
   navigation: any;
 }
 
-
 const MyCreatedActivities: React.FC<MyCreatedActivitiesProps> = ({ navigation }) => {
   const [activity, setActivity] = useState(null);
-  
-  const handleMyCreatedActivities = async () => { 
-   
+  const [isLoading, setIsLoading] = useState(true);
+
+  const handleMyCreatedActivities = async () => {
     const myToken = await retrieveToken();
     try {
-      const response = await fetch("http://152.94.160.72:3000/activities-by-user", {
+      const response = await fetch('http://152.94.160.72:3000/activities-by-user', {
         headers: {
-          Authorization: `Bearer ${myToken}`
-        }
+          Authorization: `Bearer ${myToken}`,
+        },
       });
       const data = await response.json();
       console.log('Data from server:', data);
       setActivity(data);
-      
-
     } catch (error) {
       console.log('Error fetching activity', error);
     }
-  }
-  
-
-
-useEffect(() => {
-  const getData = async () => {
-    await handleMyCreatedActivities();
+    setIsLoading(false);
   };
-  getData();
 
-  return () => {};
-}, []);
+  useEffect(() => {
+    const getData = async () => {
+      await handleMyCreatedActivities();
+    };
+    getData();
+  }, []);
 
   return (
     <View style={styles.background}>
-      <View>
-        
-      </View>
-      
+      <View></View>
+
       <ScrollView contentContainerStyle={styles.scrollView}>
-        {activity ? <ActivityList activities={activity} navigation={navigation} hideCreatedBy={true} /> : <Text>Du har ikke laget noen aktiviteter enda... </Text>}
+        {isLoading ? (
+          <ActivityIndicator size="large" color="#EB7B31" />
+        ) : activity && activity.length > 0 ? (
+          <ActivityList activities={activity} navigation={navigation} hideCreatedBy={true} />
+        ) : (
+          <Text>Du har ikke opprettet noen aktiviteter enda... </Text>
+        )}
       </ScrollView>
-    
-      
+
       <View style={{ flex: 0 }}>
         <Footer />
       </View>

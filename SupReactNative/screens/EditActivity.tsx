@@ -54,14 +54,16 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
     }, []);
 
     // To get this value prefilled I set the value locally here
- 
-    const [max_participants, setMax_participants] = useState(activity.max_participants);
-    console.log("maks participant", activity.max_participants);
+
+    const [max_participants, setMax_participants] = useState(activity.max_participants.toString());
+
+
+    console.log("maks participant ---------------------------------------", activity.max_participants);
     console.log('participants', activity.number_of_participants);
-    const [numberOfParticipants, setNumberOfParticipants] = useState(activity.number_of_participants);
 
     const [description, setDescription] = useState(activity.description);
     const [address, setAddress] = useState(activity.address);
+
     const [title, setTitle] = useState(activity.title);
 
     const navigation = useNavigation();
@@ -70,24 +72,24 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
     console.log("selectedCategory:" + selectedCategory);
 
     const handleEditActivity = async () => {
-        if ((!selectedDate) || (!counties) || (!address.trim()) || (!selectedCategory) || (!description.trim())){
+        if ((!selectedDate) || (!counties) || (!address.trim()) || (!selectedCategory) || (!description.trim())) {
             setError("All input field must be filled out")
             return;
         }
-        if ((address.length < addressMinLength)){
+        if ((address.length < addressMinLength)) {
             console.log("Address cant be less that ", addressMinLength, "characters.")
             setError("Address cant be less that " + addressMinLength + "characters.")
             return;
         }
-        if ((description.length < descriptionMinLength)){
+        if ((description.length < descriptionMinLength)) {
             console.log("Description cant be less that ", descriptionMinLength, "characters.")
             setError("Description cant be less that " + descriptionMinLength + "characters.")
             return;
-        
+
         }
         try {
             const myToken = await retrieveToken();
-            console.log('description: ',title);
+            console.log('description: ', title);
             console.log('max_part: ', max_participants);
             const response = await fetch(`http://152.94.160.72:3000/activity/${activity.id}`, {
                 method: 'PUT',
@@ -107,7 +109,7 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
                 }),
             });
             if (!response.ok) {
-                console.log('tittel her',title)
+                console.log('tittel her', title)
                 throw new Error(`Failed to update activity. Server responded with ${response.status}.`);
             }
             const data = await response.json();
@@ -119,24 +121,22 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
         }
     };
 
-    function handleDescriptionChange(text: string ){
+    function handleDescriptionChange(text: string) {
         const errorMessageLength = validateInputLength(text, descriptionMaxLength);
         const errorMessageCharacters = validateInputCharacters(text);
-        if (errorMessageCharacters !== '')
-        {
+        if (errorMessageCharacters !== '') {
             setError(errorMessageLength + ' ' + errorMessageCharacters)
         }
         else {
             setError(errorMessageLength + ' ' + errorMessageCharacters)
             setDescription(text)
         }
-        
+
     }
-    function handleAddressChange(text: string ){
+    function handleAddressChange(text: string) {
         const errorMessageLength = validateInputLength(text, addressMaxLength);
         const errorMessageCharacters = validateInputCharacters(text);
-        if (errorMessageCharacters !== '')
-        {
+        if (errorMessageCharacters !== '') {
             setError(errorMessageLength + ' ' + errorMessageCharacters)
         }
         else {
@@ -145,11 +145,10 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
         }
     }
 
-    function handleTitleChange(text: string ){
+    function handleTitleChange(text: string) {
         const errorMessageLength = validateInputLength(text, addressMaxLength);
         const errorMessageCharacters = validateInputCharacters(text);
-        if (errorMessageCharacters !== '')
-        {
+        if (errorMessageCharacters !== '') {
             setError(errorMessageLength + ' ' + errorMessageCharacters)
         }
         else {
@@ -194,47 +193,47 @@ const EditActivity: React.FC<EditActivityProps> = ({ route }) => {
                     />
 
                     <>
-                    <Text style={styles.label}>Møtested: </Text>
-                    <View style={styles.inputContainer}>
-                        <TextInput
-                        value={address}
-                        onChangeText={handleAddressChange}
-                        maxLength={(addressMaxLength+1)}
-                        style={[styles.input, {maxHeight: 200}]}
-                        multiline={true}
-                        />
-                    </View>
+                        <Text style={styles.label}>Møtested: </Text>
+                        <View style={styles.inputContainer}>
+                            <TextInput
+                                value={address}
+                                onChangeText={handleAddressChange}
+                                maxLength={(addressMaxLength + 1)}
+                                style={[styles.input, { maxHeight: 200 }]}
+                                multiline={true}
+                            />
+                        </View>
                     </>
                     <>
-                    <Text style={styles.label}>Beskrivelse: </Text>
-                    <View style={styles.inputContainer}>
-                    <TextInput
-                        value={description}
-                        onChangeText={handleDescriptionChange}
-                        maxLength={(descriptionMaxLength+1)}
-                        multiline={true}
-                        style={[styles.input, {maxHeight: 200}]}
-                    />
-                    </View>
+                        <Text style={styles.label}>Beskrivelse: </Text>
+                        <View style={styles.inputContainer}>
+                            <TextInput
+                                value={description}
+                                onChangeText={handleDescriptionChange}
+                                maxLength={(descriptionMaxLength + 1)}
+                                multiline={true}
+                                style={[styles.input, { maxHeight: 200 }]}
+                            />
+                        </View>
 
-                    <Text>Tittel: </Text>
-                    <View style={styles.inputContainer}>
-                    <TextInput
-                        value={title}
-                        onChangeText={handleTitleChange}
-                    />
-                    </View>
+                        <Text>Tittel: </Text>
+                        <View style={styles.inputContainer}>
+                            <TextInput
+                                value={title}
+                                onChangeText={handleTitleChange}
+                            />
+                        </View>
 
-                    <Text>Hvor mange kan maks melde seg på: </Text>
-                    <View style={styles.inputContainer}>
-                    <TextInput
-                        value={max_participants}
-                        onChangeText={setMax_participants}
-                    />
-                    </View>
-                    
-                    <View></View>
-                    {error && <Text style={{color: 'red'}}>{error}</Text>}
+                        <Text>Hvor mange kan maks melde seg på: </Text>
+                        <View style={styles.inputContainer}>
+                            <TextInput
+                                value={max_participants.toString()}
+                                onChangeText={(text) => setMax_participants(Number(text))}
+                            />
+                        </View>
+
+                        <View></View>
+                        {error && <Text style={{ color: 'red' }}>{error}</Text>}
                     </>
 
                     <TouchableOpacity style={styles.button} onPress={handleEditActivity} >
@@ -281,17 +280,17 @@ const styles = StyleSheet.create({
         marginTop: 0,
         borderWidth: 1,
         borderColor: 'grey'
-      },
-      input: {
+    },
+    input: {
         fontSize: 16,
         color: 'grey'
-      },
-      label: {
+    },
+    label: {
         marginTop: 10,
         fontWeight: 'bold',
         fontSize: 16,
-      },
-      scroll: {
+    },
+    scroll: {
         marginBottom: 100,
     }
 })

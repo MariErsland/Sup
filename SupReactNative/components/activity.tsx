@@ -126,9 +126,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexWrap: 'wrap',
     },
-    titleText: {   
-        fontWeight: 'bold' 
-    }
+   
 })
 
 export default ActivityList;
