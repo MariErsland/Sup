@@ -58,3 +58,10 @@ npx react-native run-android
  
  # Nye notater 30.03
  1. Last ned docker: https://www.docker.com/products/docker-desktop/
+
+# Nye notater 31.03
+1. Last ned java 11 først:
+    1. ```
+         Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+      ``` 
+    2. 
