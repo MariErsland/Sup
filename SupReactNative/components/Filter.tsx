@@ -116,7 +116,9 @@ const Filter = (props: FilterProps) => {
   return (
     <View>
       <View style={styles.container}>
+        
         <View style={styles.categoryContainer}>
+        <ScrollView horizontal={true}>
           <TouchableOpacity onPress={handleCategoryPress}>
             <Text style={[
               styles.filterText,
@@ -136,15 +138,7 @@ const Filter = (props: FilterProps) => {
               Sted
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={handlePastActivitiesFilter}>
-            <Text style={[
-              styles.filterText,
-              styles.filterButton,
-              showPastActivities && styles.filterButtonSelected
-            ]}>
-              Dato
-            </Text>
-          </TouchableOpacity>
+          
           <TouchableOpacity onPress={() => handleParticipantFilterPress(props.setFilteredActivities)}>
             <Text style={[
               styles.filterText,
@@ -154,6 +148,17 @@ const Filter = (props: FilterProps) => {
               Påmeldte
             </Text>
           </TouchableOpacity>
+          
+          <TouchableOpacity onPress={handlePastActivitiesFilter}>
+            <Text style={[
+              styles.filterText,
+              styles.filterButton,
+              showPastActivities && styles.filterButtonSelected
+            ]}>
+              Tidligere aktiviteter
+            </Text>
+          </TouchableOpacity>
+          </ScrollView>
         </View>
       </View>
 
