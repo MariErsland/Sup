@@ -41,6 +41,7 @@ const NewActivity = () => {
     const addressMaxLength = 100;
     const descriptionMinLength = 20;
     const addressMinLength = 10;
+    const ParticipantMin = 2; 
 
     const navigation = useNavigation();
 
@@ -116,6 +117,25 @@ const NewActivity = () => {
         }
     }
 
+    function handleMaxParticipantChange(text: string) {
+        if (!isNaN(Number(text))) {
+            const numParticipants = Number(text);
+            const errorMessageLength = validateInputLength(text, ParticipantMin);
+            const errorMessageCharacters = validateInputCharacters(text);
+            if (errorMessageCharacters !== '') {
+                setError(errorMessageLength + ' ' + errorMessageCharacters)
+            }
+            else if (numParticipants < ParticipantMin ) {
+                setError("Minst antall påmeldte kan ikke være mindre enn 2");
+            }
+            else {
+                setError(errorMessageLength + ' ' + errorMessageCharacters)
+                setMax_participants(text)
+            }
+        }
+    }
+    
+
     return (
         <View style={{ flex: 1 }}>
             <ScrollView style={styles.background, styles.scroll}>
@@ -134,6 +154,19 @@ const NewActivity = () => {
                             />
                         )}
                     </TouchableOpacity>
+
+                    <Text style={styles.label}>Tittel: </Text>
+                    <View style={styles.inputContainer}>
+                        <TextInput
+                            placeholder="Tittel"
+                            value={title}
+                            onChangeText={handletTitleChange}
+                            style={[styles.input, { maxHeight: 200 }]}
+                            multiline={true}
+                        />
+                    </View>
+
+
 
                     <Text></Text>
 
@@ -180,18 +213,18 @@ const NewActivity = () => {
                         </View>
 
                         <>
-                            <TextInput
-                                placeholder="Max antall deltakere"
-                                value={max_participants}
-                                onChangeText={setMax_participants}
-                            />
+                            <Text style={styles.label}>Maks antall deltakere: </Text>
+                            <View style={styles.inputContainer}>
+                                <TextInput
+                                    placeholder="Max antall deltakere"
+                                    value={max_participants}
+                                    onChangeText={handleMaxParticipantChange}
+                                    keyboardType={'numeric'}
+                                />
+                            </View>
                         </>
                         <>
-                            <TextInput
-                                placeholder="Tittel"
-                                value={title}
-                                onChangeText={handletTitleChange}
-                            />
+
                         </>
                         {error && <Text style={{ color: 'red' }}>{error}</Text>}
                     </>
