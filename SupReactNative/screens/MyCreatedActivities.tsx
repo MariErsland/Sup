@@ -1,41 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import ActivityList from '../components/activity';
 import Footer from '../shared/Footer';
-import { retrieveToken } from '../security/token_handling';
+import { useMyActivitiesLogic } from '../screens-logic/MyCreatedActivitiesLogic'
 
 interface MyCreatedActivitiesProps {
   navigation: any;
 }
 
-const MyCreatedActivities: React.FC<MyCreatedActivitiesProps> = ({ navigation }) => {
-  const [activity, setActivity] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const handleMyCreatedActivities = async () => {
-    const myToken = await retrieveToken();
-    try {
-      const response = await fetch('http://152.94.160.72:3000/activities-by-user', {
-        headers: {
-          Authorization: `Bearer ${myToken}`,
-        },
-      });
-      const data = await response.json();
-      console.log('Data from server:', data);
-      setActivity(data);
-    } catch (error) {
-      console.log('Error fetching activity', error);
-    }
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    const getData = async () => {
-      await handleMyCreatedActivities();
-    };
-    getData();
-  }, []);
+const MyCreatedActivitiesScreen: React.FC<MyCreatedActivitiesProps> = ({ navigation }) => {
+  const { activities, isLoading, handleMyCreatedActivities } = useMyActivitiesLogic();
 
   return (
     <View style={styles.background}>
@@ -44,8 +18,8 @@ const MyCreatedActivities: React.FC<MyCreatedActivitiesProps> = ({ navigation })
       <ScrollView contentContainerStyle={styles.scrollView}>
         {isLoading ? (
           <ActivityIndicator size="large" color="#EB7B31" />
-        ) : activity && activity.length > 0 ? (
-          <ActivityList activities={activity} navigation={navigation} hideCreatedBy={true} />
+        ) : activities && activities.length > 0 ? (
+          <ActivityList activities={activities} navigation={navigation} hideCreatedBy={true} />
         ) : (
           <Text>Du har ikke opprettet noen aktiviteter enda... </Text>
         )}
@@ -68,4 +42,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyCreatedActivities;
+export default MyCreatedActivitiesScreen;
