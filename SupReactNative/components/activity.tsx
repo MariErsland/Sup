@@ -18,6 +18,7 @@ export interface ActivityProps {
         first_name: string;
     };
     onPress: () => void;
+
     navigation: any;
     activities: ActivityProps[];
     hideCreatedBy?: boolean;
