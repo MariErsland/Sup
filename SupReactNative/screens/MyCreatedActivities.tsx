@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import ActivityList from '../components/activity';
-import Footer from '../shared/Footer';
+import Footer from '../components/Footer';
 import { useMyActivitiesLogic } from '../screens-logic/MyCreatedActivitiesLogic'
 
 interface MyCreatedActivitiesProps {

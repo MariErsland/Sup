@@ -5,9 +5,9 @@ import { NavigationProp, useFocusEffect } from '@react-navigation/native';
 import { RootStackParamList } from '../types';
 import { LoginContext } from '../App';
 import { useAuth } from '../security/auth';
-import Footer from '../shared/Footer';
+import Footer from '../components/Footer';
 import Filter from '../components/Filter';
-import { FilterContext } from '../components/FilterContext';
+import { FilterContext } from '../helpers/FilterContext';
 import { useFeedLogic } from '../screens-logic/FeedLogic';
 
 interface FeedProps {

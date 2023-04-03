@@ -2,8 +2,8 @@ import React, { useContext, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { categories, counties } from '../state/ActivityState';
 import activity, { ActivityProps } from './activity';
-import { FilterContext } from './FilterContext';
-import { getUser } from '../components/getUser';
+import { FilterContext } from '../helpers/FilterContext';
+import { getUser } from '../services/getUser';
 import { retrieveToken } from '../security/token_handling';
 
 

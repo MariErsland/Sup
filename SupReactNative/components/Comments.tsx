@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, TouchableWithoutFeedback, Alert, Image, ActivityIndicator } from 'react-native';
 import { retrieveToken } from '../security/token_handling';
-import { getUser } from './getUser';
-import { formatDate } from '../components/formatDate';
-import { validateInputCharacters, validateInputLength } from './inputValiation';
+import { getUser } from '../services/getUser';
+import { formatDate } from '../helpers/formatDate';
+import { validateInputCharacters, validateInputLength } from '../helpers/inputValiation';
 
 interface Comment {
     id: number;

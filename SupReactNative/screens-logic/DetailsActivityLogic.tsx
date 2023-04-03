@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ActivityProps } from '../components/activity';
-import { getUser } from '../components/getUser'
+import { getUser } from '../services/getUser'
 import { retrieveToken } from '../security/token_handling';
 import { Alert} from 'react-native';
 

@@ -1,8 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import { retrieveToken } from '../security/token_handling';
-import { formatDate } from '../components/formatDate';
-import { validateInputCharacters, validateInputLength } from '../components/inputValiation';
+import { formatDate } from '../helpers/formatDate';
+import { validateInputCharacters, validateInputLength } from '../helpers/inputValiation';
 import { counties, useActivityState } from '../state/ActivityState';
 
 interface EditActivityLogicProps {

@@ -1,6 +1,6 @@
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list'
-import Footer from '../shared/Footer';
+import Footer from '../components/Footer';
 import DatePicker from 'react-native-modern-datepicker';
 import React from 'react';
 import { useCreateActivityLogic } from '../screens-logic/CreateActivityLogic'
