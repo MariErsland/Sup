@@ -3,7 +3,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { LoginContext } from '../App';
 import { useAuth } from '../security/auth';
 import { retrieveToken } from '../security/token_handling';
-import { validateInputCharacters, validateInputLength } from '../components/inputValiation';
+import { validateInputCharacters, validateInputLength } from '../helpers/inputValiation';
 
 export const useEditLogic = () => {
   const navigation = useNavigation();

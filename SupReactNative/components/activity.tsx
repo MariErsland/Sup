@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Image, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { formatDate } from './formatDate';
+import { formatDate } from '../helpers/formatDate';
 
 export interface ActivityProps {
     title: string;

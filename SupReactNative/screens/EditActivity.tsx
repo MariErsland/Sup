@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list';
-import Footer from '../shared/Footer';
+import Footer from '../components/Footer';
 import DatePicker from 'react-native-modern-datepicker';
 import { useEditActivityLogic } from '../screens-logic/EditActivityLogic'
 import { categories, counties } from '../state/ActivityState';
-import { formatDate } from '../components/formatDate';
+import { formatDate } from '../helpers/formatDate';
 
 interface EditActivityProps {
     route: {

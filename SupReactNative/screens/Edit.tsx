@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
-import Footer from '../shared/Footer';
+import Footer from '../components/Footer';
 import { useEditLogic } from '../screens-logic/EditLogic';
 
 const Edit = () => {

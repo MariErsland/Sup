@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, ScrollView, ActivityIndicator } from 'react-native';
 import { ActivityProps } from '../components/activity';
-import Footer from '../shared/Footer';
-import { formatDate } from '../components/formatDate';
+import Footer from '../components/Footer';
+import { formatDate } from '../helpers/formatDate';
 import Comment from '../components/Comments';
 import { useDetailsActivityLogic } from '../screens-logic/DetailsActivityLogic'
 

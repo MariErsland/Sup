@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useActivityState, categories, counties } from '../state/ActivityState';
 import { retrieveToken } from '../security/token_handling';
-import { validateInputCharacters, validateInputLength } from '../components/inputValiation';
+import { validateInputCharacters, validateInputLength } from '../helpers/inputValiation';
 import { useNavigation } from '@react-navigation/native';
 
 export const useCreateActivityLogic = () => {

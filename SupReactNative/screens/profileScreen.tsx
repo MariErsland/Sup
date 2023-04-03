@@ -3,8 +3,8 @@ import { View, Text, Button, Alert, StyleSheet, TouchableOpacity, Image} from 'r
 import { useNavigation } from '@react-navigation/native';
 import { LoginContext } from '../App';
 import { useAuth } from '../security/auth';
-import { getUser } from '../components/getUser';
-import Footer from '../shared/Footer';
+import { getUser } from '../services/getUser';
+import Footer from '../components/Footer';
 import { deleteToken, retrieveToken} from '../security/token_handling';
 //import { onSignOut } from '../screens/login'
 import AsyncStorage from '@react-native-async-storage/async-storage';
