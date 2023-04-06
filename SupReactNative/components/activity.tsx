@@ -41,6 +41,7 @@ const Activity = (props: ActivityProps) => {
     const backgroundColor = activityDate < currentDate ? 'lightgray' : 'white';
 
     return (
+            
         <TouchableOpacity key={props.id} style={[styles.activityBox, { backgroundColor }]} onPress={() => props.navigation.navigate('DetailsActivity', 
             {
                 activity: {
@@ -63,8 +64,8 @@ const Activity = (props: ActivityProps) => {
                 }
             }
         )}>
-            <View style={styles.iconText}>
-                <Image source={Title} style={styles.icons}/>
+            
+            <View style={styles.iconTextTitle}>
                 <Text style={styles.titleText}>{props.title}</Text>
             </View>
             <View style={styles.iconText}>
@@ -138,6 +139,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginRight: 10
     },
+    iconTextTitle: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginRight: 10,
+        marginBottom: 5,
+
+    },
     scroll: {
         marginBottom: 100,
     },
@@ -145,7 +153,13 @@ const styles = StyleSheet.create({
         flex: 1,
         flexWrap: 'wrap',
     },
-   
+    titleText: {
+        color: '#145D6E',
+        fontWeight: 'bold',
+        fontSize: 17,
+        
+        
+    }   
 })
 
 export default ActivityList;
