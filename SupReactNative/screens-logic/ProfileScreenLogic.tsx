@@ -17,6 +17,7 @@ interface User {
 
 export const ProfileScreenLogic = () => {
 
+  const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation();
   const [data, setData] = useState<User[]>([]);
   const {isLoggedIn, setIsLoggedIn} = useContext(LoginContext);
@@ -24,9 +25,11 @@ export const ProfileScreenLogic = () => {
 
     //Setting userdata with logged in user
   useEffect(() => {
+    setIsLoading(true)
     const getData = async () => {
       const user = await getUser();
       setData([user.user]);
+      setIsLoading(false)
     };
     getData();
   }, []);
@@ -89,7 +92,7 @@ export const ProfileScreenLogic = () => {
 
   function EditUser() {
     console.log("User: ", data[0]);
-    navigation.navigate('Edit', { params: { userId: data[0].id } });
+    navigation.navigate('Edit', { params: { userId: data[0].id, firstName: data[0].first_name, email: data[0].email } });
 }
 
 
@@ -154,6 +157,9 @@ function OnSignOut() {
     DeleteUser,
     EditUser,
     OnSignOut,
+    isLoading,
+    setIsLoading,
+    setData
     };
 
-}
+};

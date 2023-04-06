@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, ScrollView } from 'react-native';
 import Footer from '../components/Footer';
 import { useEditLogic } from '../screens-logic/EditLogic';
 
@@ -20,36 +20,45 @@ const Edit = () => {
   const nameMaxLength = 30;
 
   return (
-    <View style={styles.background}>
-      <View style={styles.container}>
-      <View style={styles.imageContainer}>
-        <View style={styles.imageFrame}>
-          <Image style={styles.image} source={UserButton} />
-        </View>
-      </View>
+    <View style={{ flex: 1 }}>
+      <ScrollView style={[styles.background, styles.scroll]}>
+      <Text style={styles.title}> Rediger din profil </Text> 
+        <View style={styles.container}>
+          <View style={styles.imageContainer}>
+            <View style={styles.imageFrame}>
+              <Image style={styles.image} source={UserButton} />
+            </View>
+          </View>
 
-      <View style={styles.infoContainer}>
-        <Text style={styles.label}> Navn: </Text>
-        <View style={styles.inputContainer}>
-          <TextInput
-            placeholder={firstName}
-            onChangeText={text => handleSetFirstName(text)}
-            value={firstName}
-            maxLength={(nameMaxLength+1)}
-            style={styles.input}
-          />
-        </View>
-      <Text style={styles.label}>{email}</Text>
-      {error && <Text style={{color: 'red'}}>{error}</Text>}
-      </View>
+          <View style={styles.infoContainer}>
+            <Text style={styles.label}> Navn: </Text>
+            <View style={styles.inputContainer}>
+              <TextInput
+                placeholder={firstName}
+                onChangeText={text => handleSetFirstName(text)}
+                value={firstName}
+                maxLength={(nameMaxLength+1)}
+                style={styles.input}
+              />
+            </View>
+            <Text style={styles.label}>E-post:</Text>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  value={email}
+                  editable={false}
+                  style={styles.input}
+                />
+              </View>
+          {error && <Text style={{color: 'red'}}>{error}</Text>}
+          </View>
 
-      <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.button} onPress={saveChanges}>
-                        <Text style={styles.buttonText}>Lagre endringer</Text>
-                    </TouchableOpacity>
-                </View>
-      </View>
-      
+          <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.button} onPress={saveChanges}>
+                  <Text style={styles.buttonText}> Lagre endringer </Text>
+              </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
       <Footer />
     </View>
   );
@@ -76,6 +85,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start' ,
   },
   buttonContainer: {
+    marginTop: 25,
     marginVertical: 10,
     backgroundColor: '#EB7B31',
     borderRadius: 10,
@@ -122,6 +132,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
+  scroll: {
+    marginBottom: 100,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    alignSelf: 'center', 
+    paddingBottom: 15
+  }
 })
 
 export default Edit;

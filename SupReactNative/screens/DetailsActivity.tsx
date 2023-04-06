@@ -5,6 +5,7 @@ import { formatDate } from '../helpers/formatDate';
 import Comment from '../components/Comments';
 import { useDetailsActivityLogic } from '../screens-logic/DetailsActivityLogic'
 
+
 interface DetailsProps {
     route: {
         params: {
@@ -13,6 +14,7 @@ interface DetailsProps {
     };
     activityParticipants: any;
 }
+
 
 const MadeBy = require('../assets/user.png');
 const greenMan = require('../assets/darkGreenMan.png')
@@ -23,7 +25,10 @@ const Address = require('../assets/map.png');
 const County = require('../assets/globeIcon.png');
 const Description = require('../assets/descriptionIcon.png');
 
+
 const DetailsActivity: React.FC<DetailsProps> = ({ route, navigation }) => {
+    console.log("routeparams activity: ", route.params);
+    //const { id, address, category, county, createdBy, desctiption, hideCreatedBy, isUpcoming, maxParticipants, navigation, numberOfParticipants } = route.params;
     const { activity } = route.params;
     const {
         currentUserId,
@@ -36,25 +41,21 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route, navigation }) => {
         handleSignOffActivity,
         handleDeleteActivity,
         handlePutInQueue,
-        handleRemoveFromQueue
+        handleRemoveFromQueue,
+        handleSignUpForActivity
     } = useDetailsActivityLogic(activity, navigation);
-
 
     return (
         <View style={styles.background}>
             {isLoading ? (
                 <ActivityIndicator size="large" color="#EB7B31" />
-
             ) : (
-
                 <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center', flexGrow: 1 }}>
                     <Text style={styles.title}> {activity.title}</Text>
                     <Text style={styles.madeby}><Image source={MadeBy} style={styles.iconMadeBy} /> Laget av: {activity.created_by.first_name}</Text>
-
                     <View>
                         {(actDate < now) ? (<Text> Aktiviteten er utløpt </Text>) : null}
                     </View>
-
                     <View style={styles.participateButtonContainer}>
                         {
                             (currentUserId === String(activity.created_by.user_id) || actDate < now) ? (
@@ -75,7 +76,7 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route, navigation }) => {
                                                 </TouchableOpacity>
                                             ) : (
                                                 <>
-                                                    {activity.max_participants === number_of_participants && currentUserId !== String(activity.created_by.user_id) && !activityParticipants.some(participant => participant.user_id === currentUserId) ? (
+                                                    {activity.max_participants === activityParticipants.length && currentUserId !== String(activity.created_by.user_id) && !activityParticipants.some(participant => participant.user_id === currentUserId) ? (
                                                         <TouchableOpacity style={styles.button} onPress={handlePutInQueue}>
                                                             <Text style={styles.buttonText}>Sett meg i kø</Text>
                                                         </TouchableOpacity>
@@ -95,40 +96,41 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route, navigation }) => {
                     <View>
                         {participantsInQueue.findIndex(participant => participant.user_id === currentUserId) >= 0 ? (<Text>Du er nummer {participantsInQueue.findIndex(participant => participant.user_id === currentUserId) + 1} på ventelisten</Text>) : null}
 
+
                     </View>
                     <View style={styles.container}>
+
 
                         <ScrollView>
                             <Text ><Image source={Description} style={styles.icons} /> {activity.description}</Text>
                             <Text><Image source={TimeActivity} style={styles.icons} /> {formatDate(activity.time)}</Text>
                             <Text><Image source={County} style={styles.icons} /> {activity.county}</Text>
                             <Text><Image source={Address} style={styles.icons} /> {activity.address}</Text>
-                            <Text><Image source={PersonAttending} style={styles.icons} /> {number_of_participants} påmeldt </Text>
+                            <Text><Image source={PersonAttending} style={styles.icons} /> {activityParticipants.length} påmeldt </Text>
                             <View>
-                                {((activity.max_participants - number_of_participants) !== 0) ? (<Text><Image source={greenMan} style={styles.icons} /> {activity.max_participants - number_of_participants} ledig </Text>) : null}
+                                {((activity.max_participants - activityParticipants.length) !== 0) ? (<Text><Image source={greenMan} style={styles.icons} /> {activity.max_participants - activityParticipants.length} ledig </Text>) : null}
                             </View>
                             <View>
-                                {((participantsInQueue.length !== 0) || ((participantsInQueue.length === 0) && ((activity.max_participants - number_of_participants) === 0))) ? (<Text><Image source={orangeMan} style={styles.icons} /> {participantsInQueue.length} på venteliste </Text>) : null}
+                                {((participantsInQueue.length !== 0) || ((participantsInQueue.length === 0) && ((activity.max_participants - activityParticipants.length) === 0))) ? (<Text><Image source={orangeMan} style={styles.icons} /> {participantsInQueue.length} på venteliste </Text>) : null}
                             </View>
+
 
                             {currentUserId === String(activity.created_by.user_id) && (
-
-                                <View style={styles.editButtonContainer}>
+                            <View style={styles.editButtonContainer}>
+                                {(actDate < now) ? null : (
                                     <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('EditActivity', { activity })}>
                                         <Text style={styles.buttonText}>Rediger</Text>
                                     </TouchableOpacity>
+                                )}
 
-                                    <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteActivity}>
-                                        <Text style={styles.buttonText}>Slett</Text>
-                                    </TouchableOpacity>
-                                </View>
 
+                                <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteActivity}>
+                                    <Text style={styles.buttonText}>Slett</Text>
+                                </TouchableOpacity>
+                            </View>
                             )}
-
                         </ScrollView>
                     </View>
-
-
 
                     <ScrollView style={styles.chatcontainer}>
                         <View style={styles.commentsSection}>
@@ -146,6 +148,7 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route, navigation }) => {
     );
 }
 
+
 const styles = StyleSheet.create({
     background: {
         backgroundColor: '#DEE7E6',
@@ -162,6 +165,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         borderRadius: 10,
 
+
     },
     participateButtonContainer: {
         alignSelf: 'center',
@@ -171,6 +175,7 @@ const styles = StyleSheet.create({
         width: '98%',
         alignItems: 'center',
         justifyContent: 'center'
+
 
     },
     editButtonContainer: {
@@ -206,6 +211,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         width: '50%',
         height: 40,
+
 
     },
     buttonText: {
@@ -265,5 +271,6 @@ const styles = StyleSheet.create({
         borderRadius: 15,
     },
 });
+
 
 export default DetailsActivity;
