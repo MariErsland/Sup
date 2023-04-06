@@ -16,10 +16,12 @@ export const useEditLogic = () => {
 
   if (!route.params) return { error: 'No route parameters found' };
 
-  const userId: any = route.params.params.userId;
+  const email: any = route.params.params.email;
+  const firstName2: any = route.params.params.firstName;
 
-  const [firstName, setFirstName] = useState('');
-  const [email, setEmail] = useState('');
+  console.log("Email: ", email)
+
+  const [firstName, setFirstName] = useState(firstName2);
 
   async function saveChanges() {
     if ((!firstName.trim()) || (firstName.length < MIN_LENGHT_FIRST_NAME)) {
@@ -30,6 +32,8 @@ export const useEditLogic = () => {
   }
     const myToken = await retrieveToken();
     try {
+      console.log("Name before update user: ", firstName);
+      console.log("email before update user: ", email);
       const response = await fetch(`http://152.94.160.72:3000/user`, {
         method: 'PUT',
         headers: {
@@ -66,7 +70,6 @@ return {
     firstName,
     setFirstName,
     email,
-    setEmail,
     error,
     setError,
     saveChanges,

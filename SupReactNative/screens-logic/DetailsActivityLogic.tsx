@@ -102,7 +102,7 @@ export function useDetailsActivityLogic(activity: ActivityProps, navigation) {
             setNumberOfParticipants(data.length);
 
             //Vis maks antall deltakere > antall deltakere, kjør metode som melder opp neste deltaker
-            if (data.length < activity.max_participants) {
+            if (participantsInQueue.length > 0) {
                 //Finn neste deltaker
                 console.log("Inne her fordi ein frå køen må over")
                 participantsInQueue.sort((a, b) => a.time - b.time);
