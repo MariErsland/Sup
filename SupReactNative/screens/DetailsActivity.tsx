@@ -27,6 +27,8 @@ const Description = require('../assets/descriptionIcon.png');
 
 
 const DetailsActivity: React.FC<DetailsProps> = ({ route, navigation }) => {
+    console.log("routeparams activity: ", route.params);
+    //const { id, address, category, county, createdBy, desctiption, hideCreatedBy, isUpcoming, maxParticipants, navigation, numberOfParticipants } = route.params;
     const { activity } = route.params;
     const {
         currentUserId,
@@ -43,28 +45,17 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route, navigation }) => {
         handleSignUpForActivity
     } = useDetailsActivityLogic(activity, navigation);
 
-
-
-
     return (
         <View style={styles.background}>
             {isLoading ? (
                 <ActivityIndicator size="large" color="#EB7B31" />
-
-
             ) : (
-
-
                 <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center', flexGrow: 1 }}>
                     <Text style={styles.title}> {activity.title}</Text>
                     <Text style={styles.madeby}><Image source={MadeBy} style={styles.iconMadeBy} /> Laget av: {activity.created_by.first_name}</Text>
-
-
                     <View>
                         {(actDate < now) ? (<Text> Aktiviteten er utløpt </Text>) : null}
                     </View>
-
-
                     <View style={styles.participateButtonContainer}>
                         {
                             (currentUserId === String(activity.created_by.user_id) || actDate < now) ? (
@@ -85,7 +76,7 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route, navigation }) => {
                                                 </TouchableOpacity>
                                             ) : (
                                                 <>
-                                                    {activity.max_participants === number_of_participants && currentUserId !== String(activity.created_by.user_id) && !activityParticipants.some(participant => participant.user_id === currentUserId) ? (
+                                                    {activity.max_participants === activityParticipants.length && currentUserId !== String(activity.created_by.user_id) && !activityParticipants.some(participant => participant.user_id === currentUserId) ? (
                                                         <TouchableOpacity style={styles.button} onPress={handlePutInQueue}>
                                                             <Text style={styles.buttonText}>Sett meg i kø</Text>
                                                         </TouchableOpacity>
@@ -115,12 +106,12 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route, navigation }) => {
                             <Text><Image source={TimeActivity} style={styles.icons} /> {formatDate(activity.time)}</Text>
                             <Text><Image source={County} style={styles.icons} /> {activity.county}</Text>
                             <Text><Image source={Address} style={styles.icons} /> {activity.address}</Text>
-                            <Text><Image source={PersonAttending} style={styles.icons} /> {number_of_participants} påmeldt </Text>
+                            <Text><Image source={PersonAttending} style={styles.icons} /> {activityParticipants.length} påmeldt </Text>
                             <View>
-                                {((activity.max_participants - number_of_participants) !== 0) ? (<Text><Image source={greenMan} style={styles.icons} /> {activity.max_participants - number_of_participants} ledig </Text>) : null}
+                                {((activity.max_participants - activityParticipants.length) !== 0) ? (<Text><Image source={greenMan} style={styles.icons} /> {activity.max_participants - activityParticipants.length} ledig </Text>) : null}
                             </View>
                             <View>
-                                {((participantsInQueue.length !== 0) || ((participantsInQueue.length === 0) && ((activity.max_participants - number_of_participants) === 0))) ? (<Text><Image source={orangeMan} style={styles.icons} /> {participantsInQueue.length} på venteliste </Text>) : null}
+                                {((participantsInQueue.length !== 0) || ((participantsInQueue.length === 0) && ((activity.max_participants - activityParticipants.length) === 0))) ? (<Text><Image source={orangeMan} style={styles.icons} /> {participantsInQueue.length} på venteliste </Text>) : null}
                             </View>
 
 
@@ -140,11 +131,6 @@ const DetailsActivity: React.FC<DetailsProps> = ({ route, navigation }) => {
                             )}
                         </ScrollView>
                     </View>
-
-
-
-
-
 
                     <ScrollView style={styles.chatcontainer}>
                         <View style={styles.commentsSection}>

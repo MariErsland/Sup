@@ -1,14 +1,10 @@
-import React, { useContext, useEffect, useState, Component } from 'react';
-import { View, Text, Button, Alert, StyleSheet, TouchableOpacity, Image} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { LoginContext } from '../App';
-import { useAuth } from '../security/auth';
-import { getUser } from '../services/getUser';
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ActivityIndicator} from 'react-native';
 import Footer from '../components/Footer';
-import { deleteToken, retrieveToken} from '../security/token_handling';
-//import { onSignOut } from '../screens/login'
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ProfileScreenLogic } from '../screens-logic/ProfileScreenLogic';
+import { useIsFocused } from '@react-navigation/native';
+import { getUser } from '../services/getUser';
+
 
 
 
@@ -24,18 +20,33 @@ function ProfileScreen() {
 
   const {
     data,
-    setIsLoggedIn,
     DeleteUser,
     EditUser,
     OnSignOut,
+    isLoading,
+    setIsLoading,
+    setData
   } = ProfileScreenLogic();
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if (isFocused){
+      setIsLoading(true)
+      console.log("Inside effect in not logic")
+      const getData = async () => {
+        console.log("Inside effect in not logic")
+        const user = await getUser();
+        setData([user.user]);
+        setIsLoading(false)
+      };
+      getData();
+    }
+  }, [isFocused]);
 
 
-
-     
   return (
     <View style={styles.background}>
-   
+   <Text style={styles.title}> Min profil </Text> 
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <View style={styles.imageFrame}>
@@ -45,15 +56,15 @@ function ProfileScreen() {
       <View style={styles.infoContainer}>
      
         {
-          data === undefined ?
-            <View><Text> Loading... </Text></View> :
+          (isLoading || !data ) ?
+          (<ActivityIndicator size="large" color="#EB7B31" />) :
            
-              data.map((item: User) => (
+             ( data.map((item: User) => (
                 <View  key={item.id} >
                   <Text style={styles.infoElement}>{item.first_name}</Text>
                   <Text style={styles.infoElement}>{item.email}</Text>
                 </View>
-              ))
+              )))
         }
       </View>
       <View style={styles.buttonsContainer}>
@@ -62,33 +73,22 @@ function ProfileScreen() {
                 <Text style={styles.buttonText}>Rediger bruker</Text>
             </TouchableOpacity>
         </View>
-
-
         <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={DeleteUser}>
                 <Text style={styles.buttonText}>Slett bruker</Text>
             </TouchableOpacity>
         </View>
-
-
         <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={OnSignOut}>
                 <Text style={styles.buttonText}>Logg ut</Text>
             </TouchableOpacity>
         </View>
       </View>
-   
-
-
     </View>
     <Footer />
     </View>
   );
 };
-
-
-
-
 
 
 const styles = StyleSheet.create({
@@ -151,6 +151,12 @@ const styles = StyleSheet.create({
   image: {
     width: 50,
     height: 55,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    alignSelf: 'center', 
+    paddingBottom: 15
   }
  
 

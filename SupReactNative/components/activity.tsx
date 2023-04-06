@@ -41,7 +41,28 @@ const Activity = (props: ActivityProps) => {
     const backgroundColor = activityDate < currentDate ? 'lightgray' : 'white';
 
     return (
-        <TouchableOpacity key={props.id} style={[styles.activityBox, { backgroundColor }]} onPress={() => props.navigation.navigate('DetailsActivity', {activity: props})}>
+        <TouchableOpacity key={props.id} style={[styles.activityBox, { backgroundColor }]} onPress={() => props.navigation.navigate('DetailsActivity', 
+            {
+                activity: {
+                    title: props.title,
+                    time: props.time,
+                    id: props.id,
+                    address: props.address,
+                    category: props.category,
+                    county: props.county,
+                    created_by: { user_id: props.created_by.user_id, first_name: props.created_by.first_name },
+                    onPress: props.onPress,
+                    description: props.description,
+                    hideCreatedBy: props.hideCreatedBy,
+                    isUpcoming: props.isUpcoming,
+                    max_participants: props.max_participants,
+                    navigation: props.navigation,
+                    number_of_participants: props.number_of_participants,
+                    activities: props.activities
+                    
+                }
+            }
+        )}>
             <View style={styles.iconText}>
                 <Image source={Title} style={styles.icons}/>
                 <Text style={styles.titleText}>{props.title}</Text>
@@ -85,12 +106,9 @@ interface ActivityListProps {
 const ActivityList = (props: ActivityListProps) => {
     const currentDate = new Date();
     const sortedActivities = props.activities.sort((a, b) => a.time.localeCompare(b.time));
-
-    // filter past activities and add to the end of the sorted activities array?
     const pastActivities = sortedActivities.filter(activity => new Date(activity.time) < currentDate);
     const upcomingActivities = sortedActivities.filter(activity => new Date(activity.time) >= currentDate);
     const sortedPastUpcomingActivities = [...upcomingActivities, ...pastActivities];
-    //console.log('upcoming inni activity.tsx:', sortedPastUpcomingActivities)
 
     return (
         <ScrollView style={styles.scroll}>

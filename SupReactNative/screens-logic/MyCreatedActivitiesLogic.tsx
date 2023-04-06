@@ -13,6 +13,7 @@ export const useMyActivitiesLogic = (): UseMyActivitiesLogic => {
   const [isLoading, setIsLoading] = useState(true);
 
   const handleMyCreatedActivities = async () => {
+    setIsLoading(true);
     const myToken = await retrieveToken();
     try {
       const response = await fetch('http://152.94.160.72:3000/activities-by-user', {
