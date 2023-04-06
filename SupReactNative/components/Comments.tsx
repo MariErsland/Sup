@@ -66,8 +66,6 @@ const Comments: React.FC<CommentsProps> = ({ activityId }) => {
                 return;
             }
 
-
-
             const user = await getUser()
             const myToken = retrieveToken();
             const response = await fetch(`http://152.94.160.72:3000/activity/${activityId}/comments`, {
