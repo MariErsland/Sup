@@ -164,8 +164,6 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         marginBottom: 20,
         borderRadius: 10,
-
-
     },
     participateButtonContainer: {
         alignSelf: 'center',
@@ -175,18 +173,15 @@ const styles = StyleSheet.create({
         width: '98%',
         alignItems: 'center',
         justifyContent: 'center'
-
-
     },
     editButtonContainer: {
-        marginTop: 40,
         flexDirection: 'row',
         position: 'absolute',
-        bottom: 10,
+        bottom: 5,
         width: '30%',
-        right: 10,
+        right: 15,
         backgroundColor: '#EB7B31',
-        borderRadius: 10,
+        borderRadius: 30,
         justifyContent: 'space-around'
     },
     button: {
@@ -209,7 +204,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#EB7B31',
         borderRadius: 10,
-        width: '50%',
+        width: '49%',
         height: 40,
 
 
@@ -238,6 +233,7 @@ const styles = StyleSheet.create({
         marginBottom: 3,
         marginTop: 3,
         resizeMode: 'contain',
+        
     },
     iconMadeBy: {
         width: 15,
