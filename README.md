@@ -40,8 +40,17 @@ Install Node here: https://nodejs.org/en/download
 1. Go to the project folder and write command:  
 ```
 npx react-native run-android
+
 ```
-2. If you have your virtual device installed, it should open on your virtuel device. if not, follow these steps: 
+2. You will be prompted to install react-native, say yes. 
+3. If you are having trouble with the 'react-native' command, try the following:
+
+```
+npm install react-native
+```
+4. If you are still having issues restart your computer. 
+
+5. If you have your virtual device installed, it should open on your virtuel device. if not, follow these steps: 
     1. Connect your phone to you computer with usb
     2. Turn developer mode on on your phone
     3. When prompted, allow usb debugging. 
