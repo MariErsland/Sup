@@ -1,11 +1,9 @@
-import React, {useState} from 'react';
-import {SafeAreaView, Text, Button, Alert, StyleSheet, View, Image, ImageBackground} from 'react-native';
-import {GoogleSignin, GoogleSigninButton} from '@react-native-google-signin/google-signin';
+import {useState} from 'react';
+import {Alert} from 'react-native';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import { useContext } from 'react';
 import { LoginContext } from '../App';
-import { deleteToken, retrieveToken, storeToken } from '../security/token_handling';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { storeToken } from '../security/token_handling';
 
 GoogleSignin.configure({
     webClientId:
@@ -14,17 +12,13 @@ GoogleSignin.configure({
     offlineAccess: false,
   });
 
-
   export const onSignOut = async () => {
     await GoogleSignin.signOut()
   };
 
-
 export const useLoginLogic = (props: any) => {
   const [loading, setLoading] = useState(false);
   const { setIsLoggedIn } = useContext(LoginContext);
-  let timeoutId = props.timeoutId;
-
 
   const onSignIn = () => {
     setLoading(true);
@@ -52,19 +46,10 @@ export const useLoginLogic = (props: any) => {
           return response.json();
         })
         .then(async data => {
-          console.log("data: ",data)
           let userToken = data.token;
           await storeToken(userToken);
-         
-          try {
-            await AsyncStorage.setItem('isLoggedIn', 'true');
-            console.log("In try");
-          } catch (e) {
-            console.log("Error storing isloggedin: ", e);
-          }
           setIsLoggedIn(true);
           setLoading(false);
-          console.log("redirecting to feed ");
           props.navigation.reset({
             index: 0,
             routes: [{name: 'Feed'}]
@@ -80,7 +65,6 @@ export const useLoginLogic = (props: any) => {
         console.log(err);
     });
   };
-
 
   return {
     loading,

@@ -20,12 +20,8 @@ export function useDetailsActivityLogic(activity: ActivityProps, navigation) {
             try {
                 const user = await getUser();
                 setCurrentUserId(user.user.id);
-                console.log('user user id', user.user.id);
                 await updateStatusOfActivityParticipants();
                 await updateStatusOfParticipantsInQueue();
-                console.log("Current user id: ", currentUserId);
-                console.log("Current user id: ", user.user.id);
-                console.log("Participants in queue in effect: ", participantsInQueue)
                 setIsLoading(false);
             }
             catch (err) {
@@ -48,7 +44,6 @@ export function useDetailsActivityLogic(activity: ActivityProps, navigation) {
                 throw new Error(`Failed to get status of activity participants. Response from server is ${response.status}.`);
             }
             const data = await response.json();
-            console.log('Activity participants collected successfully', data);
             setActivityParticipants(data);
             setNumberOfParticipants(data.length)
         } catch (error) {
@@ -58,7 +53,6 @@ export function useDetailsActivityLogic(activity: ActivityProps, navigation) {
 
     async function handleSignUpForActivity() {
         try {
-            console.log("Inni sign up for activity");
             const myToken = await retrieveToken();
             const response = await fetch(`http://152.94.160.72:3000/addParticipantToActivity/${activity.id}`, {
                 method: 'PUT',
@@ -72,10 +66,6 @@ export function useDetailsActivityLogic(activity: ActivityProps, navigation) {
             }
             const data = await response.json();
             await updateStatusOfActivityParticipants();
-            console.log("Signon")
-            console.log("current user: ", currentUserId)
-            console.log("Number of participants + 1: ", (number_of_participants + 1))
-            console.log("Length from db: ", data.length)
             setNumberOfParticipants(data.length);
         } catch (error) {
             console.error('Error updating activity:', error);
@@ -84,7 +74,6 @@ export function useDetailsActivityLogic(activity: ActivityProps, navigation) {
 
     async function handleSignOffActivity() {
         try {
-            console.log("Inni sign off activity");
             const myToken = await retrieveToken();
             const response = await fetch(`http://152.94.160.72:3000/removeParticipantFromActivity/${activity.id}`, {
                 method: 'PUT',
@@ -97,14 +86,11 @@ export function useDetailsActivityLogic(activity: ActivityProps, navigation) {
                 throw new Error(`Failed to update activity. Server responded with ${response.status}.`);
             }
             const data = await response.json();
-            console.log('Activity updated successfully', data);
             await updateStatusOfActivityParticipants();
             setNumberOfParticipants(data.length);
 
             //Vis maks antall deltakere > antall deltakere, kjør metode som melder opp neste deltaker
             if (participantsInQueue.length > 0) {
-                //Finn neste deltaker
-                console.log("Inne her fordi ein frå køen må over")
                 participantsInQueue.sort((a, b) => a.time - b.time);
                 const firstInQueue = participantsInQueue.shift();
                 await handleAddFirstUserToActivityParticipants(firstInQueue)
@@ -127,7 +113,6 @@ export function useDetailsActivityLogic(activity: ActivityProps, navigation) {
                     {
                         text: 'Slett',
                         onPress: async () => {
-                            console.log('inni onPress' + activity.id);
                             const response = await fetch(`http://152.94.160.72:3000/activity/${activity.id}`, {
                                 method: 'DELETE',
                                 headers: {
@@ -150,7 +135,6 @@ export function useDetailsActivityLogic(activity: ActivityProps, navigation) {
 
     async function handlePutInQueue() {
         try {
-            console.log("Inni put in queue in activity");
             const myToken = await retrieveToken();
             const response = await fetch(`http://152.94.160.72:3000/putInQueue/${activity.id}`, {
                 method: 'PUT',
@@ -163,7 +147,6 @@ export function useDetailsActivityLogic(activity: ActivityProps, navigation) {
                 throw new Error(`Failed to put user in queue. Server responded with ${response.status}.`);
             }
             const data = await response.json();
-            console.log('Activity updated successfully, user put in queue', data);
             await updateStatusOfParticipantsInQueue();
         } catch (error) {
             console.error('Error updating activity:', error);
@@ -172,7 +155,6 @@ export function useDetailsActivityLogic(activity: ActivityProps, navigation) {
 
     async function handleRemoveFromQueue() {
         try {
-            console.log("Inni remove from queue in activity");
             const myToken = await retrieveToken();
             const response = await fetch(`http://152.94.160.72:3000/removeFromQueue/${activity.id}`, {
                 method: 'DELETE',
@@ -185,7 +167,6 @@ export function useDetailsActivityLogic(activity: ActivityProps, navigation) {
                 throw new Error(`Failed to remove user from queue. Server responded with ${response.status}.`);
             }
             const data = await response.json();
-            console.log('Activity updated successfully', data);
             await updateStatusOfParticipantsInQueue();
         } catch (error) {
             console.error('Error updating activity:', error);
@@ -205,7 +186,6 @@ export function useDetailsActivityLogic(activity: ActivityProps, navigation) {
                 throw new Error(`Failed to get activity participants  in queue. Server responded with ${response.status}.`);
             }
             const data = await response.json();
-            console.log('Activity participants in queue collected successfully', data);
             data.sort((a, b) => a.time - b.time);
             setParticipantsInQueue(data);
         } catch (error) {
@@ -226,7 +206,6 @@ export function useDetailsActivityLogic(activity: ActivityProps, navigation) {
                 throw new Error(`Failed to add first user to activity participants. Server responded with ${response.status}.`);
             }
             const data = await response.json();
-            console.log('Activity participants in queue collected successfully', data);
             updateStatusOfParticipantsInQueue();
             updateStatusOfActivityParticipants();
         } catch (error) {
@@ -248,5 +227,4 @@ export function useDetailsActivityLogic(activity: ActivityProps, navigation) {
         handlePutInQueue,
         handleRemoveFromQueue
     };
-
-    }
+}
