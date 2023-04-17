@@ -1,35 +1,14 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect } from 'react';
 
 interface Props {
-  isLoggedIn: boolean;
   navigation: any;
+  isLoggedIn: boolean;
 }
-
-// Check if user is logged in or not
-/*export const useAuth = (props: Props) => {
-  useEffect(() => {
-    const value = await AsyncStorage.getItem('isLoggedIn');
-    console.log("Value: ", value);
-    if (!props.isLoggedIn || !value) {
-      console.log("Redirecting to login.. ")
-      props.navigation.reset({
-        index: 0,
-        routes: [{name: 'Login'}]
-      });
-    }
-  }, [props.isLoggedIn, props.navigation]);
-};*/
 
 export const useAuth = (props: Props) => {
   useEffect(() => {
-    
     const checkLoggedIn = async () => {
-      const value = await AsyncStorage.getItem('isLoggedIn');
-      console.log("In auth. Value of async: ", value, " Value of isLoggedIn: ", props.isLoggedIn);
-      console.log("Value: ", value);
-      if ((props.isLoggedIn == false) && (value == 'false') || (props.isLoggedIn == false) && (value == null)) {
-        console.log("Redirecting to login.. ")
+      if (props.isLoggedIn == false) {
         props.navigation.reset({
           index: 0,
           routes: [{name: 'Login'}]
@@ -37,7 +16,7 @@ export const useAuth = (props: Props) => {
       }
     };
     checkLoggedIn();
-  }, [props.isLoggedIn, props.navigation]);
+  }, [props.navigation, props.isLoggedIn]);
 };
 
 

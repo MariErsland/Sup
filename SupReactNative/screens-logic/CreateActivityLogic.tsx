@@ -92,7 +92,6 @@ export const useCreateActivityLogic = () => {
             setError(errorMessageLength + ' ' + errorMessageCharacters)
             setTitle(text)
         }
-
     }
 
     function handleAddressChange(text: string) {
