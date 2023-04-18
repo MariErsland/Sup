@@ -83,5 +83,7 @@ npm install react-native
     2. Turn developer mode on on your phone
     3. When prompted, allow usb debugging. 
     
+
+### Good luck!
   
  
