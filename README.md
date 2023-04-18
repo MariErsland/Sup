@@ -83,11 +83,5 @@ npm install react-native
     2. Turn developer mode on on your phone
     3. When prompted, allow usb debugging. 
     
-    
- ### Nye notater
- 1. Må ha git installert
- 2. Må ha Node installert for å bruke npx kommando og npm kommando
- 3. Må installere react native når det dukker opp under kjøring av kommando npx react native
-    Må kanskje bruke kommando:  npm install -g react-native
- Fekk det ikkje til. Prøv å last ned android studio igjen. Ta med alle SDK som trengs
+  
  
