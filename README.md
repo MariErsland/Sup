@@ -1,12 +1,12 @@
 # Sup
 
-## Below follows guide to how to run our application. In both ways you will have to clone this reository on your computer. 
+### Below follows two guides to how to run our application. In both ways you will have to clone this reository on your computer. 
 
 There are two ways to run it;
 1. Connect your phone to your computer and install the application on your phone. This requires an android phone. 
 2. Download Android Studio and run it on a emulator. 
 
-### How to install it on your phone: 
+#### How to install it on your phone: 
 1. Go to settings on your phone and turn on developer mode. 
 2. When in developer mode turn on 'debugging with USB'
 3. Connect your phone to your computer with USB. 
@@ -29,21 +29,21 @@ npx react-native run-android
 8. Once your phone is installed on your phone, locate it on your phone and start using it! 
 
 
-### How to run it with android studio
+#### How to run it with android studio
 
 1. Install Node.js
 2. Install Java JDK (Java 11)
 3. Install Android Studio
 
-#### Install Node.js:
+##### Install Node.js:
 Install Node here: https://nodejs.org/en/download
 
-#### Install Java JDK:
+##### Install Java JDK:
 1. Go to https://www.oracle.com/java/technologies/downloads/#java11-windows and choose Java 11 for Windows x64 installer. 
 2. You will be prompted for username and password in oracle. Click 'create account'.
 3. When you have created an account you can sign in and Java 11 will download. 
 
-#### Install Android Studio:
+##### Install Android Studio:
 1. Go to developer.android.com/studio and download latest version
 
 *To run the project you have to use Android Studio.
@@ -63,7 +63,7 @@ Install Node here: https://nodejs.org/en/download
     Variable value: *Path to AppData>Local>Android>Sdk*
 12. Finished!
 
-## Run the code with android studio:
+### Run the code with android studio:
 
 1. Go to the project folder and write command:  
 ```
@@ -84,21 +84,10 @@ npm install react-native
     3. When prompted, allow usb debugging. 
     
     
- ## Nye notater
+ ### Nye notater
  1. Må ha git installert
  2. Må ha Node installert for å bruke npx kommando og npm kommando
  3. Må installere react native når det dukker opp under kjøring av kommando npx react native
     Må kanskje bruke kommando:  npm install -g react-native
  Fekk det ikkje til. Prøv å last ned android studio igjen. Ta med alle SDK som trengs
  
- 
- 
- # Nye notater 30.03
- 1. Last ned docker: https://www.docker.com/products/docker-desktop/
-
-# Nye notater 31.03
-1. Last ned java 11 først:
-    1. ```
-         Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-      ``` 
-    2. 
