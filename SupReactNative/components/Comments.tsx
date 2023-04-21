@@ -12,7 +12,6 @@ interface Comment {
     comment: string;
     created_at: string;
     user_first_name: string;
-
 }
 
 interface CommentsProps {
@@ -40,7 +39,7 @@ const Comments: React.FC<CommentsProps> = ({ activityId }) => {
             const user = await getUser()
             setCurrentUserId(user.user.id);
             console.log("activity id inni fetch ocmments:", activityId)
-            const response = await fetch(`http://152.94.160.72:3000/activity/${activityId}/comments`);
+            const response = await fetch(`http://152.94.160.72:3000/comment/activity/${activityId}/comments`);
             if (!response.ok) {
                 throw new Error(`Failed to fetch comments for activity ${activityId}. Server responded with ${response.status}.`);
             }
@@ -68,7 +67,7 @@ const Comments: React.FC<CommentsProps> = ({ activityId }) => {
 
             const user = await getUser()
             const myToken = retrieveToken();
-            const response = await fetch(`http://152.94.160.72:3000/activity/${activityId}/comments`, {
+            const response = await fetch(`http://152.94.160.72:3000/comment/activity/${activityId}/comments`, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${myToken}`,
@@ -111,7 +110,7 @@ const Comments: React.FC<CommentsProps> = ({ activityId }) => {
                     {
                         text: 'Slett',
                         onPress: async () => {
-                            const response = await fetch(`http://152.94.160.72:3000/activity/${comment.id}/comments`, {
+                            const response = await fetch(`http://152.94.160.72:3000/comment/activity/${comment.id}/comments`, {
                                 method: 'DELETE',
                                 headers: {
                                     Authorization: `Bearer ${myToken}`,

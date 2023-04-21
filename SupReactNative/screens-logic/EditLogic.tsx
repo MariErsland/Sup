@@ -34,7 +34,7 @@ export const useEditLogic = () => {
     try {
       console.log("Name before update user: ", firstName);
       console.log("email before update user: ", email);
-      const response = await fetch(`http://152.94.160.72:3000/user`, {
+      const response = await fetch(`http://152.94.160.72:3000/user/user`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

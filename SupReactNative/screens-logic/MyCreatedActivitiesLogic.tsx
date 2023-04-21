@@ -16,7 +16,7 @@ export const useMyActivitiesLogic = (): UseMyActivitiesLogic => {
     setIsLoading(true);
     const myToken = await retrieveToken();
     try {
-      const response = await fetch('http://152.94.160.72:3000/activities-by-user', {
+      const response = await fetch('http://152.94.160.72:3000/activity/activities-by-user', {
         headers: {
           Authorization: `Bearer ${myToken}`,
         },
