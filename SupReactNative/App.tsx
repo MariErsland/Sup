@@ -1,7 +1,6 @@
 import StackNavigationHome from './navigation/StackNavigationHome'
-import { createContext, useEffect, useState, useContext } from 'react';
+import { createContext, useState } from 'react';
 import React from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface ILoginContext {
   isLoggedIn: boolean;
@@ -24,7 +23,6 @@ function App() {
   return (
     <StackNavigationHome />
   );
-  
 }
 
 export default App;

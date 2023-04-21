@@ -32,9 +32,7 @@ function ProfileScreen() {
   useEffect(() => {
     if (isFocused){
       setIsLoading(true)
-      console.log("Inside effect in not logic")
       const getData = async () => {
-        console.log("Inside effect in not logic")
         const user = await getUser();
         setData([user.user]);
         setIsLoading(false)

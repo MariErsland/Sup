@@ -23,7 +23,7 @@ export const ProfileScreenLogic = () => {
   const {isLoggedIn, setIsLoggedIn} = useContext(LoginContext);
   useAuth({isLoggedIn, navigation});
 
-    //Setting userdata with logged in user
+  //Setting userdata with logged in user
   useEffect(() => {
     setIsLoading(true)
     const getData = async () => {
@@ -65,16 +65,12 @@ export const ProfileScreenLogic = () => {
               return response.json();
             })
             .then(async data => {
-              console.log('Bruker slettet = suksess', data);
-              AsyncStorage.setItem('isLoggedIn', 'false');
               setIsLoggedIn(false);
               await deleteToken();
             })
             .catch(error => {
               console.log('Feil ved sletting av bruker', error);
-             
               if (error.toString().includes('Cannot delete or update a parent row: a foreign key constraint fails')) {
-                console.log("User has stuff attached to it, for example an activity");
                 Alert.alert(
                   'Sorry',
                   'Delete all your activities before deleting your user',
@@ -91,7 +87,6 @@ export const ProfileScreenLogic = () => {
 
 
   function EditUser() {
-    console.log("User: ", data[0]);
     navigation.navigate('Edit', { params: { userId: data[0].id, firstName: data[0].first_name, email: data[0].email } });
 }
 
@@ -124,16 +119,12 @@ function OnSignOut() {
             return response.json();
           })
           .then(async data => {
-            console.log('Bruker logget av  = suksess', data);
-            AsyncStorage.setItem('isLoggedIn', 'false');
             await deleteToken();
             setIsLoggedIn(false);
-            console.log("Ferdig logget av");
             navigation.navigate('Feed', {});
           })
           .catch(error => {
             console.log('Feil ved logging av bruker', error);
-           
             if (error.toString().includes('Cannot delete or update a parent row: a foreign key constraint fails')) {
               console.log("User has stuff attached to it, for example an activity");
               Alert.alert(
