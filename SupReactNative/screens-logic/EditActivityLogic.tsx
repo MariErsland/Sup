@@ -59,7 +59,7 @@ export const useEditActivityLogic = ({
         const myToken = await retrieveToken();
         console.log('description: ', title);
         console.log('max_part: ', max_participants);
-        const response = await fetch(`http://152.94.160.72:3000/activity/${activity.id}`, {
+        const response = await fetch(`http://152.94.160.72:3000/activity/activity/${activity.id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

@@ -35,7 +35,7 @@ export const useLoginLogic = (props: any) => {
       .then(async (response) => {
         const accessToken = response.idToken;
         //Sending fetch with access token to server. Fetch will send userToken back
-        fetch('http://152.94.160.72:3000/verify-token', {
+        fetch('http://152.94.160.72:3000/auth/verify-token', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -38,7 +38,7 @@ export function useDetailsActivityLogic(activity: ActivityProps, navigation) {
     async function updateStatusOfActivityParticipants() {
         try {
             const myToken = retrieveToken();
-            let response = await fetch(`http://152.94.160.72:3000/getActivityParticipants/${activity.id}`, {
+            let response = await fetch(`http://152.94.160.72:3000/participant/getActivityParticipants/${activity.id}`, {
                 headers:
                 {
                     Authorization: `Bearer ${myToken}`
@@ -52,7 +52,7 @@ export function useDetailsActivityLogic(activity: ActivityProps, navigation) {
             setActivityParticipants(data);
             setNumberOfParticipants(data.length)
         } catch (error) {
-            console.error('Error updating activity:', error);
+            console.error('Error updating activity in update status of activity participants:', error);
         }
     }
 
@@ -60,7 +60,7 @@ export function useDetailsActivityLogic(activity: ActivityProps, navigation) {
         try {
             console.log("Inni sign up for activity");
             const myToken = await retrieveToken();
-            const response = await fetch(`http://152.94.160.72:3000/addParticipantToActivity/${activity.id}`, {
+            const response = await fetch(`http://152.94.160.72:3000/participant/addParticipantToActivity/${activity.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ export function useDetailsActivityLogic(activity: ActivityProps, navigation) {
             console.log("Length from db: ", data.length)
             setNumberOfParticipants(data.length);
         } catch (error) {
-            console.error('Error updating activity:', error);
+            console.error('Error updating activity in handle sign up for activity:', error);
         }
     };
 
@@ -86,7 +86,7 @@ export function useDetailsActivityLogic(activity: ActivityProps, navigation) {
         try {
             console.log("Inni sign off activity");
             const myToken = await retrieveToken();
-            const response = await fetch(`http://152.94.160.72:3000/removeParticipantFromActivity/${activity.id}`, {
+            const response = await fetch(`http://152.94.160.72:3000/participant/removeParticipantFromActivity/${activity.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -111,7 +111,7 @@ export function useDetailsActivityLogic(activity: ActivityProps, navigation) {
             }
 
         } catch (error) {
-            console.error('Error updating activity:', error);
+            console.error('Error updating activity in sign off activity:', error);
         }
     };
 
@@ -128,7 +128,7 @@ export function useDetailsActivityLogic(activity: ActivityProps, navigation) {
                         text: 'Slett',
                         onPress: async () => {
                             console.log('inni onPress' + activity.id);
-                            const response = await fetch(`http://152.94.160.72:3000/activity/${activity.id}`, {
+                            const response = await fetch(`http://152.94.160.72:3000/activity/activity/${activity.id}`, {
                                 method: 'DELETE',
                                 headers: {
                                     Authorization: `Bearer ${myToken}`,
@@ -152,7 +152,7 @@ export function useDetailsActivityLogic(activity: ActivityProps, navigation) {
         try {
             console.log("Inni put in queue in activity");
             const myToken = await retrieveToken();
-            const response = await fetch(`http://152.94.160.72:3000/putInQueue/${activity.id}`, {
+            const response = await fetch(`http://152.94.160.72:3000/queue/putInQueue/${activity.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -166,7 +166,7 @@ export function useDetailsActivityLogic(activity: ActivityProps, navigation) {
             console.log('Activity updated successfully, user put in queue', data);
             await updateStatusOfParticipantsInQueue();
         } catch (error) {
-            console.error('Error updating activity:', error);
+            console.error('Error updating activity i put in queue:', error);
         }
     }
 
@@ -174,7 +174,7 @@ export function useDetailsActivityLogic(activity: ActivityProps, navigation) {
         try {
             console.log("Inni remove from queue in activity");
             const myToken = await retrieveToken();
-            const response = await fetch(`http://152.94.160.72:3000/removeFromQueue/${activity.id}`, {
+            const response = await fetch(`http://152.94.160.72:3000/queue/removeFromQueue/${activity.id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -188,14 +188,14 @@ export function useDetailsActivityLogic(activity: ActivityProps, navigation) {
             console.log('Activity updated successfully', data);
             await updateStatusOfParticipantsInQueue();
         } catch (error) {
-            console.error('Error updating activity:', error);
+            console.error('Error updating activity handle remove from queue:', error);
         }
     }
 
     async function updateStatusOfParticipantsInQueue() {
         try {
             const myToken = retrieveToken();
-            let response = await fetch(`http://152.94.160.72:3000/getParticipantsInQueue/${activity.id}`, {
+            let response = await fetch(`http://152.94.160.72:3000/queue/getParticipantsInQueue/${activity.id}`, {
                 headers:
                 {
                     Authorization: `Bearer ${myToken}`
@@ -215,7 +215,7 @@ export function useDetailsActivityLogic(activity: ActivityProps, navigation) {
 
     async function handleAddFirstUserToActivityParticipants(user: any) {
         try {
-            let response = await fetch(`http://152.94.160.72:3000/addUserFromQueueToActivityParticipants/${activity.id}`, {
+            let response = await fetch(`http://152.94.160.72:3000/queue/addUserFromQueueToActivityParticipants/${activity.id}`, {
                 method: 'POST',
                 body: JSON.stringify({ user_id: user.user_id }),
                 headers: {
@@ -230,7 +230,7 @@ export function useDetailsActivityLogic(activity: ActivityProps, navigation) {
             updateStatusOfParticipantsInQueue();
             updateStatusOfActivityParticipants();
         } catch (error) {
-            console.error('Error updating activity participants in queue:', error);
+            console.error('Error updating add first user to activity participants in queue:', error);
         }
     }
 

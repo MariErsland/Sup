@@ -3,7 +3,7 @@ import {retrieveToken}  from '../security/token_handling';
 
 export async function getUser() {
   const myToken = await retrieveToken();
-  let response = fetch("http://152.94.160.72:3000/userByToken", {
+  let response = fetch("http://152.94.160.72:3000/user/userByToken", {
     headers: {
       Authorization: `Bearer ${myToken}`
     }

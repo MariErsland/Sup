@@ -51,7 +51,7 @@ export const useCreateActivityLogic = () => {
         const myToken = await retrieveToken();
         console.log(selectedDate, counties, categories);
         console.log(JSON.stringify({ selectedDate, counties, address, categories, description, number_of_participants, created_by, title, max_participants }));
-        const response = await fetch('http://152.94.160.72:3000/create-activity', {
+        const response = await fetch('http://152.94.160.72:3000/activity/create-activity', {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${myToken}`,

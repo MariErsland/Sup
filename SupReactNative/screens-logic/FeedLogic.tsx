@@ -16,7 +16,7 @@ export const useFeedLogic = () => {
     setIsLoading(true);
 
     const myToken = await retrieveToken();
-    await fetch(`http://152.94.160.72:3000/activities/`, {
+    await fetch(`http://152.94.160.72:3000/activity/activities/`, {
       headers: {
         Authorization: `Bearer ${myToken}`,
       },

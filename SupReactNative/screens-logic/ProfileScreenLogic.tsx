@@ -50,7 +50,7 @@ export const ProfileScreenLogic = () => {
 
 
             console.log(myToken)
-            fetch(`http://152.94.160.72:3000/delete-account`, {
+            fetch(`http://152.94.160.72:3000/user/delete-account`, {
               method: 'DELETE',
               headers: {
                 Authorization: `Bearer ${myToken}`,
@@ -109,7 +109,7 @@ function OnSignOut() {
         text: 'Logg av',
         onPress: async () => {
           const myToken = await retrieveToken();
-          fetch(`http://152.94.160.72:3000/log-out`, {
+          fetch(`http://152.94.160.72:3000/auth/log-out`, {
             method: 'POST',
             headers: {
               Authorization: `Bearer ${myToken}`,
