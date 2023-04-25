@@ -67,7 +67,7 @@ const Filter = (props: FilterProps) => {
     //console.log("userid " + user?.user?.id);
     try {
       const myToken = retrieveToken();
-      const response = await fetch(`http://152.94.160.72:3000/activity/activities-by-participants/${user.user.id}`, {
+      const response = await fetch(`http://152.94.160.72:3000/participant/activities-by-participants/${user.user.id}`, {
         headers: {
           Authorization: `Bearer ${myToken}`
         }
