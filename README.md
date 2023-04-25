@@ -4,7 +4,7 @@
 
 ### There are two ways to run it:
 1. Connect your phone to your computer and install the application on your phone. This requires an android phone. 
-2. Download Android Studio and run it on a emulator. 
+2. Download Android Studio and run it on an emulator. 
 
 #### How to install it on your phone: 
 1. Go to settings on your phone and turn on developer mode. 
