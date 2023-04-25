@@ -31,11 +31,14 @@ export const useActivityState = () => {
 };
 
 export const categories = [
-  { label: 'Tur', value: 'Tur' },
-  { label: 'Trening', value: 'Trening' },
+  { label: 'Friluft', value: 'Friluft' },
+  { label: 'Sport og Trening', value: 'Trening' },
+  { label: 'Dyrehold', value: 'Dyrehold' },
+  { label: 'Dans og musikk', value: 'Dans og musikk' },
   { label: 'Matlaging', value: 'Matlaging' },
+  { label: 'Språk', value: 'Språk' },
   { label: 'Annet', value: 'Annet' },
-  { label: 'Test', value: 'Test' },
+  
 ];
 
 export const counties = [
