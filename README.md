@@ -46,7 +46,6 @@ Install Node here: https://nodejs.org/en/download
 ##### Install Android Studio:
 1. Go to developer.android.com/studio and download latest version
 
-*To run the project you have to use Android Studio.
 
 2. When installing, remember to check the box 'install andriod virtuel device'. The checkbox will be shown in the installation menu under 'components' 
 3. Once installed, open Anroid Studio to set up the emulator
@@ -78,10 +77,6 @@ npm install react-native
 ```
 4. If you are still having issues restart your computer. 
 
-5. If you have your virtual device installed, it should open on your virtuel device. if not, follow these steps: 
-    1. Connect your phone to you computer with usb
-    2. Turn developer mode on on your phone
-    3. When prompted, allow usb debugging. 
     
 
 ### Good luck!
