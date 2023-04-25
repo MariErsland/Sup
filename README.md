@@ -14,7 +14,7 @@
 ```
 adb devices 
 ```
-5. If there are other connected deices than your phone, disconnect them with: 
+5. If there are other connected devices than your phone, disconnect them with: 
 ```
 adb disconnect <ip address> 
 ```
