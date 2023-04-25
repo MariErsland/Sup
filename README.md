@@ -1,6 +1,6 @@
 # Sup
 
-#### Below follows two guides to how to run our application. In both ways you will have to clone this reository on your computer. 
+#### Below follows two guides to run the application. In both ways you will have to clone this repository to your computer. 
 
 There are two ways to run it;
 1. Connect your phone to your computer and install the application on your phone. This requires an android phone. 
