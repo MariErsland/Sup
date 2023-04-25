@@ -26,7 +26,7 @@ npx react-native start
 ``` 
 npx react-native run-android
 ```
-8. Once your phone is installed on your phone, locate it on your phone and start using it! 
+8. Once the app is installed on your phone, locate it on your phone and start using it! 
 
 
 #### How to run it with android studio
