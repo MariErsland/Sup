@@ -2,10 +2,9 @@
 
 ### Demo video
 
-To view a demo of the app, check out one of the two links below. We recommend to choose the first link to get the best quality. Make sure you press 'settings' -> 'quality' ->'1080p HD' to get the best experience once you have clicked on the link: 
+To view a demo of the app, check out the link below. Make sure you press 'settings' -> 'quality' ->'1080p HD' to get the best experience once you have clicked on the link: 
 
-1. https://drive.google.com/file/d/1UOzwO73RG_mfa2TsbMawSM7EFU37pgt-/view?fbclid=IwAR1cLvzm22-JTNJ9EH-N681ccOJHelaQg7k82-SsfDdSU4GhFHiBtS7RQPI
-2. https://www.youtube.com/watch?v=cslIS-OXxxA
+https://www.youtube.com/watch?v=cslIS-OXxxA
 
 #### Below follows two guides to run the application. In both ways you will have to clone this repository to your computer. 
 
